@@ -1,5 +1,5 @@
 export interface Feedback {
-  id: string;
+  id: number;
   text: string;
   source: string;
   topic: string;
@@ -8,17 +8,17 @@ export interface Feedback {
   keywords: string[];
   created_at: string;
   organization_id?: string;
-  workspace_id?: string;
+  project_id?: string;
 }
 
 export interface Organization {
-  id: string;
+  id: number;
   name: string;
   created_at: string;
 }
 
-export interface Workspace {
-  id: string;
+export interface Project {
+  id: number;
   name: string;
   organization_id: string;
   created_at: string;
