@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { createServerClient } from '@/lib/supabase';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const supabase = createServerClient();
 
@@ -25,10 +25,20 @@ export async function GET(request: NextRequest) {
 
     // Calculate sentiment distribution
     const bySentiment = {
-      positive: feedbacks.filter(f => f.sentiment === 'positive').length,
-      neutral: feedbacks.filter(f => f.sentiment === 'neutral').length,
-      negative: feedbacks.filter(f => f.sentiment === 'negative').length,
+      positive: 0,
+      neutral: 0,
+      negative: 0
     };
+
+    feedbacks.forEach(f => {
+      if (f.sentiment === 'positive') {
+        bySentiment.positive++;
+      } else if (f.sentiment === 'neutral') {
+        bySentiment.neutral++;
+      } else if (f.sentiment === 'negative') {
+        bySentiment.negative++;
+      }
+    })
 
     // Calculate topic distribution
     const topicCounts: Record<string, number> = {};
