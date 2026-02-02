@@ -12,7 +12,7 @@ export default async function Dashboard() {
     stats = await response.json();
   } catch (error) {
     console.error('Failed to fetch stats:', error);
-    return
+    throw new Error('Failed to fetch stats')
   }
 
   if (stats.total === 0) {
