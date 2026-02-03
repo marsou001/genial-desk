@@ -22,7 +22,7 @@ export default function NavHeader() {
             {tabs.map((tab) => (
               <Link
                 key={tab.href}
-                href={tab.label}
+                href={tab.href}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   false
                     ? 'bg-blue-600 text-white'
