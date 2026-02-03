@@ -3,9 +3,9 @@
 import { useState } from 'react';
 import Navigation from '@/components/Navigation';
 import Dashboard from '@/components/Dashboard';
-import CSVUpload from '@/components/CSVUpload';
+import CSVUpload from '@/components/interfaces/upload/CSVUpload';
 import WeeklyInsights from '@/components/WeeklyInsights';
-import FeedbackList from '@/components/FeedbackList';
+import FeedbackList from '@/components/interfaces/FeedbackList/FeedbackList';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('dashboard');

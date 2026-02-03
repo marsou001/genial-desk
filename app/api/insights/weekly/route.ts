@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
 
     if (!feedbacks || feedbacks.length === 0) {
       return NextResponse.json({
-        insights: 'No feedback available for this period.',
+        data: 'No feedback available for this period.',
         count: 0,
       });
     }
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
     const insights = await generateWeeklyInsights(feedbacks);
 
     return NextResponse.json({
-      insights,
+      data: insights,
       count: feedbacks.length,
       period: `${days} days`,
     });
