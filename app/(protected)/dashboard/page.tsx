@@ -1,19 +1,11 @@
 import Link from "next/link";
-import { Stats } from "@/types";
 import SummaryCards from "@/components/interfaces/dashboard/SummaryCards";
 import ChartsGrid from "@/components/interfaces/dashboard/ChartsGrid";
 import SentimentsDistribution from "@/components/interfaces/dashboard/SentimentsDistribution";
 import { fetchStats } from "@/data/fetchStats";
 
 export default async function Dashboard() {
-  let stats: Stats;
-
-  try {
-    stats = await fetchStats();
-  } catch (error) {
-    console.error('Failed to fetch stats:', error);
-    throw new Error('Failed to fetch stats')
-  }
+  const stats = await fetchStats();
 
   if (stats.total === 0) {
     return (

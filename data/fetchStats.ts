@@ -3,6 +3,7 @@ import { Stats } from "@/types";
 
 export async function fetchStats(): Promise<Stats> {
   try {
+    // throw new Error("yoooooooooooooo")
     const supabase = createServerClient();
 
     // Get all feedbacks
@@ -67,6 +68,7 @@ export async function fetchStats(): Promise<Stats> {
       volumeOverTime,
     });
   } catch (error) {
+    console.log('Failed to fetch stats: ', error)
     throw new Error(error instanceof Error ? error.message : 'Failed to fetch stats');
   }
 }
