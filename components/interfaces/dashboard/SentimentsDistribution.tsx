@@ -1,5 +1,7 @@
-import { Stats } from '@/types';
+"use client";
+
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
+import { Stats } from '@/types';
 
 const COLORS = {
   positive: '#10b981',
