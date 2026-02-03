@@ -21,6 +21,10 @@ export default function FeedbackList({ feedbacks }: { feedbacks: Feedback[]}) {
     }
   })
 
+  function resetFilters() {
+    setFilter({ topic: "", sentiment: "" })
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex gap-2 flex-wrap">
@@ -46,11 +50,23 @@ export default function FeedbackList({ feedbacks }: { feedbacks: Feedback[]}) {
         </select>
       </div>
 
-      <div className="space-y-3">
-        {filteredSentiments.map((feedback) => (
-          <FeedbackCard key={feedback.id} feedback={feedback} />
-        ))}
-      </div>
+      {filteredSentiments.length === 0 ? (
+        <div className="text-center pt-4">
+          <h2 className="mb-4">No results were found with the selected topic and sentiment</h2>
+          <button
+            type="button"
+            onClick={resetFilters}
+            className="bg-blue-300 px-4 py-3 rounded-lg"
+          >Reset filters</button>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {filteredSentiments.map((feedback) => (
+            <FeedbackCard key={feedback.id} feedback={feedback} />
+          ))}
+        </div>
+      )}
+
     </div>
   );
 }
