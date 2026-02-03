@@ -3,13 +3,13 @@ import { Stats } from "@/types";
 import SummaryCards from "@/components/interfaces/dashboard/SummaryCards";
 import ChartsGrid from "@/components/interfaces/dashboard/ChartsGrid";
 import SentimentsDistribution from "@/components/interfaces/dashboard/SentimentsDistribution";
+import { fetchStats } from "@/data/fetchStats";
 
 export default async function Dashboard() {
   let stats: Stats;
 
   try {
-    const response = await fetch('/api/stats');
-    stats = await response.json();
+    stats = await fetchStats();
   } catch (error) {
     console.error('Failed to fetch stats:', error);
     throw new Error('Failed to fetch stats')

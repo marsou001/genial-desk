@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server';
-import { createServerClient } from '@/lib/supabase';
+import { createServerClient } from "@/lib/supabase";
+import { Stats } from "@/types";
 
-export async function GET() {
+export async function fetchStats(): Promise<Stats> {
   try {
     const supabase = createServerClient();
 
@@ -11,11 +11,11 @@ export async function GET() {
       .select('topic, sentiment, created_at');
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      throw new Error(error.message);
     }
 
     if (!feedbacks || feedbacks.length === 0) {
-      return NextResponse.json({
+      return ({
         total: 0,
         bySentiment: { positive: 0, neutral: 0, negative: 0 },
         byTopic: {},
@@ -60,17 +60,13 @@ export async function GET() {
       volumeOverTime.push({ date: dateStr, count });
     }
 
-    return NextResponse.json({
+    return ({
       total: feedbacks.length,
       bySentiment,
       byTopic: topicCounts,
       volumeOverTime,
     });
   } catch (error) {
-    console.error('Stats error:', error);
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to fetch stats' },
-      { status: 500 }
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to fetch stats');
   }
 }
