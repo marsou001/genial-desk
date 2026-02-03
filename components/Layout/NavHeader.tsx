@@ -3,7 +3,7 @@ import Link from "next/link";
 const tabs = [
   { href: 'dashboard', label: 'Dashboard' },
   { href: 'upload', label: 'Upload' },
-  { href: 'feedback', label: 'Feedback' },
+  { href: 'feedback-list', label: 'Feedback' },
   { href: 'insights', label: 'Weekly Insights' },
 ];
 
