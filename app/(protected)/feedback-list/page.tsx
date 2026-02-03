@@ -1,17 +1,8 @@
 import FeedbackList from "@/components/interfaces/FeedbackList/FeedbackList";
-import { Feedback } from "@/types/database";
+import { fetchFeedbacks } from "@/data/fetchFeedbacks";
 
 export default async function FeedbackListPage() {
-  let feedbacks: Feedback[];
-
-  try {
-    const response = await fetch(`/api/feedbacks`);
-    const data = await response.json();
-    feedbacks = data.feedbacks || [];
-  } catch (error) {
-    console.error('Failed to fetch feedbacks:', error);
-    throw new Error('Failed to fetch feedbacks')
-  }
+  const feedbacks = await fetchFeedbacks()
 
   if (feedbacks.length === 0) {
     return (
