@@ -8,6 +8,8 @@ export default function Insights({ insightsData }: { insightsData: InsightsData}
   const [loading, setLoading] = useState(false)
 
   async function fetchInsights() {
+    setLoading(true)
+
     try {
       const response = await fetch('/api/insights/weekly?days=7');
       const data = await response.json();
@@ -19,6 +21,8 @@ export default function Insights({ insightsData }: { insightsData: InsightsData}
       setLoading(false);
     }
   };
+
+  if (loading) return <div className="text-center">Loading...</div>
 
   return (
     <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-8 rounded-lg border border-blue-200 dark:border-blue-800 shadow-sm">
