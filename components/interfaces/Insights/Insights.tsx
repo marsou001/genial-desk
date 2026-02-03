@@ -12,8 +12,9 @@ export default function Insights({ insightsData }: { insightsData: InsightsData}
       const response = await fetch('/api/insights/weekly?days=7');
       const data = await response.json();
       setInsights(data);
-    } catch (error) {
-      console.error('Failed to fetch insights:', error);
+    } catch {
+      // TODO: toast error message
+      console.error('Failed to fetch insights:');
     } finally {
       setLoading(false);
     }

@@ -1,12 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@/lib/supabase';
-import { generateWeeklyInsights } from '@/lib/openai';
+import { generateWeeklyInsights } from "@/lib/openai";
+import { createServerClient } from "@/lib/supabase";
+import { Insights } from "@/types";
 
-export async function GET(request: NextRequest) {
+export async function fetchInsights(days: number = 7): Promise<Insights> {
   try {
-    const { searchParams } = new URL(request.url);
-    const days = parseInt(searchParams.get('days') || '7');
-
     const supabase = createServerClient();
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
@@ -18,11 +15,11 @@ export async function GET(request: NextRequest) {
       .order('created_at', { ascending: false });
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      throw new Error(error.message)
     }
 
     if (!feedbacks || feedbacks.length === 0) {
-      return NextResponse.json({
+      return ({
         data: 'No feedback available for this period.',
         count: 0,
         period: `${days} days`,
@@ -31,16 +28,13 @@ export async function GET(request: NextRequest) {
 
     const insights = await generateWeeklyInsights(feedbacks);
 
-    return NextResponse.json({
+    return ({
       data: insights,
       count: feedbacks.length,
       period: `${days} days`,
     });
   } catch (error) {
     console.error('Insights error:', error);
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to generate insights' },
-      { status: 500 }
-    );
+    throw new Error(error instanceof Error ? error.message : 'Failed to generate insights')
   }
 }

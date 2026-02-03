@@ -1,16 +1,8 @@
 import Insights from "@/components/interfaces/Insights/Insights";
-import { Insights as InsightsData } from "@/types";
+import { fetchInsights } from "@/data/fetchInsights";
 
 export default async function InsightsPage() {
-  let insights: InsightsData;
-
-  try {
-    const response = await fetch('/api/insights/weekly?days=7');
-    insights = await response.json();
-  } catch (error) {
-    console.error('Failed to fetch insights:', error);
-    throw new Error('Failed to fetch insights')
-  }
+  let insights = await fetchInsights()
 
   if (!insights) {
     return (
