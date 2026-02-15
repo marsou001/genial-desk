@@ -4,8 +4,13 @@ import ChartsGrid from "@/components/interfaces/dashboard/ChartsGrid";
 import SentimentsDistribution from "@/components/interfaces/dashboard/SentimentsDistribution";
 import { fetchStats } from "@/data/fetchStats";
 
-export default async function Dashboard() {
-  const stats = await fetchStats();
+export default async function Dashboard({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id: organizationId } = await params;
+  const stats = await fetchStats(organizationId);
 
   if (stats.total === 0) {
     return (
@@ -19,7 +24,7 @@ export default async function Dashboard() {
             Upload your first CSV file to start analyzing customer feedback with AI.
           </p>
           <Link
-            href="/upload"
+            href={`/organizations/${organizationId}/upload`}
             className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
           >
             Upload Feedback →

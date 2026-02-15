@@ -1,20 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase/server';
 import { analyzeFeedback } from '@/lib/openai';
+import { authGuard } from '@/lib/auth-guard';
 import Papa from 'papaparse';
 
 export async function POST(request: NextRequest) {
+  const guard = await authGuard(request, {
+    requireAuth: true,
+    requireOrg: true,
+    requirePermission: 'data:create',
+  });
+
+  if (!guard.success) {
+    return guard.response;
+  }
+
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
     const source = formData.get('source') || 'CSV Upload';
+    const projectId = formData.get('project_id') as string | null;
 
     if (!file) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
     const text = await file.text();
-    const supabase = createServerClient();
+    const supabase = await createClient();
 
     // Parse CSV using papaparse
     const parseResult = Papa.parse(text, {
@@ -64,7 +76,7 @@ export async function POST(request: NextRequest) {
         // Analyze with AI
         const analysis = await analyzeFeedback(feedbackText);
 
-        // Insert into database
+        // Insert into database (scoped to organization)
         const { data, error } = await supabase
           .from('feedbacks')
           .insert({
@@ -74,6 +86,8 @@ export async function POST(request: NextRequest) {
             sentiment: analysis.sentiment,
             summary: analysis.summary,
             keywords: analysis.keywords,
+            organization_id: guard.organizationId,
+            project_id: projectId || guard.projectId || null,
           })
           .select()
           .single();

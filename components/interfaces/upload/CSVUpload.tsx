@@ -29,12 +29,38 @@ export default function CSVUpload() {
     setResult(null);
 
     try {
+      // Get organization ID from URL
+      const pathMatch = window.location.pathname.match(/\/organizations\/([^/]+)/);
+      const orgId = pathMatch?.[1] || '';
+      
+      const projectId = document.cookie
+        .split('; ')
+        .find((row) => row.startsWith('project-id='))
+        ?.split('=')[1] || null;
+
+      if (!orgId) {
+        setResult({
+          success: false,
+          processed: 0,
+          errors: ['Organization context not found'],
+        });
+        setUploading(false);
+        return;
+      }
+
       const formData = new FormData();
       formData.append('file', file);
       formData.append('source', source);
+      if (projectId) {
+        formData.append('project_id', projectId);
+      }
 
       const response = await fetch('/api/upload', {
         method: 'POST',
+        headers: {
+          'x-organization-id': orgId,
+          ...(projectId && { 'x-project-id': projectId }),
+        },
         body: formData,
       });
 

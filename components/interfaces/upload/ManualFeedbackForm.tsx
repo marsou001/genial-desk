@@ -21,14 +21,35 @@ export default function ManualFeedbackForm() {
     setResult(null);
 
     try {
+      // Get organization ID from URL
+      const pathMatch = window.location.pathname.match(/\/organizations\/([^/]+)/);
+      const orgId = pathMatch?.[1] || '';
+      
+      const projectId = document.cookie
+        .split('; ')
+        .find((row) => row.startsWith('project-id='))
+        ?.split('=')[1] || null;
+
+      if (!orgId) {
+        setResult({
+          success: false,
+          error: 'Organization context not found',
+        });
+        setSubmitting(false);
+        return;
+      }
+
       const response = await fetch('/api/feedback', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'x-organization-id': orgId,
+          ...(projectId && { 'x-project-id': projectId }),
         },
         body: JSON.stringify({
           text: feedback.trim(),
           source: source.trim() || 'Manual Entry',
+          ...(projectId && { project_id: projectId }),
         }),
       });
 

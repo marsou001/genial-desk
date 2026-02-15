@@ -1,8 +1,13 @@
 import FeedbackList from "@/components/interfaces/FeedbackList/FeedbackList";
 import { fetchFeedbacks } from "@/data/fetchFeedbacks";
 
-export default async function FeedbackListPage() {
-  const feedbacks = await fetchFeedbacks()
+export default async function FeedbackListPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id: organizationId } = await params;
+  const feedbacks = await fetchFeedbacks(organizationId)
 
   if (feedbacks.length === 0) {
     return (

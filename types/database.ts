@@ -7,8 +7,8 @@ export interface Feedback {
   summary: string;
   keywords: string[];
   created_at: string;
-  organization_id?: string;
-  project_id?: string;
+  organization_id: number;
+  project_id: number;
 }
 
 export interface Organization {
@@ -20,6 +20,15 @@ export interface Organization {
 export interface Project {
   id: number;
   name: string;
-  organization_id: string;
+  organization_id: number;
+  created_at: string;
+}
+
+export interface OrganizationMember {
+  id: number;
+  user_id: string;
+  organization_id: number;
+  project_id: number | null;
+  role: 'owner' | 'admin' | 'analyst' | 'viewer';
   created_at: string;
 }

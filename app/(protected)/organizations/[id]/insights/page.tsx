@@ -1,8 +1,13 @@
 import Insights from "@/components/interfaces/Insights/Insights";
 import { fetchInsights } from "@/data/fetchInsights";
 
-export default async function InsightsPage() {
-  let insights = await fetchInsights()
+export default async function InsightsPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id: organizationId } = await params;
+  let insights = await fetchInsights(7, organizationId)
 
   if (!insights) {
     return (

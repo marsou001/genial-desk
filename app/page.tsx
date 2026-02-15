@@ -1,7 +1,6 @@
+import { redirect } from 'next/navigation';
+
 export default function Home() {
-  return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-black">
-      uuuu
-    </div>
-  );
+  // Redirect to organizations page (or sign in if not authenticated)
+  redirect('/organizations');
 }

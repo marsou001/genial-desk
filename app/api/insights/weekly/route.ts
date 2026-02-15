@@ -1,19 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase/server';
 import { generateWeeklyInsights } from '@/lib/openai';
+import { authGuard } from '@/lib/auth-guard';
 
 export async function GET(request: NextRequest) {
+  const guard = await authGuard(request, {
+    requireAuth: true,
+    requireOrg: true,
+    requirePermission: 'insights:read',
+  });
+
+  if (!guard.success) {
+    return guard.response;
+  }
+
   try {
     const { searchParams } = new URL(request.url);
     const days = parseInt(searchParams.get('days') || '7');
 
-    const supabase = createServerClient();
+    const supabase = await createClient();
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
 
     const { data: feedbacks, error } = await supabase
       .from('feedbacks')
       .select('text, topic, sentiment')
+      .eq('organization_id', guard.organizationId)
       .gte('created_at', startDate.toISOString())
       .order('created_at', { ascending: false });
 

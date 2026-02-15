@@ -1,15 +1,19 @@
-import { createServerClient } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase/server";
 import { Stats } from "@/types";
 
-export async function fetchStats(): Promise<Stats> {
+export async function fetchStats(organizationId: string | null): Promise<Stats> {
   try {
-    // throw new Error("yoooooooooooooo")
-    const supabase = createServerClient();
+    if (!organizationId) {
+      throw new Error("No organization Id was found")
+    }
 
-    // Get all feedbacks
+    const supabase = await createClient();
+
+    // Get feedbacks scoped to organization
     const { data: feedbacks, error } = await supabase
       .from('feedbacks')
-      .select('topic, sentiment, created_at');
+      .select('topic, sentiment, created_at')
+      .eq('organization_id', organizationId);
 
     if (error) {
       throw new Error(error.message);
@@ -69,6 +73,6 @@ export async function fetchStats(): Promise<Stats> {
     });
   } catch (error) {
     console.log('Failed to fetch stats: ', error)
-    throw new Error(error instanceof Error ? error.message : 'Failed to fetch stats');
+    throw new Error('Failed to fetch stats');
   }
 }
