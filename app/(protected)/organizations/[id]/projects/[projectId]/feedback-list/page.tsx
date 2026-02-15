@@ -1,4 +1,4 @@
-import FeedbackList from "@/components/interfaces/FeedbackList/FeedbackList";
+import FeedbackList from "@/components/interfaces/organizations/projects/FeedbackList/FeedbackList";
 import { fetchFeedbacks } from "@/data/fetchFeedbacks";
 
 export default async function FeedbackListPage({

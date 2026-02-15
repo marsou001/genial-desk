@@ -1,4 +1,4 @@
-import Insights from "@/components/interfaces/Insights/Insights";
+import Insights from "@/components/interfaces/organizations/projects/Insights/Insights";
 import { fetchInsights } from "@/data/fetchInsights";
 
 export default async function InsightsPage({

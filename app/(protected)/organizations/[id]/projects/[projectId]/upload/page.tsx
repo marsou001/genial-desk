@@ -1,4 +1,4 @@
-import UploadTabs from "@/components/interfaces/upload/UploadTabs";
+import UploadTabs from "@/components/interfaces/organizations/projects/upload/UploadTabs";
 
 export default function UploadPage() {
   return (

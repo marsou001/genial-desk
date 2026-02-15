@@ -1,7 +1,7 @@
 import Link from "next/link";
-import SummaryCards from "@/components/interfaces/dashboard/SummaryCards";
-import ChartsGrid from "@/components/interfaces/dashboard/ChartsGrid";
-import SentimentsDistribution from "@/components/interfaces/dashboard/SentimentsDistribution";
+import SummaryCards from "@/components/interfaces/organizations/projects/dashboard/SummaryCards";
+import ChartsGrid from "@/components/interfaces/organizations/projects/dashboard/ChartsGrid";
+import SentimentsDistribution from "@/components/interfaces/organizations/projects/dashboard/SentimentsDistribution";
 import { fetchStats } from "@/data/fetchStats";
 
 export default async function Dashboard({
