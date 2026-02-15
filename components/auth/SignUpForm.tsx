@@ -2,10 +2,10 @@
 
 import { useActionState } from 'react';
 import { signUpAction } from '@/app/actions/auth';
-import { AuthActionState } from '@/types';
+import { ErrorActionState } from '@/types';
 
 export default function SignUpForm() {
-  const [state, formAction, isPending] = useActionState<AuthActionState, FormData>(signUpAction, { error: null });
+  const [state, formAction, isPending] = useActionState<ErrorActionState, FormData>(signUpAction, { error: null });
 
   return (
     <form action={formAction} className="space-y-4">

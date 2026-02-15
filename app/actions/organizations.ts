@@ -2,19 +2,20 @@
 
 import { getUser } from '@/lib';
 import { createClient } from '@/lib/supabase/server';
-import { OrganizationActionState } from '@/types';
+import { ErrorActionState } from '@/types';
 import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 
-export async function createOrganization(_: OrganizationActionState, formData: FormData): Promise<OrganizationActionState> {
+export async function createOrganization(_: ErrorActionState, formData: FormData): Promise<ErrorActionState> {
   const name = formData.get("name") as string
   const user = await getUser();
   
   if (!user) {
-    return { isError: true, error: 'Unauthorized' };
+    return { error: 'Unauthorized' };
   }
 
   if (!name || name.trim().length < 2) {
-    return { isError: true, error: 'Organization name must be at least 3 characters' };
+    return { error: 'Organization name must be at least 3 characters' };
   }
 
   try {
@@ -28,7 +29,7 @@ export async function createOrganization(_: OrganizationActionState, formData: F
       .single();
 
     if (orgError) {
-      return { isError: true, error: orgError.message };
+      return { error: orgError.message };
     }
 
     // Add creator as Owner
@@ -44,13 +45,13 @@ export async function createOrganization(_: OrganizationActionState, formData: F
     if (memberError) {
       // Rollback organization creation
       await supabase.from('organizations').delete().eq('id', organization.id);
-      return { isError: true, error: memberError.message };
+      return { error: memberError.message };
     }
 
     revalidatePath('/organizations');
-    return { isError: false, organizationId: organization.id };
+    redirect(`/organizations/${organization.id}/projects`)
   } catch (error) {
     console.error('Error creating organization:', error);
-    return { isError: true, error: 'Failed to create organization' };
+    return { error: 'Failed to create organization' };
   }
 }

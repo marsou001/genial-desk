@@ -3,9 +3,9 @@
 import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { AuthActionState } from '@/types';
+import { ErrorActionState } from '@/types';
 
-export async function signInAction(_: AuthActionState, formData: FormData) {
+export async function signInAction(_: ErrorActionState, formData: FormData) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const supabase = await createClient();
@@ -23,7 +23,7 @@ export async function signInAction(_: AuthActionState, formData: FormData) {
   redirect('/organizations');
 }
 
-export async function signUpAction(_: AuthActionState, formData: FormData) {
+export async function signUpAction(_: ErrorActionState, formData: FormData) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const supabase = await createClient();

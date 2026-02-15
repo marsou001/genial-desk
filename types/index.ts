@@ -33,18 +33,6 @@ export type OrganizationView = {
   created_at: string;
 }
 
-export type AuthActionState = {
+export type ErrorActionState = {
   error: string | null;
-}
-
-export type OrganizationActionState = {
-  isError: false
-  error: null
-  organizationId: null
-} | {
-  isError: true
-  error: string
-} | {
-  isError: false
-  organizationId: number
 }

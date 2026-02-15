@@ -1,5 +1,5 @@
 import { fetchOrganizations } from '@/data/fetchOrganizations';
-import OrganizationsList from '@/components/organizations/OrganizationsList';
+import OrganizationsList from '@/components/interfaces/organizations/OrganizationsList';
 
 export default async function OrganizationsPage() {
   const organizations = await fetchOrganizations();
