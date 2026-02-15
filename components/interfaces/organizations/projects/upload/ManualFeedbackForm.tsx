@@ -21,19 +21,14 @@ export default function ManualFeedbackForm() {
     setResult(null);
 
     try {
-      // Get organization ID from URL
-      const pathMatch = window.location.pathname.match(/\/organizations\/([^/]+)/);
+      const pathMatch = window.location.pathname.match(/\/organizations\/([^/]+)\/projects\/([^/]+)/);
       const orgId = pathMatch?.[1] || '';
-      
-      const projectId = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('project-id='))
-        ?.split('=')[1] || null;
+      const projectId = pathMatch?.[2] || null;
 
-      if (!orgId) {
+      if (!orgId || !projectId) {
         setResult({
           success: false,
-          error: 'Organization context not found',
+          error: 'Organization and project context not found. Open this page from a project.',
         });
         setSubmitting(false);
         return;
@@ -44,12 +39,12 @@ export default function ManualFeedbackForm() {
         headers: {
           'Content-Type': 'application/json',
           'x-organization-id': orgId,
-          ...(projectId && { 'x-project-id': projectId }),
+          'x-project-id': projectId,
         },
         body: JSON.stringify({
           text: feedback.trim(),
           source: source.trim() || 'Manual Entry',
-          ...(projectId && { project_id: projectId }),
+          project_id: projectId,
         }),
       });
 

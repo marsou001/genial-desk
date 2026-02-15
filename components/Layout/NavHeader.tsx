@@ -6,29 +6,53 @@ import OrganizationSelector from "./OrganizationSelector";
 import ProjectSelector from "./ProjectSelector";
 import { signOutAction } from "@/app/actions/auth";
 
-// Tabs will be generated dynamically based on current organization
-const getTabs = (organizationId: string) => [
-  { href: `/organizations/${organizationId}/dashboard`, label: 'Dashboard' },
-  { href: `/organizations/${organizationId}/upload`, label: 'Upload' },
-  { href: `/organizations/${organizationId}/feedback-list`, label: 'Feedback' },
-  { href: `/organizations/${organizationId}/insights`, label: 'Weekly Insights' },
+const getTabs = (organizationId: string, projectId: string) => [
+  { href: `/organizations/${organizationId}/projects/${projectId}/dashboard`, label: 'Dashboard' },
+  { href: `/organizations/${organizationId}/projects/${projectId}/upload`, label: 'Upload' },
+  { href: `/organizations/${organizationId}/projects/${projectId}/feedback-list`, label: 'Feedback' },
+  { href: `/organizations/${organizationId}/projects/${projectId}/insights`, label: 'Weekly Insights' },
 ];
 
 export default function NavHeader() {
   const pathname = usePathname();
   const params = useParams();
   const organizationId = params?.id as string | undefined;
-  
-  // Only show nav if we're in an organization route
+  const projectId = params?.projectId as string | undefined;
+
   const isOrgRoute = pathname?.startsWith('/organizations/') && organizationId;
-  const tabs = isOrgRoute ? getTabs(organizationId) : [];
+  const isProjectRoute = isOrgRoute && !!projectId;
+  const tabs = isProjectRoute ? getTabs(organizationId!, projectId!) : [];
 
   const handleSignOut = async () => {
     await signOutAction();
   };
 
   if (!isOrgRoute) {
-    return null; // Don't show nav header on auth pages or organizations list
+    return null;
+  }
+
+  // Projects list page: minimal header (no tabs, no project selector)
+  if (!projectId) {
+    return (
+      <header className="border-b border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-6">
+              <Link href="/organizations" className="text-xl font-bold text-zinc-900 dark:text-zinc-50">
+                GenialDesk
+              </Link>
+              <OrganizationSelector />
+            </div>
+            <button
+              onClick={handleSignOut}
+              className="px-3 py-1.5 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50"
+            >
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </header>
+    );
   }
 
   return (
@@ -36,7 +60,7 @@ export default function NavHeader() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-6">
-            <Link href={`/organizations/${organizationId}/dashboard`}>
+            <Link href={`/organizations/${organizationId}/projects/${projectId}/dashboard`}>
               <h1 className="text-xl font-bold text-zinc-900 dark:text-zinc-50">
                 GenialDesk
               </h1>

@@ -3,24 +3,33 @@
 import { useState } from "react";
 import { Insights as InsightsData } from "@/types";
 
-export default function Insights({ insightsData }: { insightsData: InsightsData}) {
-  const [insights, setInsights] = useState(insightsData)
-  const [loading, setLoading] = useState(false)
+export default function Insights({
+  insightsData,
+  organizationId,
+  projectId,
+}: {
+  insightsData: InsightsData;
+  organizationId?: string;
+  projectId?: string;
+}) {
+  const [insights, setInsights] = useState(insightsData);
+  const [loading, setLoading] = useState(false);
 
   async function fetchInsights() {
-    setLoading(true)
-
+    setLoading(true);
     try {
-      const response = await fetch('/api/insights/weekly?days=7');
+      const headers: HeadersInit = {};
+      if (organizationId) headers['x-organization-id'] = organizationId;
+      if (projectId) headers['x-project-id'] = projectId;
+      const response = await fetch('/api/insights/weekly?days=7', { headers });
       const data = await response.json();
       setInsights(data);
     } catch {
-      // TODO: toast error message
       console.error('Failed to fetch insights:');
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   if (loading) return <div className="text-center">Loading...</div>
 

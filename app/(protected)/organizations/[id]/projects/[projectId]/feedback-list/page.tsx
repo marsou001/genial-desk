@@ -4,10 +4,10 @@ import { fetchFeedbacks } from "@/data/fetchFeedbacks";
 export default async function FeedbackListPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string; projectId: string }>;
 }) {
-  const { id: organizationId } = await params;
-  const feedbacks = await fetchFeedbacks(organizationId)
+  const { id: organizationId, projectId } = await params;
+  const feedbacks = await fetchFeedbacks(organizationId, projectId);
 
   if (feedbacks.length === 0) {
     return (

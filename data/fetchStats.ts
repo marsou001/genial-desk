@@ -1,7 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
 import { Stats } from "@/types";
 
-export async function fetchStats(organizationId: string | null): Promise<Stats> {
+export async function fetchStats(
+  organizationId: string | null,
+  projectId?: string | null
+): Promise<Stats> {
   try {
     if (!organizationId) {
       throw new Error("No organization Id was found")
@@ -9,11 +12,16 @@ export async function fetchStats(organizationId: string | null): Promise<Stats> 
 
     const supabase = await createClient();
 
-    // Get feedbacks scoped to organization
-    const { data: feedbacks, error } = await supabase
+    let query = supabase
       .from('feedbacks')
       .select('topic, sentiment, created_at')
       .eq('organization_id', organizationId);
+
+    if (projectId) {
+      query = query.eq('project_id', projectId);
+    }
+
+    const { data: feedbacks, error } = await query;
 
     if (error) {
       throw new Error(error.message);

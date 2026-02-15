@@ -22,12 +22,17 @@ export async function GET(request: NextRequest) {
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
 
-    const { data: feedbacks, error } = await supabase
+    let query = supabase
       .from('feedbacks')
       .select('text, topic, sentiment')
       .eq('organization_id', guard.organizationId)
-      .gte('created_at', startDate.toISOString())
-      .order('created_at', { ascending: false });
+      .gte('created_at', startDate.toISOString());
+
+    if (guard.projectId) {
+      query = query.eq('project_id', guard.projectId);
+    }
+
+    const { data: feedbacks, error } = await query.order('created_at', { ascending: false });
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });

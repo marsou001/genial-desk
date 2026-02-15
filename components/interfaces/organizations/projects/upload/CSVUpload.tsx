@@ -29,20 +29,15 @@ export default function CSVUpload() {
     setResult(null);
 
     try {
-      // Get organization ID from URL
-      const pathMatch = window.location.pathname.match(/\/organizations\/([^/]+)/);
+      const pathMatch = window.location.pathname.match(/\/organizations\/([^/]+)\/projects\/([^/]+)/);
       const orgId = pathMatch?.[1] || '';
-      
-      const projectId = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('project-id='))
-        ?.split('=')[1] || null;
+      const projectId = pathMatch?.[2] || null;
 
-      if (!orgId) {
+      if (!orgId || !projectId) {
         setResult({
           success: false,
           processed: 0,
-          errors: ['Organization context not found'],
+          errors: ['Organization and project context not found. Open this page from a project.'],
         });
         setUploading(false);
         return;
@@ -51,15 +46,13 @@ export default function CSVUpload() {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('source', source);
-      if (projectId) {
-        formData.append('project_id', projectId);
-      }
+      formData.append('project_id', projectId);
 
       const response = await fetch('/api/upload', {
         method: 'POST',
         headers: {
           'x-organization-id': orgId,
-          ...(projectId && { 'x-project-id': projectId }),
+          'x-project-id': projectId,
         },
         body: formData,
       });

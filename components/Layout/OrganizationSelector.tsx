@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 interface Organization {
   id: string;
@@ -14,21 +14,19 @@ export default function OrganizationSelector() {
   const [selectedOrgId, setSelectedOrgId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const pathname = usePathname();
+
+  // Derive selected org from URL: /organizations/[id]/...
+  const pathOrgId = pathname?.match(/\/organizations\/([^/]+)/)?.[1] ?? null;
+
+  useEffect(() => {
+    if (pathOrgId) {
+      setSelectedOrgId(pathOrgId);
+    }
+  }, [pathOrgId]);
 
   useEffect(() => {
     fetchOrganizations();
-    // Get selected org from URL params or cookie
-    const pathMatch = window.location.pathname.match(/\/organizations\/([^/]+)/);
-    if (pathMatch) {
-      setSelectedOrgId(pathMatch[1]);
-    } else {
-      const orgCookie = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('organization-id='));
-      if (orgCookie) {
-        setSelectedOrgId(orgCookie.split('=')[1]);
-      }
-    }
   }, []);
 
   const fetchOrganizations = async () => {
@@ -37,10 +35,8 @@ export default function OrganizationSelector() {
       if (response.ok) {
         const data = await response.json();
         setOrganizations(data.organizations || []);
-        
-        // Auto-select first org if none selected
-        if (!selectedOrgId && data.organizations?.length > 0) {
-          handleSelectOrg(data.organizations[0].id);
+        if (!selectedOrgId && data.organizations?.length > 0 && pathOrgId) {
+          setSelectedOrgId(pathOrgId);
         }
       }
     } catch (error) {
@@ -50,14 +46,9 @@ export default function OrganizationSelector() {
     }
   };
 
-  const handleSelectOrg = async (orgId: string) => {
+  const handleSelectOrg = (orgId: string) => {
     setSelectedOrgId(orgId);
-    
-    // Set cookie
-    document.cookie = `organization-id=${orgId}; path=/; max-age=31536000`; // 1 year
-    
-    // Navigate to dashboard of selected organization
-    router.push(`/organizations/${orgId}/dashboard`);
+    router.push(`/organizations/${orgId}/projects`);
   };
 
   if (loading) {

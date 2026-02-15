@@ -2,7 +2,11 @@ import { generateWeeklyInsights } from "@/lib/openai";
 import { createClient } from "@/lib/supabase/server";
 import { Insights } from "@/types";
 
-export async function fetchInsights(days: number = 7, organizationId: string | null = null): Promise<Insights> {
+export async function fetchInsights(
+  days: number = 7,
+  organizationId: string | null = null,
+  projectId?: string | null
+): Promise<Insights> {
   try {
     if (!organizationId) {
       return {
@@ -16,12 +20,17 @@ export async function fetchInsights(days: number = 7, organizationId: string | n
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
 
-    const { data: feedbacks, error } = await supabase
+    let query = supabase
       .from('feedbacks')
       .select('text, topic, sentiment')
       .eq('organization_id', organizationId)
-      .gte('created_at', startDate.toISOString())
-      .order('created_at', { ascending: false });
+      .gte('created_at', startDate.toISOString());
+
+    if (projectId) {
+      query = query.eq('project_id', projectId);
+    }
+
+    const { data: feedbacks, error } = await query.order('created_at', { ascending: false });
 
     if (error) {
       throw new Error(error.message)

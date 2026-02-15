@@ -4,10 +4,10 @@ import { fetchInsights } from "@/data/fetchInsights";
 export default async function InsightsPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string; projectId: string }>;
 }) {
-  const { id: organizationId } = await params;
-  let insights = await fetchInsights(7, organizationId)
+  const { id: organizationId, projectId } = await params;
+  let insights = await fetchInsights(7, organizationId, projectId);
 
   if (!insights) {
     return (
@@ -17,5 +17,11 @@ export default async function InsightsPage({
     );
   }
 
-  return <Insights insightsData={insights} />
+  return (
+    <Insights
+      insightsData={insights}
+      organizationId={organizationId}
+      projectId={projectId}
+    />
+  );
 }

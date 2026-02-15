@@ -7,10 +7,10 @@ import { fetchStats } from "@/data/fetchStats";
 export default async function Dashboard({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string; projectId: string }>;
 }) {
-  const { id: organizationId } = await params;
-  const stats = await fetchStats(organizationId);
+  const { id: organizationId, projectId } = await params;
+  const stats = await fetchStats(organizationId, projectId);
 
   if (stats.total === 0) {
     return (
@@ -24,7 +24,7 @@ export default async function Dashboard({
             Upload your first CSV file to start analyzing customer feedback with AI.
           </p>
           <Link
-            href={`/organizations/${organizationId}/upload`}
+            href={`/organizations/${organizationId}/projects/${projectId}/upload`}
             className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
           >
             Upload Feedback →

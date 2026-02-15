@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 interface Project {
   id: string;
@@ -10,32 +10,23 @@ interface Project {
 
 export default function ProjectSelector() {
   const [projects, setProjects] = useState<Project[]>([]);
-  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const pathname = usePathname();
+
+  const pathMatch = pathname?.match(/\/organizations\/([^/]+)\/projects\/([^/]+)/);
+  const orgId = pathMatch?.[1] ?? null;
+  const projectIdFromUrl = pathMatch?.[2] ?? null;
 
   useEffect(() => {
-    // Get organization ID from URL
-    const pathMatch = window.location.pathname.match(/\/organizations\/([^/]+)/);
-    if (pathMatch) {
+    if (orgId) {
       fetchProjects();
-      // Get selected project from cookie
-      const projectCookie = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('project-id='));
-      if (projectCookie) {
-        setSelectedProjectId(projectCookie.split('=')[1]);
-      }
     } else {
       setLoading(false);
     }
-  }, []);
+  }, [orgId]);
 
   const fetchProjects = async () => {
-    // Get organization ID from URL
-    const pathMatch = window.location.pathname.match(/\/organizations\/([^/]+)/);
-    const orgId = pathMatch?.[1];
-    
     if (!orgId) {
       setLoading(false);
       return;
@@ -43,19 +34,12 @@ export default function ProjectSelector() {
 
     try {
       const response = await fetch('/api/projects', {
-        headers: {
-          'x-organization-id': orgId,
-        },
+        headers: { 'x-organization-id': orgId },
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setProjects(data.projects || []);
-        
-        // Auto-select first project if none selected and projects exist
-        if (!selectedProjectId && data.projects?.length > 0) {
-          handleSelectProject(data.projects[0].id);
-        }
       }
     } catch (error) {
       console.error('Failed to fetch projects:', error);
@@ -64,16 +48,8 @@ export default function ProjectSelector() {
     }
   };
 
-  const handleSelectProject = async (projectId: string | null) => {
-    setSelectedProjectId(projectId);
-    
-    if (projectId) {
-      document.cookie = `project-id=${projectId}; path=/; max-age=31536000`;
-    } else {
-      document.cookie = 'project-id=; path=/; max-age=0';
-    }
-    
-    router.refresh();
+  const handleSelectProject = (projectId: string) => {
+    router.push(`/organizations/${orgId}/projects/${projectId}/dashboard`);
   };
 
   if (loading) {
@@ -87,11 +63,10 @@ export default function ProjectSelector() {
   return (
     <div className="relative">
       <select
-        value={selectedProjectId || ''}
-        onChange={(e) => handleSelectProject(e.target.value || null)}
+        value={projectIdFromUrl || ''}
+        onChange={(e) => handleSelectProject(e.target.value)}
         className="px-3 py-1.5 text-sm font-medium bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg text-zinc-900 dark:text-zinc-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
       >
-        <option value="">All Projects</option>
         {projects.map((project) => (
           <option key={project.id} value={project.id}>
             {project.name}
