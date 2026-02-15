@@ -22,6 +22,7 @@ export default function CreateOrganizationDialog({ handleClose } : { handleClose
               Organization Name
             </label>
             <input
+              ref={nameInputRef}
               id="name"
               type="text"
               name="name"
