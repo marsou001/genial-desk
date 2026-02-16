@@ -4,18 +4,16 @@ import OrganizationsList from '@/components/interfaces/organizations/Organizatio
 export default async function OrganizationsPage() {
   const organizations = await fetchOrganizations();
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900">
-      <div className="max-w-4xl mx-auto px-4 py-12">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-50 mb-2">
-            Your Organizations
-          </h1>
-          <p className="text-zinc-600 dark:text-zinc-400">
-            Select an organization to get started, or create a new one.
-          </p>
-        </div>
-        <OrganizationsList organizations={organizations} />
-        </div>
+    <div className="max-w-4xl mx-auto px-4 py-12">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-50 mb-2">
+          Your Organizations
+        </h1>
+        <p className="text-zinc-600 dark:text-zinc-400">
+          Select an organization to get started, or create a new one.
+        </p>
+      </div>
+      <OrganizationsList organizations={organizations} />
     </div>
-  )
+  );
 }

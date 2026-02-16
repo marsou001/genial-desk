@@ -55,3 +55,31 @@ export async function createOrganization(_: ErrorActionState, formData: FormData
     return { error: 'Failed to create organization' };
   }
 }
+
+export async function updateOrganization(_: ErrorActionState, formData: FormData): Promise<ErrorActionState> {
+  const name = (formData.get('name') as string)?.trim();
+  const organizationId = formData.get('organization_id') as string;
+
+  if (!name || name.length < 3) {
+    return { error: 'Organization name must be at least 3 characters' };
+  }
+
+  try {
+    const supabase = await createClient();
+    const { error } = await supabase
+      .from('organizations')
+      .update({ name })
+      .eq('id', organizationId);
+
+    if (error) {
+      return { error: error.message };
+    }
+
+    revalidatePath(`/organizations/${organizationId}/settings`);
+    revalidatePath(`/organizations/${organizationId}`);
+    return { error: null };
+  } catch (error) {
+    console.error('Error updating organization:', error);
+    return { error: 'Failed to update organization' };
+  }
+}

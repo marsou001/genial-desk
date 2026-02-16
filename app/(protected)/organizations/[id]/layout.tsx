@@ -1,5 +1,8 @@
 import { redirect } from 'next/navigation';
 import { getUser, verifyOrganizationAccess } from '@/lib';
+import { fetchOrganization } from '@/data/fetchOrganization';
+import AppHeader from '@/components/Layout/AppHeader';
+import AppSidebar from '@/components/Layout/AppSidebar';
 
 export default async function OrganizationLayout({
   children,
@@ -14,5 +17,37 @@ export default async function OrganizationLayout({
   if (!hasAccess) {
     redirect('/organizations');
   }
-  return <>{children}</>;
+
+  const organization = await fetchOrganization(organizationId);
+  if (!organization) {
+    redirect('/organizations');
+  }
+
+  const sidebarLinks = [
+    {
+      href: `/organizations/${organizationId}/projects`,
+      label: 'Dashboard',
+      icon: '📊',
+    },
+    {
+      href: `/organizations/${organizationId}/settings`,
+      label: 'Settings',
+      icon: '⚙️',
+    },
+  ];
+
+  return (
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900 flex">
+      <AppSidebar links={sidebarLinks} />
+      <div className="flex-1 flex flex-col">
+        <AppHeader
+          breadcrumbs={[
+            { label: 'Organizations', href: '/organizations' },
+            { label: organization.name },
+          ]}
+        />
+        <main className="flex-1">{children}</main>
+      </div>
+    </div>
+  );
 }
