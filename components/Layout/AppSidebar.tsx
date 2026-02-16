@@ -1,22 +1,41 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { useParams, usePathname } from 'next/navigation';
 import { useState } from 'react';
 
-interface SidebarLink {
-  href: string;
-  label: string;
-  icon?: string;
-}
-
-interface AppSidebarProps {
-  links: SidebarLink[];
-}
-
-export default function AppSidebar({ links }: AppSidebarProps) {
+export default function AppSidebar() {
+  const { id: organizationId } = useParams();
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const sidebarLinks = [
+    {
+      href: `/organizations/${organizationId}/dashboard`,
+      label: 'Dashboard',
+      icon: '📊',
+    },
+    {
+      href: `/organizations/${organizationId}/upload`,
+      label: 'Upload',
+      icon: '📊',
+    },
+    {
+      href: `/organizations/${organizationId}/feedback-list`,
+      label: 'Feedbacks',
+      icon: '📊',
+    },
+    {
+      href: `/organizations/${organizationId}/insights`,
+      label: 'Insights',
+      icon: '📊',
+    },
+    {
+      href: `/organizations/${organizationId}/settings`,
+      label: 'Settings',
+      icon: '⚙️',
+    },
+  ];
 
   return (
     <aside
@@ -48,7 +67,7 @@ export default function AppSidebar({ links }: AppSidebarProps) {
         </div>
         <nav className="flex-1 p-2">
           <ul className="space-y-1">
-            {links.map((link) => {
+            {sidebarLinks.map((link) => {
               const isActive = pathname === link.href || pathname?.startsWith(link.href + '/');
               return (
                 <li key={link.href}>
