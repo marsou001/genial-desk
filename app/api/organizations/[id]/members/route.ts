@@ -108,11 +108,44 @@ export async function POST(
   try {
     const body = await request.json();
     const userId = body?.user_id as string;
+    const email = body?.email as string;
     const role = (body?.role as string) || 'viewer';
 
-    if (!userId) {
+    let targetUserId: string | null = userId || null;
+
+    // If email is provided instead of user_id, find the user by email
+    if (!targetUserId && email) {
+      // Try to find user through organization_members join (if user is member of any org)
+      const { data: existingMember, error: memberError } = await supabase
+        .from('organization_members')
+        .select(`
+          user_id,
+          user:"auth.users"!inner (
+            id,
+            email
+          )
+        `)
+        .eq('user.email', email.toLowerCase().trim())
+        .limit(1)
+        .single();
+
+      if (!memberError && existingMember) {
+        targetUserId = existingMember.user_id;
+      } else {
+        // If user not found through members, try RPC function if it exists
+        const { data: rpcData, error: rpcError } = await supabase
+          .rpc('get_user_by_email', { user_email: email.toLowerCase().trim() })
+          .single();
+
+        if (!rpcError && rpcData) {
+          targetUserId = rpcData.id;
+        }
+      }
+    }
+
+    if (!targetUserId) {
       return NextResponse.json(
-        { error: 'user_id is required' },
+        { error: email ? 'User with this email not found. Please ensure the user has signed up first.' : 'user_id or email is required' },
         { status: 400 }
       );
     }
@@ -137,7 +170,7 @@ export async function POST(
     const { data: existing } = await supabase
       .from('organization_members')
       .select('id')
-      .eq('user_id', userId)
+      .eq('user_id', targetUserId)
       .eq('organization_id', id)
       .single();
 
@@ -148,13 +181,27 @@ export async function POST(
       );
     }
 
+    // Get role ID from role name if role is a string
+    let roleId: number | string = role;
+    if (typeof role === 'string') {
+      const { data: roleData, error: roleError } = await supabase
+        .from('roles')
+        .select('id')
+        .eq('name', role)
+        .single();
+
+      if (!roleError && roleData) {
+        roleId = roleData.id;
+      }
+    }
+
     // Add member
     const { data, error } = await supabase
       .from('organization_members')
       .insert({
-        user_id: userId,
+        user_id: targetUserId,
         organization_id: id,
-        role,
+        role: roleId,
       })
       .select()
       .single();

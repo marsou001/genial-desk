@@ -1,14 +1,14 @@
 import { redirect } from "next/navigation"
 import { createClient } from "./supabase/server"
-import { UserMembership, UserRole } from "@/types"
 import { NextRequest } from "next/server"
+import { UserRole } from "@/types"
 
 export async function getUser() {
   const supabase = await createClient()
   const { data: userData, error: userError } = await supabase.auth.getUser()
   if (userError) {
     console.log("error getting user: ", userError.message)
-    redirect("sign-in")
+    redirect("/sign-in")
   }
 
   const { user } = userData

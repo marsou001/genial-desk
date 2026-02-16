@@ -31,6 +31,11 @@ export default function AppSidebar() {
       icon: '📊',
     },
     {
+      href: `/organizations/${organizationId}/members`,
+      label: 'Members',
+      icon: '📊',
+    },
+    {
       href: `/organizations/${organizationId}/settings`,
       label: 'Settings',
       icon: '⚙️',

@@ -1,6 +1,3 @@
-
-export type UserRole = 'owner' | 'admin' | 'analyst' | 'viewer';
-
 export type Stats = {
   total: number;
   bySentiment: {
@@ -27,10 +24,21 @@ export interface UserMembership {
 export type OrganizationView = {
   id: number;
   name: string;
-  role: string;
+  role: UserRole;
   created_at: string;
+}
+
+export type OrganizationMember = {
+  id: string;
+  role: UserRole;
+  fullName: string | null;
+  email: string;
+  avatarUrl?: string | null;
+  createdAt: string;
 }
 
 export type ErrorActionState = {
   error: string | null;
 }
+
+export type UserRole = 'owner' | 'admin' | 'analyst' | 'viewer';
