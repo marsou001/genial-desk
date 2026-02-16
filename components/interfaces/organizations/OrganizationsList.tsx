@@ -40,7 +40,7 @@ export default function OrganizationsList({ organizations }: { organizations: Or
                     {org.name}
                   </h3>
                   <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
-                    Role: <span className="capitalize">{org.role}</span>
+                    Role: <span>{org.role.toLowerCase()}</span>
                   </p>
                 </div>
                 <div className="text-blue-600 dark:text-blue-400">

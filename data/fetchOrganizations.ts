@@ -11,7 +11,9 @@ export async function fetchOrganizations(): Promise<OrganizationView[]> {
       .from('organization_members')
       .select(`
         organization_id,
-        role,
+        role:roles (
+          name
+        ),
         organizations!inner (
           id,
           name,
@@ -27,7 +29,7 @@ export async function fetchOrganizations(): Promise<OrganizationView[]> {
     const organizations = (memberships || []).map((m: any) => ({
       id: m.organization_id,
       name: m.organizations.name,
-      role: m.role,
+      role: m.role.name.toLowerCase(),
       created_at: m.organizations.created_at,
     }));
 
