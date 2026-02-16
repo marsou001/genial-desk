@@ -1,4 +1,4 @@
-import { useActionState, useRef } from "react"
+import { useActionState, useState, useRef } from "react"
 import { ErrorActionState } from "@/types"
 import { createOrganization } from "@/app/actions/organizations"
 
@@ -6,8 +6,13 @@ export default function CreateOrganizationDialog({ handleClose } : { handleClose
   const [state, formAction, isPending] = useActionState<ErrorActionState, FormData>(
     createOrganization, { error: null }
   )
+  const [isOrganizationNameValid, setIsOrganizationNameValid] = useState(false)
   const nameInputRef = useRef<HTMLInputElement>(null)
-  const isOrganizationNameValid = nameInputRef.current !== null && nameInputRef.current.value.trim().length > 2
+
+  function validateName() {
+    const isOrganizationNameValid = nameInputRef.current !== null && nameInputRef.current.value.trim().length > 2
+    setIsOrganizationNameValid(isOrganizationNameValid);
+  }
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -22,6 +27,7 @@ export default function CreateOrganizationDialog({ handleClose } : { handleClose
               Organization Name
             </label>
             <input
+              onChange={validateName}
               ref={nameInputRef}
               id="name"
               type="text"
