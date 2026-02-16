@@ -18,7 +18,6 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const text = (body?.text as string | undefined)?.trim();
     const source = (body?.source as string | undefined)?.trim() || 'Manual Entry';
-    const projectId = (body?.project_id as string | undefined) || null;
 
     if (!text || text.length < 10) {
       return NextResponse.json(
@@ -46,7 +45,6 @@ export async function POST(request: NextRequest) {
         summary: analysis.summary,
         keywords: analysis.keywords,
         organization_id: guard.organizationId,
-        project_id: projectId || guard.projectId || null,
       })
       .select()
       .single();

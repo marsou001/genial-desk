@@ -78,28 +78,6 @@ export async function verifyOrganizationAccess(
 }
 
 /**
- * Verify project belongs to organization (used after org access is already verified)
- */
-export async function verifyProjectInOrganization(
-  organizationId: string,
-  projectId: string
-): Promise<boolean> {
-  try {
-    const supabase = await createClient();
-    const { data, error } = await supabase
-      .from('projects')
-      .select('id')
-      .eq('id', projectId)
-      .eq('organization_id', organizationId)
-      .single();
-
-    return !error && !!data;
-  } catch {
-    return false;
-  }
-}
-
-/**
  * Get user's role in an organization
  */
 export async function getUserRole(
@@ -128,12 +106,4 @@ export async function getUserRole(
 export async function getOrganizationContext(request: NextRequest): Promise<string | null> {
   const orgId = request.headers.get('x-organization-id');
   return orgId;
-}
-
-/**
- * Get the current project context from headers
- */
-export async function getProjectContext(request: NextRequest): Promise<string | null> {
-  const projectId = request.headers.get('x-project-id');
-  return projectId;
 }

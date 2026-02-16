@@ -39,7 +39,6 @@ export async function createOrganization(_: ErrorActionState, formData: FormData
         user_id: user.id,
         organization_id: organization.id,
         role: 1,
-        project_id: null,
       });
 
     if (memberError) {
@@ -49,7 +48,7 @@ export async function createOrganization(_: ErrorActionState, formData: FormData
     }
 
     revalidatePath('/organizations');
-    redirect(`/organizations/${organization.id}/projects`)
+    redirect(`/organizations/${organization.id}/dashboard`)
   } catch (error) {
     console.error('Error creating organization:', error);
     return { error: 'Failed to create organization' };

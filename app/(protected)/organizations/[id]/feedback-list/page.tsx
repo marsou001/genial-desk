@@ -1,13 +1,13 @@
-import FeedbackList from "@/components/interfaces/organizations/projects/FeedbackList/FeedbackList";
+import FeedbackList from "@/components/interfaces/organizations/FeedbackList/FeedbackList";
 import { fetchFeedbacks } from "@/data/fetchFeedbacks";
 
 export default async function FeedbackListPage({
   params,
 }: {
-  params: Promise<{ id: string; projectId: string }>;
+  params: Promise<{ id: string; }>;
 }) {
-  const { id: organizationId, projectId } = await params;
-  const feedbacks = await fetchFeedbacks(organizationId, projectId);
+  const { id: organizationId } = await params;
+  const feedbacks = await fetchFeedbacks(organizationId);
 
   if (feedbacks.length === 0) {
     return (

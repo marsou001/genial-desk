@@ -3,7 +3,6 @@ import { Feedback } from "@/types/database";
 
 export async function fetchFeedbacks(
   organizationId: string | null,
-  projectId?: string | null
 ): Promise<Feedback[]> {
   try {
     if (!organizationId) {
@@ -11,16 +10,11 @@ export async function fetchFeedbacks(
     }
 
     const supabase = await createClient();
-    let query = supabase
+    const { error, data } = await supabase
       .from('feedbacks')
       .select('*')
-      .eq('organization_id', organizationId);
-
-    if (projectId) {
-      query = query.eq('project_id', projectId);
-    }
-
-    const { error, data } = await query.order('created_at', { ascending: false })
+      .eq('organization_id', organizationId)
+      .order('created_at', { ascending: false })
 
     if (error) {
       throw new Error(error.message);

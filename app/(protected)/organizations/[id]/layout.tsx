@@ -25,8 +25,23 @@ export default async function OrganizationLayout({
 
   const sidebarLinks = [
     {
-      href: `/organizations/${organizationId}/projects`,
+      href: `/organizations/${organizationId}/dashboard`,
       label: 'Dashboard',
+      icon: '📊',
+    },
+    {
+      href: `/organizations/${organizationId}/upload`,
+      label: 'Upload',
+      icon: '📊',
+    },
+    {
+      href: `/organizations/${organizationId}/feedback-list`,
+      label: 'Feedbacks',
+      icon: '📊',
+    },
+    {
+      href: `/organizations/${organizationId}/insights`,
+      label: 'Insights',
       icon: '📊',
     },
     {

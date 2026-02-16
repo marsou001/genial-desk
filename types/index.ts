@@ -20,10 +20,8 @@ export type Insights = {
 
 export interface UserMembership {
   organization_id: number;
-  project_id: number | null;
   role: UserRole;
   organization_name: string;
-  project_name: string | null;
 }
 
 export type OrganizationView = {

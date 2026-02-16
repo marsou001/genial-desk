@@ -99,7 +99,6 @@ export async function POST(request: NextRequest) {
         user_id: guard.user.id,
         organization_id: organization.id,
         role: 'owner',
-        project_id: null, // No project assignment initially
       });
 
     if (memberError) {

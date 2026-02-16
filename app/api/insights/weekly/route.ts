@@ -28,10 +28,6 @@ export async function GET(request: NextRequest) {
       .eq('organization_id', guard.organizationId)
       .gte('created_at', startDate.toISOString());
 
-    if (guard.projectId) {
-      query = query.eq('project_id', guard.projectId);
-    }
-
     const { data: feedbacks, error } = await query.order('created_at', { ascending: false });
 
     if (error) {

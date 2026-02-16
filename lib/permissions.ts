@@ -9,10 +9,6 @@ export type Permission =
   | 'org:members:invite'
   | 'org:members:update'
   | 'org:members:remove'
-  | 'project:create'
-  | 'project:read'
-  | 'project:update'
-  | 'project:delete'
   | 'data:read'
   | 'data:create'
   | 'data:update'
@@ -39,11 +35,6 @@ const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     'org:members:invite',
     'org:members:update',
     'org:members:remove',
-    // Projects
-    'project:create',
-    'project:read',
-    'project:update',
-    'project:delete',
     // Data
     'data:read',
     'data:create',
@@ -66,11 +57,6 @@ const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     'org:members:invite',
     'org:members:update',
     'org:members:remove',
-    // Projects
-    'project:create',
-    'project:read',
-    'project:update',
-    'project:delete',
     // Data
     'data:read',
     'data:create',
@@ -89,8 +75,6 @@ const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     // Organization (read-only)
     'org:read',
     'org:members:read',
-    // Projects (read-only)
-    'project:read',
     // Data (full access)
     'data:read',
     'data:create',
@@ -109,8 +93,6 @@ const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     // Organization (read-only)
     'org:read',
     'org:members:read',
-    // Projects (read-only)
-    'project:read',
     // Data (read-only)
     'data:read',
     // Insights (read-only)

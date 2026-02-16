@@ -31,7 +31,7 @@ export default function OrganizationsList({ organizations }: { organizations: Or
           {organizations.map((org) => (
             <Link
               key={org.id}
-              href={`/organizations/${org.id}/projects`}
+              href={`/organizations/${org.id}/dashboard`}
               className="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200 dark:border-zinc-700 p-6 cursor-pointer hover:border-blue-500 hover:shadow-md transition-all"
             >
               <div className="flex items-center justify-between">

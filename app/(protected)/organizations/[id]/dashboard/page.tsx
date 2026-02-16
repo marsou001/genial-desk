@@ -1,16 +1,16 @@
 import Link from "next/link";
-import SummaryCards from "@/components/interfaces/organizations/projects/dashboard/SummaryCards";
-import ChartsGrid from "@/components/interfaces/organizations/projects/dashboard/ChartsGrid";
-import SentimentsDistribution from "@/components/interfaces/organizations/projects/dashboard/SentimentsDistribution";
+import SummaryCards from "@/components/interfaces/organizations/dashboard/SummaryCards";
+import ChartsGrid from "@/components/interfaces/organizations/dashboard/ChartsGrid";
+import SentimentsDistribution from "@/components/interfaces/organizations/dashboard/SentimentsDistribution";
 import { fetchStats } from "@/data/fetchStats";
 
 export default async function Dashboard({
   params,
 }: {
-  params: Promise<{ id: string; projectId: string }>;
+  params: Promise<{ id: string }>;
 }) {
-  const { id: organizationId, projectId } = await params;
-  const stats = await fetchStats(organizationId, projectId);
+  const { id: organizationId } = await params;
+  const stats = await fetchStats(organizationId);
 
   if (stats.total === 0) {
     return (
@@ -24,7 +24,7 @@ export default async function Dashboard({
             Upload your first CSV file to start analyzing customer feedback with AI.
           </p>
           <Link
-            href={`/organizations/${organizationId}/projects/${projectId}/upload`}
+            href={`/organizations/${organizationId}/upload`}
             className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
           >
             Upload Feedback →

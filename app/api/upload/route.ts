@@ -19,7 +19,6 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const file = formData.get('file') as File;
     const source = formData.get('source') || 'CSV Upload';
-    const projectId = formData.get('project_id') as string | null;
 
     if (!file) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
@@ -87,7 +86,6 @@ export async function POST(request: NextRequest) {
             summary: analysis.summary,
             keywords: analysis.keywords,
             organization_id: guard.organizationId,
-            project_id: projectId || guard.projectId || null,
           })
           .select()
           .single();

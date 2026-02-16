@@ -3,7 +3,6 @@ import { Stats } from "@/types";
 
 export async function fetchStats(
   organizationId: string | null,
-  projectId?: string | null
 ): Promise<Stats> {
   try {
     if (!organizationId) {
@@ -12,16 +11,10 @@ export async function fetchStats(
 
     const supabase = await createClient();
 
-    let query = supabase
+    const { data: feedbacks, error } = await supabase
       .from('feedbacks')
       .select('topic, sentiment, created_at')
       .eq('organization_id', organizationId);
-
-    if (projectId) {
-      query = query.eq('project_id', projectId);
-    }
-
-    const { data: feedbacks, error } = await query;
 
     if (error) {
       throw new Error(error.message);

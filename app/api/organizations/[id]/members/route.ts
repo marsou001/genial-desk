@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { authGuard } from '@/lib/auth-guard';
-import { createServerClient } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase/server';
 import { hasPermission, canManageMember } from '@/lib/permissions';
 
 /**
@@ -23,7 +23,7 @@ export async function GET(
   }
 
   // Verify user has access to this organization
-  const supabase = createServerClient();
+  const supabase = await createClient();
   const { data: userMembership, error: membershipError } = await supabase
     .from('organization_members')
     .select('role')
@@ -44,13 +44,9 @@ export async function GET(
       id,
       user_id,
       role,
-      project_id,
       created_at,
       auth.users!inner (
         email
-      ),
-      projects (
-        name
       )
     `)
     .eq('organization_id', id);
@@ -68,8 +64,6 @@ export async function GET(
     user_id: m.user_id,
     email: m.auth?.users?.email || null,
     role: m.role,
-    project_id: m.project_id,
-    project_name: m.projects?.name || null,
     created_at: m.created_at,
   }));
 
@@ -96,7 +90,7 @@ export async function POST(
   }
 
   // Verify user has access and permission
-  const supabase = createServerClient();
+  const supabase = await createClient();
   const { data: userMembership, error: membershipError } = await supabase
     .from('organization_members')
     .select('role')
@@ -115,7 +109,6 @@ export async function POST(
     const body = await request.json();
     const userId = body?.user_id as string;
     const role = (body?.role as string) || 'viewer';
-    const projectId = body?.project_id as string | null;
 
     if (!userId) {
       return NextResponse.json(
@@ -162,7 +155,6 @@ export async function POST(
         user_id: userId,
         organization_id: id,
         role,
-        project_id: projectId,
       })
       .select()
       .single();

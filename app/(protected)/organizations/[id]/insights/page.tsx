@@ -1,13 +1,13 @@
-import Insights from "@/components/interfaces/organizations/projects/Insights/Insights";
+import Insights from "@/components/interfaces/organizations/Insights/Insights";
 import { fetchInsights } from "@/data/fetchInsights";
 
 export default async function InsightsPage({
   params,
 }: {
-  params: Promise<{ id: string; projectId: string }>;
+  params: Promise<{ id: string }>;
 }) {
-  const { id: organizationId, projectId } = await params;
-  let insights = await fetchInsights(7, organizationId, projectId);
+  const { id: organizationId } = await params;
+  let insights = await fetchInsights(7, organizationId);
 
   if (!insights) {
     return (
@@ -21,7 +21,6 @@ export default async function InsightsPage({
     <Insights
       insightsData={insights}
       organizationId={organizationId}
-      projectId={projectId}
     />
   );
 }

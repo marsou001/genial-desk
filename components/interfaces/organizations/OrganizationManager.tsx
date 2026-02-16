@@ -10,26 +10,16 @@ interface Organization {
   created_at: string;
 }
 
-interface Project {
-  id: string;
-  name: string;
-  organization_id: string;
-  created_at: string;
-}
-
 interface Member {
   id: string;
   user_id: string;
   email: string | null;
   role: string;
-  project_id: string | null;
-  project_name: string | null;
 }
 
 export default function OrganizationManager() {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [selectedOrg, setSelectedOrg] = useState<Organization | null>(null);
-  const [projects, setProjects] = useState<Project[]>([]);
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateOrg, setShowCreateOrg] = useState(false);
@@ -41,7 +31,6 @@ export default function OrganizationManager() {
 
   useEffect(() => {
     if (selectedOrg) {
-      fetchProjects();
       fetchMembers();
     }
   }, [selectedOrg]);
@@ -60,24 +49,6 @@ export default function OrganizationManager() {
       console.error('Failed to fetch organizations:', error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fetchProjects = async () => {
-    if (!selectedOrg) return;
-    
-    try {
-      const response = await fetch('/api/projects', {
-        headers: {
-          'x-organization-id': selectedOrg.id,
-        },
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setProjects(data.projects || []);
-      }
-    } catch (error) {
-      console.error('Failed to fetch projects:', error);
     }
   };
 
@@ -125,36 +96,7 @@ export default function OrganizationManager() {
     }
   };
 
-  const handleCreateProject = async () => {
-    if (!selectedOrg) return;
-    const name = prompt('Enter project name:');
-    if (!name) return;
-
-    try {
-      const response = await fetch('/api/projects', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-organization-id': selectedOrg.id,
-        },
-        body: JSON.stringify({ name }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setProjects([...projects, data.project]);
-      } else {
-        const error = await response.json();
-        alert(error.error || 'Failed to create project');
-      }
-    } catch (error) {
-      console.error('Failed to create project:', error);
-      alert('Failed to create project');
-    }
-  };
-
   const userRole = selectedOrg?.role as any;
-  const canManageProjects = hasPermission(userRole, 'project:create');
   const canManageMembers = hasPermission(userRole, 'org:members:read');
 
   if (loading) {
@@ -165,7 +107,7 @@ export default function OrganizationManager() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
-          Organizations & Projects
+          Organizations
         </h2>
         <button
           onClick={() => setShowCreateOrg(!showCreateOrg)}
@@ -248,43 +190,11 @@ export default function OrganizationManager() {
 
           {selectedOrg && (
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
-                  Projects
-                </h3>
-                {canManageProjects && (
-                  <button
-                    onClick={handleCreateProject}
-                    className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-lg transition-colors"
-                  >
-                    + New Project
-                  </button>
-                )}
-              </div>
-              {projects.length === 0 ? (
-                <p className="text-sm text-zinc-500 dark:text-zinc-500">
-                  No projects yet. {canManageProjects && 'Create one to get started.'}
-                </p>
-              ) : (
-                <div className="space-y-2">
-                  {projects.map((project) => (
-                    <div
-                      key={project.id}
-                      className="p-3 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900"
-                    >
-                      <p className="font-medium text-zinc-900 dark:text-zinc-50">
-                        {project.name}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              )}
-
               {canManageMembers && (
                 <div className="mt-6">
-                  <h4 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50 mb-2">
+                  <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50 mb-2">
                     Members ({members.length})
-                  </h4>
+                  </h3>
                   <div className="space-y-2">
                     {members.map((member) => (
                       <div

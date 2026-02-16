@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { User } from '@supabase/supabase-js';
-import { getUser, getOrganizationContext, getProjectContext, getUserRole, verifyOrganizationAccess } from '.';
+import { getUser, getOrganizationContext, getUserRole, verifyOrganizationAccess } from '.';
 import { hasPermission, Permission } from './permissions';
 
 export interface AuthGuardOptions {
@@ -22,7 +22,6 @@ export async function authGuard(
       success: true;
       user: User;
       organizationId: string;
-      projectId: string | null;
       role: string;
     }
   | { success: false; response: NextResponse }
@@ -95,13 +94,10 @@ export async function authGuard(
         }
       }
 
-      const projectId = await getProjectContext(request);
-
       return {
         success: true,
         user,
         organizationId,
-        projectId,
         role: (await getUserRole(user.id, organizationId)) || '',
       };
     }
@@ -110,7 +106,6 @@ export async function authGuard(
       success: true,
       user,
       organizationId: '',
-      projectId: null,
       role: '',
     };
   }

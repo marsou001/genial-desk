@@ -6,11 +6,9 @@ import { Insights as InsightsData } from "@/types";
 export default function Insights({
   insightsData,
   organizationId,
-  projectId,
 }: {
   insightsData: InsightsData;
   organizationId?: string;
-  projectId?: string;
 }) {
   const [insights, setInsights] = useState(insightsData);
   const [loading, setLoading] = useState(false);
@@ -20,7 +18,6 @@ export default function Insights({
     try {
       const headers: HeadersInit = {};
       if (organizationId) headers['x-organization-id'] = organizationId;
-      if (projectId) headers['x-project-id'] = projectId;
       const response = await fetch('/api/insights/weekly?days=7', { headers });
       const data = await response.json();
       setInsights(data);
