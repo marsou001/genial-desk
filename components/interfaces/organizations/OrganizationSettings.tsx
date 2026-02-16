@@ -17,7 +17,10 @@ export default function OrganizationSettings({ organization }: OrganizationSetti
   const nameInputRef = useRef<HTMLInputElement>(null)
 
   function validateName() {
-    const isOrganizationNameValid = nameInputRef.current !== null && nameInputRef.current.value.trim().length > 2
+    const isOrganizationNameValid = 
+      nameInputRef.current !== null &&
+      nameInputRef.current.value.trim().length > 2 &&
+      nameInputRef.current.value.trim() !== organization.name
     setIsOrganizationNameValid(isOrganizationNameValid);
   }
 
@@ -52,15 +55,6 @@ export default function OrganizationSettings({ organization }: OrganizationSetti
         {state.error !== null && (
           <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
             <p className="text-sm text-red-800 dark:text-red-200">{state.error}</p>
-          </div>
-        )}
-
-        {/* TODO: toast success message */}
-        {state.error === null && !isPending && (
-          <div className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-            <p className="text-sm text-green-800 dark:text-green-200">
-              Organization updated successfully!
-            </p>
           </div>
         )}
 
