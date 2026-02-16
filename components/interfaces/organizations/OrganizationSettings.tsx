@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useRef } from 'react';
+import { useActionState, useState, useRef } from 'react';
 import { updateOrganization } from '@/app/actions/organizations';
 import { ErrorActionState } from '@/types';
 
@@ -13,8 +13,13 @@ export default function OrganizationSettings({ organization }: OrganizationSetti
     updateOrganization,
     { error: null }
   );
+  const [isOrganizationNameValid, setIsOrganizationNameValid] = useState(false)
   const nameInputRef = useRef<HTMLInputElement>(null)
-  const isOrganizationNameValid = nameInputRef.current !== null && nameInputRef.current.value.trim().length > 2
+
+  function validateName() {
+    const isOrganizationNameValid = nameInputRef.current !== null && nameInputRef.current.value.trim().length > 2
+    setIsOrganizationNameValid(isOrganizationNameValid);
+  }
 
   return (
     <div className="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200 dark:border-zinc-700 p-6">
@@ -31,10 +36,11 @@ export default function OrganizationSettings({ organization }: OrganizationSetti
             Organization Name
           </label>
           <input
+            onChange={validateName}
+            ref={nameInputRef}
             id="name"
             type="text"
             name="name"
-            ref={nameInputRef}
             defaultValue={organization.name}
             required
             minLength={3}
