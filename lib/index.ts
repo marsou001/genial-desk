@@ -88,13 +88,13 @@ export async function getUserRole(
     const supabase = await createClient();
     const { data, error } = await supabase
       .from('organization_members')
-      .select('role')
+      .select('role (name)')
       .eq('user_id', userId)
       .eq('organization_id', organizationId)
       .single();
-    
+    console.log("data", data)
     if (error || !data) return null;
-    return data.role as UserRole;
+    return data.role.name as UserRole;
   } catch {
     return null;
   }

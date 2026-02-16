@@ -8,6 +8,7 @@ import { hasPermission } from '@/lib/permissions';
  * Get organization details
  */
 export async function GET(
+  _: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
@@ -128,6 +129,7 @@ export async function PATCH(
  * Delete organization (requires owner role)
  */
 export async function DELETE(
+  _: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
@@ -139,29 +141,7 @@ export async function DELETE(
     return guard.response;
   }
 
-  // Verify user is owner
   const supabase = await createClient();
-  const { data: membership, error: membershipError } = await supabase
-    .from('organization_members')
-    .select('role')
-    .eq('user_id', guard.user.id)
-    .eq('organization_id', id)
-    .single();
-  console.log("membership", membership)
-  if (membershipError || !membership) {
-    return NextResponse.json(
-      { error: 'Organization not found or access denied' },
-      { status: 404 }
-    );
-  }
-
-  if (membership.role !== 'owner') {
-    return NextResponse.json(
-      { error: 'Only organization owners can delete organizations' },
-      { status: 403 }
-    );
-  }
-
   const { error } = await supabase
     .from('organizations')
     .delete()
