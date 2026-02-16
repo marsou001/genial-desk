@@ -8,14 +8,10 @@ import { hasPermission } from '@/lib/permissions';
  * Get organization details
  */
 export async function GET(
-  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const guard = await authGuard(request, {
-    requireAuth: true,
-    requireOrg: false,
-  });
+  const guard = await authGuard(Number(id));
 
   if (!guard.success) {
     return guard.response;
@@ -61,9 +57,7 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const guard = await authGuard(request, {
-    requireAuth: true,
-    requireOrg: false,
+  const guard = await authGuard(Number(id), {
     requirePermission: 'org:update',
   });
 
@@ -134,13 +128,10 @@ export async function PATCH(
  * Delete organization (requires owner role)
  */
 export async function DELETE(
-  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const guard = await authGuard(request, {
-    requireAuth: true,
-    requireOrg: false,
+  const guard = await authGuard(Number(id), {
     requirePermission: 'org:delete',
   });
 
@@ -156,7 +147,7 @@ export async function DELETE(
     .eq('user_id', guard.user.id)
     .eq('organization_id', id)
     .single();
-
+  console.log("membership", membership)
   if (membershipError || !membership) {
     return NextResponse.json(
       { error: 'Organization not found or access denied' },

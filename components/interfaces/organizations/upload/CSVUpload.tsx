@@ -1,5 +1,6 @@
 'use client';
 
+import { useParams } from 'next/navigation';
 import { useState } from 'react';
 
 interface UploadResult {
@@ -15,6 +16,8 @@ export default function CSVUpload() {
   const [uploading, setUploading] = useState(false);
   const [result, setResult] = useState<UploadResult | null>(null);
 
+  const { id: organizationId } = useParams()
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0]);
@@ -29,29 +32,16 @@ export default function CSVUpload() {
     setResult(null);
 
     try {
-      const pathMatch = window.location.pathname.match(/\/organizations\/([^/]+)/);
-      const orgId = pathMatch?.[1] || '';
-
-      if (!orgId) {
-        setResult({
-          success: false,
-          processed: 0,
-          errors: ['Organization context not found. Open this page from an organization.'],
-        });
-        setUploading(false);
-        return;
-      }
-
       const formData = new FormData();
       formData.append('file', file);
       formData.append('source', source);
 
-      const response = await fetch('/api/upload', {
+      const response = await fetch(`/api/organizations/${organizationId}/upload`, {
         method: 'POST',
-        headers: {
-          'x-organization-id': orgId,
-        },
         body: formData,
+        headers: {
+          'Content-type': 'multipart/form-data'
+        }
       });
 
       const data = await response.json();

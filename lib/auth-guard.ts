@@ -4,8 +4,6 @@ import { getUser, getOrganizationContext, getUserRole, verifyOrganizationAccess 
 import { hasPermission, Permission } from './permissions';
 
 export interface AuthGuardOptions {
-  requireAuth?: boolean;
-  requireOrg?: boolean;
   requirePermission?: Permission | Permission[];
   allowMultiplePermissions?: boolean; // If true, user needs ANY permission; if false, needs ALL
 }
@@ -15,104 +13,75 @@ export interface AuthGuardOptions {
  * Returns the authenticated user and organization context, or an error response
  */
 export async function authGuard(
-  request: NextRequest,
+  organizationId: number,
   options: AuthGuardOptions = {}
 ): Promise<
   | {
       success: true;
       user: User;
-      organizationId: string;
+      organizationId: number;
       role: string;
     }
   | { success: false; response: NextResponse }
 > {
   const {
-    requireAuth = true,
-    requireOrg = true,
     requirePermission,
     allowMultiplePermissions = true,
   } = options;
 
   // Check authentication
-  if (requireAuth) {
-    const user = await getUser();
+  const user = await getUser();
 
-    // Check organization access
-    if (requireOrg) {
-      const organizationId = await getOrganizationContext(request);
-      if (!organizationId) {
-        return {
-          success: false,
-          response: NextResponse.json(
-            { error: 'Organization context required. Please select an organization.' },
-            { status: 400 }
-          ),
-        };
-      }
-
-      // Verify user has access to this organization
-      const hasAccess = await verifyOrganizationAccess(user.id, organizationId);
-      if (!hasAccess) {
-        return {
-          success: false,
-          response: NextResponse.json(
-            { error: 'Forbidden. You do not have access to this organization.' },
-            { status: 403 }
-          ),
-        };
-      }
-
-      // Check permissions
-      if (requirePermission) {
-        const role = await getUserRole(user.id, organizationId);
-        if (!role) {
-          return {
-            success: false,
-            response: NextResponse.json(
-              { error: 'Unable to determine your role in this organization.' },
-              { status: 403 }
-            ),
-          };
-        }
-
-        const permissions = Array.isArray(requirePermission)
-          ? requirePermission
-          : [requirePermission];
-
-        const hasRequiredPermission = allowMultiplePermissions
-          ? permissions.some((perm) => hasPermission(role as any, perm))
-          : permissions.every((perm) => hasPermission(role as any, perm));
-
-        if (!hasRequiredPermission) {
-          return {
-            success: false,
-            response: NextResponse.json(
-              { error: 'Forbidden. You do not have the required permissions.' },
-              { status: 403 }
-            ),
-          };
-        }
-      }
-
-      return {
-        success: true,
-        user,
-        organizationId,
-        role: (await getUserRole(user.id, organizationId)) || '',
-      };
-    }
-
+  // Verify user has access to this organization
+  const hasAccess = await verifyOrganizationAccess(user.id, organizationId);
+  if (!hasAccess) {
     return {
-      success: true,
-      user,
-      organizationId: '',
-      role: '',
+      success: false,
+      response: NextResponse.json(
+        { error: 'Forbidden. You do not have access to this organization.' },
+        { status: 403 }
+      ),
     };
   }
 
-  // No auth required
+  // Check permissions
+  console.log("requirePermission", requirePermission)
+  if (requirePermission) {
+    const role = await getUserRole(user.id, organizationId);
+    console.log("role", role)
+    if (!role) {
+      return {
+        success: false,
+        response: NextResponse.json(
+          { error: 'Unable to determine your role in this organization.' },
+          { status: 403 }
+        ),
+      };
+    }
+
+    const permissions = Array.isArray(requirePermission)
+      ? requirePermission
+      : [requirePermission];
+
+    const hasRequiredPermission = allowMultiplePermissions
+      ? permissions.some((perm) => hasPermission(role as any, perm))
+      : permissions.every((perm) => hasPermission(role as any, perm));
+
+    if (!hasRequiredPermission) {
+      return {
+        success: false,
+        response: NextResponse.json(
+          { error: 'Forbidden. You do not have the required permissions.' },
+          { status: 403 }
+        ),
+      };
+    }
+  }
+
   return {
-    success: false,
-    response: NextResponse.json({ error: 'Auth guard misconfigured' }, { status: 500 }),
+    success: true,
+    user,
+    organizationId,
+    role: (await getUserRole(user.id, organizationId)) || '',
   };
 }

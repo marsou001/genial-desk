@@ -1,5 +1,6 @@
 'use client';
 
+import { useParams } from 'next/navigation';
 import { useState } from 'react';
 
 interface ManualFeedbackResult {
@@ -13,6 +14,8 @@ export default function ManualFeedbackForm() {
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<ManualFeedbackResult | null>(null);
 
+  const { id: organizationId } = useParams()
+
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!feedback.trim()) return;
@@ -21,23 +24,10 @@ export default function ManualFeedbackForm() {
     setResult(null);
 
     try {
-      const pathMatch = window.location.pathname.match(/\/organizations\/([^/]+)/);
-      const orgId = pathMatch?.[1] || '';
-
-      if (!orgId) {
-        setResult({
-          success: false,
-          error: 'Organization context not found. Open this page from an organization.',
-        });
-        setSubmitting(false);
-        return;
-      }
-
-      const response = await fetch('/api/feedback', {
+      const response = await fetch(`/api/organizations/${organizationId}/feedback`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-organization-id': orgId,
         },
         body: JSON.stringify({
           text: feedback.trim(),

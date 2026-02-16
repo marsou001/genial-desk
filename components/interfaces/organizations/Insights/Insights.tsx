@@ -15,17 +15,17 @@ export default function Insights({
 
   async function fetchInsights() {
     setLoading(true);
-    try {
-      const headers: HeadersInit = {};
-      if (organizationId) headers['x-organization-id'] = organizationId;
-      const response = await fetch('/api/insights/weekly?days=7', { headers });
-      const data = await response.json();
-      setInsights(data);
-    } catch {
-      console.error('Failed to fetch insights:');
-    } finally {
+    const response = await fetch(`/api/organizations/${organizationId}/insights/weekly?days=7`);
+    if (!response.ok) {
+      const errorMessage = await response.json()
+      // TODO: toast
+      console.log(errorMessage.error)
       setLoading(false);
+      return;
     }
+    const data = await response.json();
+    setInsights(data);
+    setLoading(false);
   }
 
   if (loading) return <div className="text-center">Loading...</div>

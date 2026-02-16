@@ -60,7 +60,7 @@ export async function getUser() {
  */
 export async function verifyOrganizationAccess(
   userId: string,
-  organizationId: string
+  organizationId: number
 ): Promise<boolean> {
   try {
     const supabase = await createClient();
@@ -82,7 +82,7 @@ export async function verifyOrganizationAccess(
  */
 export async function getUserRole(
   userId: string,
-  organizationId: string
+  organizationId: number
 ): Promise<UserRole | null> {
   try {
     const supabase = await createClient();

@@ -4,10 +4,12 @@ import { analyzeFeedback } from '@/lib/openai';
 import { authGuard } from '@/lib/auth-guard';
 import Papa from 'papaparse';
 
-export async function POST(request: NextRequest) {
-  const guard = await authGuard(request, {
-    requireAuth: true,
-    requireOrg: true,
+export async function POST(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  const guard = await authGuard(Number(id), {
     requirePermission: 'data:create',
   });
 
