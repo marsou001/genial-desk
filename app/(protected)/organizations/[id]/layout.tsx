@@ -14,11 +14,13 @@ export default async function OrganizationLayout({
   const user = await getUser();
   const hasAccess = await verifyOrganizationAccess(user.id, organizationId);
   if (!hasAccess) {
+    // TODO: toast error
     redirect('/organizations');
   }
-
+  
   const organization = await fetchOrganization(organizationId);
   if (!organization) {
+    // TODO: toast error
     redirect('/organizations');
   }
 
