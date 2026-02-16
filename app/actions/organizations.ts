@@ -3,6 +3,7 @@
 import { getUser } from '@/lib';
 import { createClient } from '@/lib/supabase/server';
 import { ErrorActionState } from '@/types';
+import { assertIsError } from '@/types/typeguards';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
@@ -50,6 +51,8 @@ export async function createOrganization(_: ErrorActionState, formData: FormData
     revalidatePath('/organizations');
     redirect(`/organizations/${organization.id}/dashboard`)
   } catch (error) {
+    assertIsError(error)
+    if (error.message === "NEXT_REDIRECT") throw error
     console.error('Error creating organization:', error);
     return { error: 'Failed to create organization' };
   }
