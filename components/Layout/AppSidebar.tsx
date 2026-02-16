@@ -13,27 +13,27 @@ export default function AppSidebar() {
     {
       href: `/organizations/${organizationId}/dashboard`,
       label: 'Dashboard',
-      icon: '📊',
+      icon: '🏠',
     },
     {
       href: `/organizations/${organizationId}/upload`,
       label: 'Upload',
-      icon: '📊',
+      icon: '⬆️',
     },
     {
       href: `/organizations/${organizationId}/feedback-list`,
       label: 'Feedbacks',
-      icon: '📊',
+      icon: '💬',
     },
     {
       href: `/organizations/${organizationId}/insights`,
       label: 'Insights',
-      icon: '📊',
+      icon: '📈',
     },
     {
       href: `/organizations/${organizationId}/members`,
       label: 'Members',
-      icon: '📊',
+      icon: '👥',
     },
     {
       href: `/organizations/${organizationId}/settings`,
