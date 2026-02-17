@@ -20,6 +20,6 @@ export interface OrganizationMember {
   id: number;
   user_id: string;
   organization_id: number;
-  role: 'owner' | 'admin' | 'analyst' | 'viewer';
+  role: 1 | 2 | 3 | 4;
   created_at: string;
 }

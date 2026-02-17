@@ -8,7 +8,7 @@ export default function InviteMemberDialog({
   organizationId,
   handleClose 
 }: { 
-  organizationId: string;
+  organizationId: number;
   handleClose: () => void 
 }) {
   const [state, formAction, isPending] = useActionState<ErrorActionState, FormData>(

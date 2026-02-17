@@ -1,19 +1,12 @@
-'use client';
-
-import { useState } from 'react';
-import { OrganizationMember, UserRole } from '@/types';
-import InviteMemberDialog from './InviteMemberDialog';
 import Image from 'next/image';
+import { OrganizationMember, UserRole } from '@/types';
+import InviteUsers from './InviteUsers';
 
 export default function MembersList({ 
   members, 
-  organizationId 
 }: { 
   members: OrganizationMember[];
-  organizationId: string;
 }) {
-  const [showInviteDialog, setShowInviteDialog] = useState(false);
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -45,12 +38,7 @@ export default function MembersList({
           <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
             Members
           </h1>
-          <button
-            onClick={() => setShowInviteDialog(true)}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
-          >
-            Invite Users
-          </button>
+          <InviteUsers />
         </div>
 
         {/* Desktop: table */}
@@ -157,13 +145,6 @@ export default function MembersList({
           ))}
         </div>
       </div>
-
-      {showInviteDialog && (
-        <InviteMemberDialog 
-          organizationId={organizationId}
-          handleClose={() => setShowInviteDialog(false)} 
-        />
-      )}
     </>
   );
 }
