@@ -21,7 +21,8 @@ export default function InviteMemberDialog({
 
   function validateEmail() {
     const email = emailInputRef.current?.value.trim() || '';
-    const isValid = email.includes('@') && email.length > 3;
+    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/;
+    const isValid = regex.test(email);
     setIsEmailValid(isValid);
   }
 
