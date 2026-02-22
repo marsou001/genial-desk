@@ -1,11 +1,15 @@
 'use server';
 
-import { getUser } from '@/lib';
-import { createClient } from '@/lib/supabase/server';
-import { ErrorActionState } from '@/types';
-import { assertIsError } from '@/types/typeguards';
+import crypto from "crypto";
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { getUser } from '@/lib';
+import { authGuard } from '@/lib/auth-guard';
+import { createClient } from '@/lib/supabase/server';
+import { isEmailValid } from '@/lib/utils';
+import { ErrorActionState, InviteMemberActionState, UserRole } from '@/types';
+import { assertIsError } from '@/types/typeguards';
+import { sendInviteMemberEmail } from "@/lib/emails";
 
 export async function createOrganization(_: ErrorActionState, formData: FormData): Promise<ErrorActionState> {
   const name = formData.get("name") as string
@@ -86,43 +90,34 @@ export async function updateOrganization(_: ErrorActionState, formData: FormData
   }
 }
 
-export async function inviteMember(_: ErrorActionState, formData: FormData): Promise<ErrorActionState> {
+export async function inviteMember(_: InviteMemberActionState, formData: FormData): Promise<InviteMemberActionState> {
   const email = (formData.get('email') as string)?.trim().toLowerCase();
   const organizationId = formData.get('organization_id') as string;
-  const role = (formData.get('role') as string) || 'viewer';
+  const role = (formData.get('role') as UserRole) || 'viewer';
 
-  if (!email || !email.includes('@')) {
-    return { error: 'Valid email is required' };
+  if (!email || !isEmailValid(email)) {
+    return { error: 'Valid email is required', email, role };
   }
 
   if (!organizationId) {
-    return { error: 'Organization ID is required' };
+    return { error: 'Organization ID is required', email, role };
   }
 
   const validRoles = ['owner', 'admin', 'analyst', 'viewer'];
   if (!validRoles.includes(role)) {
-    return { error: 'Invalid role' };
+    return { error: 'Invalid role', email, role };
+  }
+
+  const guard = await authGuard(Number(organizationId), {
+    requirePermission: 'org:members:invite',
+  })
+
+  if (!guard.success) {
+    return { error: (await guard.response.json()).error, email, role }
   }
 
   try {
-    const user = await getUser();
-    if (!user) {
-      return { error: 'Unauthorized' };
-    }
-
     const supabase = await createClient();
-
-    // Verify user has access to this organization
-    const { data: userMembership, error: membershipError } = await supabase
-      .from('organization_members')
-      .select('role')
-      .eq('user_id', user.id)
-      .eq('organization_id', organizationId)
-      .single();
-
-    if (membershipError || !userMembership) {
-      return { error: 'Organization not found or access denied' };
-    }
 
     // Find user by email - try through organization_members join first
     // This works if the user is already a member of any organization
@@ -130,51 +125,21 @@ export async function inviteMember(_: ErrorActionState, formData: FormData): Pro
       .from('organization_members')
       .select(`
         user_id,
-        user:"auth.users"!inner (
-          id,
+        profiles!inner (
           email
         )
       `)
-      .eq('user.email', email)
+      .eq('profiles.email', email)
+      .eq('organization_id', organizationId)
       .limit(1)
       .maybeSingle();
 
-    let targetUserId: string | null = null;
-
     if (!memberError && existingMember) {
-      targetUserId = existingMember.user_id;
-    } else {
-      // Try RPC function if it exists (may not be available)
-      try {
-        const { data: rpcData, error: rpcError } = await supabase
-          .rpc('get_user_by_email', { user_email: email })
-          .maybeSingle();
-
-        if (!rpcError && rpcData) {
-          const userData = rpcData as any;
-          if (userData?.id) {
-            targetUserId = userData.id;
-          }
-        }
-      } catch {
-        // RPC function may not exist, ignore
-      }
-    }
-
-    if (!targetUserId) {
-      return { error: 'User with this email not found. Please ensure the user has signed up first.' };
-    }
-
-    // Check if user is already a member of this organization
-    const { data: existing } = await supabase
-      .from('organization_members')
-      .select('id')
-      .eq('user_id', targetUserId)
-      .eq('organization_id', organizationId)
-      .maybeSingle();
-
-    if (existing) {
-      return { error: 'User is already a member of this organization' };
+      return ({ 
+        error: `User with email ${existingMember.profiles.email} is already a member of your organization`,
+        email,
+        role,
+      })
     }
 
     // Get role ID from role name
@@ -185,27 +150,55 @@ export async function inviteMember(_: ErrorActionState, formData: FormData): Pro
       .single();
 
     if (roleError || !roleData) {
-      return { error: 'Invalid role' };
+      return { error: 'Invalid role', email, role };
     }
-
-    // Add member
-    const { error: insertError } = await supabase
-      .from('organization_members')
+    
+    const user = await getUser();
+    const userId = user.id;
+    const inviteToken = crypto.randomBytes(32).toString("hex");
+    const tokenHash = crypto.createHash("sha256").update(inviteToken).digest("hex");
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+    
+    const { error: inviteError } = await supabase
+      .from('invites')
       .insert({
-        user_id: targetUserId,
-        organization_id: parseInt(organizationId),
+        // organizationId,
+        organization_id: organizationId,
+        email,
         role: roleData.id,
-      });
+        invited_by: userId,
+        token_hash: tokenHash,
+        expires_at: expiresAt,
+      })
 
-    if (insertError) {
-      return { error: insertError.message };
+    if (inviteError) {
+      console.log(inviteError.message)
+      return { error: 'Failed to create invite', email, role };
+    }
+     
+    // Get organization's name
+    const { data: organizationData, error: organizationError } = await supabase
+      .from('organizations')
+      .select('name')
+      .eq('id', organizationId)
+      .single()
+
+    if (organizationError) {
+      console.log(organizationError.message)
+      return { error: 'Failed to fetch organization', email, role };
     }
 
-    revalidatePath(`/organizations/${organizationId}/members`);
-    return { error: null };
+    const { error: sendEmailError } = await sendInviteMemberEmail(email, organizationData.name, role, inviteToken);
+    
+    if (sendEmailError) {
+      console.log("Failed to send invite", sendEmailError.message)
+      return { error: "Failed to send invite", email, role }
+    }
+
+    return { error: null, email: "", role }
   } catch (error) {
     assertIsError(error);
     console.error('Error inviting member:', error);
-    return { error: 'Failed to invite member' };
+    return { error: 'Failed to invite member', email, role };
   }
 }

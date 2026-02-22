@@ -1,13 +1,10 @@
 "use client"
 
-import { useParams } from "next/navigation";
 import { useState } from "react";
 import InviteMemberDialog from "./InviteMemberDialog";
 
 export default function InviteUsers() {
   const [showInviteDialog, setShowInviteDialog] = useState(false);
-  const { id } = useParams()
-  const organizationId = Number(id)
 
   return (
     <>
@@ -18,12 +15,7 @@ export default function InviteUsers() {
         Invite Users
       </button>
 
-      {showInviteDialog && (
-        <InviteMemberDialog
-          organizationId={organizationId}
-          handleClose={() => setShowInviteDialog(false)} 
-        />
-      )}
+      {showInviteDialog && <InviteMemberDialog handleClose={() => setShowInviteDialog(false)} />}
     </>
   )
 }

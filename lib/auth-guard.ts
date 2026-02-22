@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { User } from '@supabase/supabase-js';
-import { getUser, getOrganizationContext, getUserRole, verifyOrganizationAccess } from '.';
+import { getUser, getUserRole, verifyOrganizationAccess } from '.';
 import { hasPermission, Permission } from './permissions';
 
 export interface AuthGuardOptions {

@@ -92,7 +92,6 @@ export async function getUserRole(
       .eq('user_id', userId)
       .eq('organization_id', organizationId)
       .single();
-    console.log("data", data)
     if (error || !data) return null;
     return data.role.name as UserRole;
   } catch {

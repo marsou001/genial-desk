@@ -44,15 +44,18 @@ export async function updateSession(request: NextRequest) {
   const isProtectedRoute = !isPublicRoute && !isAuthRoute
 
   if (!user && isProtectedRoute) {
-    // no user, potentially respond by redirecting the user to the login page
+    const fullPath = request.nextUrl.pathname + request.nextUrl.search
+    console.log("fullPath", fullPath)
     const url = request.nextUrl.clone()
+    
     url.pathname = '/sign-in'
+    url.search = ''
+    url.searchParams.set('redirectTo', fullPath)
+    
     return NextResponse.redirect(url)
   }
 
   if (user && isAuthRoute) {
-    // user is authenticated, potentially respond by redirecting the user to the
-    // organizations page
     const url = request.nextUrl.clone()
     url.pathname = '/organizations'
     return NextResponse.redirect(url)

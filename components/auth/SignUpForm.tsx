@@ -4,11 +4,12 @@ import { useActionState } from 'react';
 import { signUpAction } from '@/app/actions/auth';
 import { ErrorActionState } from '@/types';
 
-export default function SignUpForm() {
+export default function SignUpForm({ redirectTo }: { redirectTo?: string }) {
   const [state, formAction, isPending] = useActionState<ErrorActionState, FormData>(signUpAction, { error: null });
 
   return (
     <form action={formAction} className="space-y-4">
+      {redirectTo !== undefined && <input type="hidden" name="redirect_to" value={redirectTo} />}
       <div>
         <label htmlFor="email" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
           Email

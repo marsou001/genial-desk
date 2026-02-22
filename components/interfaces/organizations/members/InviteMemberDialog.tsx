@@ -1,27 +1,29 @@
 'use client';
 
+import { useParams } from "next/navigation";
 import { useActionState, useState, useRef, useEffect } from "react"
-import { ErrorActionState } from "@/types"
+import { InviteMemberActionState } from "@/types"
 import { inviteMember } from "@/app/actions/organizations"
 
 export default function InviteMemberDialog({ 
-  organizationId,
   handleClose 
 }: { 
-  organizationId: number;
   handleClose: () => void 
 }) {
-  const [state, formAction, isPending] = useActionState<ErrorActionState, FormData>(
+  const [state, formAction, isPending] = useActionState<InviteMemberActionState, FormData>(
     inviteMember, 
-    { error: null }
+    { error: null, email: "", role: "viewer" }
   )
   const [isEmailValid, setIsEmailValid] = useState(false)
   const emailInputRef = useRef<HTMLInputElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
 
+  const { id } = useParams()
+  const organizationId = Number(id)
+
   function validateEmail() {
     const email = emailInputRef.current?.value.trim() || '';
-    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/;
+    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const isValid = regex.test(email);
     setIsEmailValid(isValid);
   }
@@ -61,13 +63,32 @@ export default function InviteMemberDialog({
               type="email"
               name="email"
               required
+              defaultValue={state.email}
               className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="user@example.com"
               autoFocus
             />
           </div>
+          
+          <div>
+            <label htmlFor="role" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+              Role
+            </label>
+            <select
+              id="role"
+              name="role"
+              required
+              defaultValue="viewer"
+              className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="owner">Owner</option>
+              <option value="admin">Admin</option>
+              <option value="analyst">Analyst</option>
+              <option value="viewer">Viewer</option>
+            </select>
+          </div>
 
-          {state.error !== null && (
+          {!isPending && state.error !== null && (
             <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
               <p className="text-sm text-red-800 dark:text-red-200">{state.error}</p>
             </div>

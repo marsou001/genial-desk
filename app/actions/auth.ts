@@ -8,6 +8,7 @@ import { ErrorActionState } from '@/types';
 export async function signInAction(_: ErrorActionState, formData: FormData) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
+  const redirectTo = formData.get("redirect_to") as string | undefined
   const supabase = await createClient();
   
   const { error } = await supabase.auth.signInWithPassword({
@@ -20,12 +21,13 @@ export async function signInAction(_: ErrorActionState, formData: FormData) {
   }
   
   revalidatePath('/');
-  redirect('/organizations');
+  redirect(redirectTo ?? '/organizations');
 }
 
 export async function signUpAction(_: ErrorActionState, formData: FormData) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
+  const redirectTo = formData.get("redirect_to") as string | undefined
   const supabase = await createClient();
 
   const { error } = await supabase.auth.signUp({
@@ -41,7 +43,7 @@ export async function signUpAction(_: ErrorActionState, formData: FormData) {
   }
   
   revalidatePath('/');
-  redirect('/organizations');
+  redirect(redirectTo ?? '/organizations');
 }
 
 export async function signOutAction() {
