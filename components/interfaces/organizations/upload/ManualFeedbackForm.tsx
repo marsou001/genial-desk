@@ -47,11 +47,6 @@ export default function ManualFeedbackForm() {
 
       setResult({ success: true });
       setFeedback('');
-
-      // Give the user a moment to read the success message before refresh
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
     } catch (error) {
       setResult({
         success: false,

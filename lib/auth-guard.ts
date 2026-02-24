@@ -13,13 +13,13 @@ export interface AuthGuardOptions {
  * Returns the authenticated user and organization context, or an error response
  */
 export async function authGuard(
-  organizationId: number,
+  organizationId: string,
   options: AuthGuardOptions = {}
 ): Promise<
   | {
       success: true;
       user: User;
-      organizationId: number;
+      organizationId: string;
       role: string;
     }
   | { success: false; response: NextResponse }

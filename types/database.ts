@@ -1,7 +1,7 @@
 import { UserRole } from ".";
 
 export interface Feedback {
-  id: number;
+  id: string;
   text: string;
   source: string;
   topic: string;
@@ -9,26 +9,26 @@ export interface Feedback {
   summary: string;
   keywords: string[];
   created_at: string;
-  organization_id: number;
+  organization_id: string;
 }
 
 export interface Organization {
-  id: number;
+  id: string;
   name: string;
   created_at: string;
 }
 
 export interface OrganizationMember {
-  id: number;
+  id: string;
   user_id: string;
-  organization_id: number;
+  organization_id: string;
   role: 1 | 2 | 3 | 4;
   created_at: string;
 }
 
 export interface Invite {
-  id: number;
-  organization_id: number;
+  id: string;
+  organization_id: string;
   email: string;
   role: Role["name"];
   invited_by: string;

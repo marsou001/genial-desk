@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { OrganizationMember } from '@/types';
 
-export async function fetchMembers(organizationId: number): Promise<OrganizationMember[]> {
+export async function fetchMembers(organizationId: string): Promise<OrganizationMember[]> {
   const supabase = await createClient()
   try {
     const { data: memberships, error } = await supabase

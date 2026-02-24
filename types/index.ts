@@ -16,13 +16,13 @@ export type Insights = {
 }
 
 export interface UserMembership {
-  organization_id: number;
+  organization_id: string;
   role: UserRole;
   organization_name: string;
 }
 
 export type OrganizationView = {
-  id: number;
+  id: string;
   name: string;
   role: UserRole;
   created_at: string;
@@ -31,6 +31,7 @@ export type OrganizationView = {
 export type OrganizationMember = {
   id: string;
   role: UserRole;
+  organizationId: string;
   fullName: string | null;
   email: string;
   avatarUrl?: string | null;
@@ -44,7 +45,7 @@ export type InviteResult =
   | { status: "accepted" }
 
 export type InviteView = {
-  id: number;
+  id: string;
   organization: string;
   role: UserRole;
   expiresAt: string;

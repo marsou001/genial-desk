@@ -8,7 +8,7 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
-  const guard = await authGuard(Number(id), {
+  const guard = await authGuard(id, {
     requirePermission: 'data:create',
   });
 
@@ -46,7 +46,7 @@ export async function POST(
         sentiment: analysis.sentiment,
         summary: analysis.summary,
         keywords: analysis.keywords,
-        organization_id: guard.organizationId,
+        organization_id: id,
       })
       .select()
       .single();
@@ -70,7 +70,7 @@ export async function POST(
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to submit feedback',
+        error: "Failed to submit feedback",
       },
       { status: 500 },
     );

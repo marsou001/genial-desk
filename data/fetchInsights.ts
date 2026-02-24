@@ -38,10 +38,11 @@ export async function fetchInsights(
       });
     }
 
-    const insights = await generateWeeklyInsights(feedbacks);
+    // const insights = await generateWeeklyInsights(feedbacks);
 
     return ({
-      data: insights,
+      // data: insights,
+      data: "insights",
       count: feedbacks.length,
       period: `${days} days`,
     });

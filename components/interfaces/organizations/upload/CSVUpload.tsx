@@ -18,15 +18,16 @@ export default function CSVUpload() {
 
   const { id: organizationId } = useParams()
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0]);
       setResult(null);
     }
   };
 
-  const handleUpload = async () => {
+  async function handleUpload(e: React.SubmitEvent<HTMLFormElement>) {
     if (!file) return;
+    e.preventDefault();
 
     setUploading(true);
     setResult(null);
@@ -39,25 +40,25 @@ export default function CSVUpload() {
       const response = await fetch(`/api/organizations/${organizationId}/upload`, {
         method: 'POST',
         body: formData,
-        headers: {
-          'Content-type': 'multipart/form-data'
-        }
       });
 
-      const data = await response.json();
-      setResult(data);
-
-      if (data.success) {
-        // Refresh the page to show new data
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
+      if (!response.ok) {
+        const errorMessage = await response.json()
+        // TODO: toast
+        setResult({
+          success: false,
+          processed: 0,
+          errors: [errorMessage.error],
+        });
+      } else {
+        const data = await response.json();
+        setResult(data);
       }
-    } catch (error) {
+    } catch {
       setResult({
         success: false,
         processed: 0,
-        errors: [error instanceof Error ? error.message : 'Upload failed'],
+        errors: ['Upload failed'],
       });
     } finally {
       setUploading(false);
@@ -67,9 +68,9 @@ export default function CSVUpload() {
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+        <h2 className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
           Source Name
-        </label>
+        </h2>
         <input
           type="text"
           value={source}
@@ -79,7 +80,7 @@ export default function CSVUpload() {
         />
       </div>
 
-      <div>
+      <form id="csv-file-upload" onSubmit={handleUpload}>
         <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
           CSV File
         </label>
@@ -114,10 +115,11 @@ export default function CSVUpload() {
             />
           </label>
         </div>
-      </div>
+      </form >
 
       <button
-        onClick={handleUpload}
+        type="submit"
+        form="csv-file-upload"
         disabled={!file || uploading}
         className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-zinc-400 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
       >
@@ -139,7 +141,7 @@ export default function CSVUpload() {
                 : 'text-red-800 dark:text-red-200'
             }`}
           >
-            {result.success
+            {result.success && result.feedbacks && result.feedbacks.length > 0
               ? `✅ Successfully processed ${result.processed} feedback items!`
               : `❌ Upload failed`}
           </p>

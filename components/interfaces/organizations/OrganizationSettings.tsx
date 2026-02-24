@@ -30,21 +30,24 @@ export default function OrganizationSettings({ organization }: OrganizationSetti
   async function deleteOrganization() {
     setIsDeleting(true)
 
-    const response = await fetch("/api/organizations/" + organization.id, {
-      method: "DELETE",
-      headers: {
-        "x-organization-id": String(organization.id)
+    try {
+      const response = await fetch("/api/organizations/" + organization.id, {
+        method: "DELETE",
+      })
+  
+      if (!response.ok) {
+        // TODO: toast error
+        const errorMessage = await response.json()
+        console.log("yyy", errorMessage.error)
+      } else {
+        redirect("/organizations")
       }
-    })
-
-    if (!response.ok) {
+    } catch {
       // TODO: toast error
-      const errorMessage = await response.json()
-      console.log("yyy", errorMessage.error)
+      console.log("Failed to delete organization")
+    } finally {
       setIsDeleting(false)
-      return
     }
-    redirect("/organizations")
   }
 
   return (

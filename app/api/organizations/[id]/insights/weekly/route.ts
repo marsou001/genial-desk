@@ -8,7 +8,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
-  const guard = await authGuard(Number(id), {
+  const guard = await authGuard(id, {
     requirePermission: 'insights:read',
   });
 

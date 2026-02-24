@@ -9,8 +9,7 @@ export default function OrganizationSwitcher({ organizations }: { organizations:
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   
-  const { id: organizationId } = useParams()
-  const currentOrganizationId = Number(organizationId)
+  const { id: currentOrganizationId } = useParams()
   const currentOrganization = currentOrganizationId ?
     organizations.find((org) => org.id === currentOrganizationId) : null;
 

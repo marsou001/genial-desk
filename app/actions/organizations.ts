@@ -23,6 +23,8 @@ export async function createOrganization(_: ErrorActionState, formData: FormData
     return { error: 'Organization name must be at least 3 characters' };
   }
 
+  const orgId = crypto.randomUUID();
+  
   try {
     const supabase = await createClient();
 
@@ -35,21 +37,6 @@ export async function createOrganization(_: ErrorActionState, formData: FormData
 
     if (orgError) {
       return { error: orgError.message };
-    }
-
-    // Add creator as Owner
-    const { error: memberError } = await supabase
-      .from('organization_members')
-      .insert({
-        user_id: user.id,
-        organization_id: organization.id,
-        role: 1,
-      });
-
-    if (memberError) {
-      // Rollback organization creation
-      await supabase.from('organizations').delete().eq('id', organization.id);
-      return { error: memberError.message };
     }
 
     revalidatePath('/organizations');
@@ -65,6 +52,14 @@ export async function createOrganization(_: ErrorActionState, formData: FormData
 export async function updateOrganization(_: ErrorActionState, formData: FormData): Promise<ErrorActionState> {
   const name = (formData.get('name') as string)?.trim();
   const organizationId = formData.get('organization_id') as string;
+
+  const guard = await authGuard(organizationId, {
+    requirePermission: 'org:update',
+  })
+
+  if (!guard.success) {
+    return { error: (await guard.response.json()).error }
+  }
 
   if (!name || name.length < 3) {
     return { error: 'Organization name must be at least 3 characters' };
@@ -108,7 +103,7 @@ export async function inviteMember(_: InviteMemberActionState, formData: FormDat
     return { error: 'Invalid role', email, role };
   }
 
-  const guard = await authGuard(Number(organizationId), {
+  const guard = await authGuard(organizationId, {
     requirePermission: 'org:members:invite',
   })
 

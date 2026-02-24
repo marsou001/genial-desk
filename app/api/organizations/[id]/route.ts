@@ -12,7 +12,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const guard = await authGuard(Number(id));
+  const guard = await authGuard(id);
 
   if (!guard.success) {
     return guard.response;
@@ -58,7 +58,7 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const guard = await authGuard(Number(id), {
+  const guard = await authGuard(id, {
     requirePermission: 'org:update',
   });
 
@@ -133,7 +133,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const guard = await authGuard(Number(id), {
+  const guard = await authGuard(id, {
     requirePermission: 'org:delete',
   });
 

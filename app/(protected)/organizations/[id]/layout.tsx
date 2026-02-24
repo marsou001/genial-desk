@@ -12,7 +12,7 @@ export default async function OrganizationLayout({
 }) {
   const { id: organizationId } = await params;
   const user = await getUser();
-  const hasAccess = await verifyOrganizationAccess(user.id, Number(organizationId));
+  const hasAccess = await verifyOrganizationAccess(user.id, organizationId);
   if (!hasAccess) {
     // TODO: toast error
     redirect('/organizations');

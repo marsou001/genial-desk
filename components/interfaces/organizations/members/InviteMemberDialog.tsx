@@ -18,8 +18,7 @@ export default function InviteMemberDialog({
   const emailInputRef = useRef<HTMLInputElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
 
-  const { id } = useParams()
-  const organizationId = Number(id)
+  const { id: organizationId } = useParams()
 
   function validateEmail() {
     const email = emailInputRef.current?.value.trim() || '';

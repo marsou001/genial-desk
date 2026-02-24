@@ -9,7 +9,7 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const guard = await authGuard(Number(id), {
+  const guard = await authGuard(id, {
     requirePermission: 'data:create',
   });
 
@@ -76,6 +76,12 @@ export async function POST(
       try {
         // Analyze with AI
         const analysis = await analyzeFeedback(feedbackText);
+        // const analysis = {
+        //   topic: 'General',
+        //   sentiment: 'neutral',
+        //   summary: text.substring(0, 100),
+        //   keywords: ["customer satisfaction", "customer service"],
+        // }
 
         // Insert into database (scoped to organization)
         const { data, error } = await supabase
@@ -87,7 +93,7 @@ export async function POST(
             sentiment: analysis.sentiment,
             summary: analysis.summary,
             keywords: analysis.keywords,
-            organization_id: guard.organizationId,
+            organization_id: id,
           })
           .select()
           .single();
@@ -114,7 +120,7 @@ export async function POST(
   } catch (error) {
     console.error('Upload error:', error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to process file' },
+      { error: 'Failed to process file' },
       { status: 500 }
     );
   }

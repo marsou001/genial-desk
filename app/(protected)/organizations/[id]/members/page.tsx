@@ -7,7 +7,7 @@ export default async function MembersPage({
   params: Promise<{ id: string }>;
 }) {
   const { id: organizationId } = await params;
-  const members = await fetchMembers(Number(organizationId));
+  const members = await fetchMembers(organizationId);
 
   return <MembersList members={members} />;
 }
