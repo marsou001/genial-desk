@@ -54,6 +54,11 @@ export type ErrorActionState = {
   error: string | null;
 }
 
+export type CreateOrganizationrActionState = {
+  error: string | null;
+  name: string;
+}
+
 export type InviteMemberActionState = {
   error: string | null;
   email: string;

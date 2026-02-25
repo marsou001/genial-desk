@@ -1,10 +1,10 @@
 import { useActionState, useState, useRef } from "react"
-import { ErrorActionState } from "@/types"
+import { CreateOrganizationrActionState } from "@/types"
 import { createOrganization } from "@/app/actions/organizations"
 
 export default function CreateOrganizationDialog({ handleClose } : { handleClose: () => void }) {
-  const [state, formAction, isPending] = useActionState<ErrorActionState, FormData>(
-    createOrganization, { error: null }
+  const [state, formAction, isPending] = useActionState<CreateOrganizationrActionState, FormData>(
+    createOrganization, { error: null, name: "" }
   )
   const [isOrganizationNameValid, setIsOrganizationNameValid] = useState(false)
   const nameInputRef = useRef<HTMLInputElement>(null)
@@ -34,13 +34,14 @@ export default function CreateOrganizationDialog({ handleClose } : { handleClose
               name="name"
               required
               minLength={3}
+              defaultValue={state.name}
               className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="My Company"
               autoFocus
             />
           </div>
 
-          {state.error !== null && (
+          {!isPending && state.error !== null && (
             <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
               <p className="text-sm text-red-800 dark:text-red-200">{state.error}</p>
             </div>

@@ -7,20 +7,20 @@ import { getUser } from '@/lib';
 import { authGuard } from '@/lib/auth-guard';
 import { createClient } from '@/lib/supabase/server';
 import { isEmailValid } from '@/lib/utils';
-import { ErrorActionState, InviteMemberActionState, UserRole } from '@/types';
+import { ErrorActionState, CreateOrganizationrActionState, InviteMemberActionState, UserRole } from '@/types';
 import { assertIsError } from '@/types/typeguards';
 import { sendInviteMemberEmail } from "@/lib/emails";
 
-export async function createOrganization(_: ErrorActionState, formData: FormData): Promise<ErrorActionState> {
+export async function createOrganization(_: CreateOrganizationrActionState, formData: FormData): Promise<CreateOrganizationrActionState> {
   const name = formData.get("name") as string
   const user = await getUser();
   
   if (!user) {
-    return { error: 'Unauthorized' };
+    return { error: 'Unauthorized', name };
   }
 
   if (!name || name.trim().length < 2) {
-    return { error: 'Organization name must be at least 3 characters' };
+    return { error: 'Organization name must be at least 3 characters', name };
   }
 
   const orgId = crypto.randomUUID();
@@ -35,7 +35,7 @@ export async function createOrganization(_: ErrorActionState, formData: FormData
       .select("id")
 
     if (orgError) {
-      return { error: orgError.message };
+      return { error: orgError.message, name };
     }
 
     revalidatePath('/organizations');
@@ -44,7 +44,7 @@ export async function createOrganization(_: ErrorActionState, formData: FormData
     assertIsError(error)
     if (error.message === "NEXT_REDIRECT") throw error
     console.error('Error creating organization:', error);
-    return { error: 'Failed to create organization' };
+    return { error: 'Failed to create organization', name };
   }
 }
 
