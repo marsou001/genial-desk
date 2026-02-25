@@ -8,14 +8,14 @@ export async function fetchMembers(organizationId: string): Promise<Organization
       .from('organization_members')
       .select(`
         id,
+        created_at,
         role (
           name
         ),
         profiles (
           full_name,
           email,
-          avatar_url,
-          created_at
+          avatar_url
         )
       `)
       .eq('organization_id', organizationId);
@@ -30,7 +30,7 @@ export async function fetchMembers(organizationId: string): Promise<Organization
       email: m.profiles.email,
       avatarUrl: m.profiles?.avatar_url ?? null,
       role: m.role.name.toLowerCase(),
-      memberSince: m.profiles.created_at,
+      memberSince: m.created_at,
     }));
 
     return members;
