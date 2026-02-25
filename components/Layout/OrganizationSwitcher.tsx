@@ -9,7 +9,7 @@ export default function OrganizationSwitcher({ organizations }: { organizations:
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname()
   const page = pathname.split("/")[3]
-  
+
   const containerRef = useRef<HTMLDivElement>(null);
   
   const { id: currentOrganizationId } = useParams()
@@ -50,7 +50,7 @@ export default function OrganizationSwitcher({ organizations }: { organizations:
             <li>
               <Link
                 href="/organizations"
-                className={`inline-block w-full text-left px-4 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 ${
+                className={`inline-block w-full text-left px-4 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 focus:outline-none focus:bg-zinc-100 dark:focus:bg-zinc-800 ${
                   !currentOrganizationId
                     ? "font-semibold"
                     : ""
@@ -67,7 +67,7 @@ export default function OrganizationSwitcher({ organizations }: { organizations:
               <li key={org.id} className="w-full">
                 <Link
                   href={`/organizations/${org.id}/${page}`}
-                  className={`inline-block w-full text-left px-4 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 ${
+                  className={`inline-block w-full text-left px-4 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 focus:outline-none focus:bg-zinc-100 dark:focus:bg-zinc-800 ${
                     org.id === currentOrganizationId
                       ? "font-semibold"
                       : ""
