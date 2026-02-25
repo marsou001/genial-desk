@@ -24,28 +24,20 @@ export async function createOrganization(_: CreateOrganizationrActionState, form
   }
 
   const orgId = crypto.randomUUID();
-  
-  try {
-    const supabase = await createClient();
+  const supabase = await createClient();
 
-    // Create organization
-    const { error: orgError } = await supabase
-      .from('organizations')
-      .insert({ id: orgId, name: name.trim() })
-      .select("id")
+  // Create organization
+  const { error: orgError } = await supabase
+    .from('organizations')
+    .insert({ id: orgId, name: name.trim() })
 
-    if (orgError) {
-      return { error: orgError.message, name };
-    }
-
-    revalidatePath('/organizations');
-    redirect(`/organizations/${orgId}/dashboard`)
-  } catch (error) {
-    assertIsError(error)
-    if (error.message === "NEXT_REDIRECT") throw error
-    console.error('Error creating organization:', error);
-    return { error: 'Failed to create organization', name };
+  if (orgError) {
+    console.log("Error creating organization", orgError.message)
+    return { error: "Error creating organization", name };
   }
+
+  revalidatePath('/organizations');
+  redirect(`/organizations/${orgId}/dashboard`)
 }
 
 export async function updateOrganization(_: ErrorActionState, formData: FormData): Promise<ErrorActionState> {
