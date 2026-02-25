@@ -29,18 +29,17 @@ export async function createOrganization(_: ErrorActionState, formData: FormData
     const supabase = await createClient();
 
     // Create organization
-    const { data: organization, error: orgError } = await supabase
+    const { error: orgError } = await supabase
       .from('organizations')
-      .insert({ name: name.trim() })
+      .insert({ id: orgId, name: name.trim() })
       .select("id")
-      .single();
 
     if (orgError) {
       return { error: orgError.message };
     }
 
     revalidatePath('/organizations');
-    redirect(`/organizations/${organization.id}/dashboard`)
+    redirect(`/organizations/${orgId}/dashboard`)
   } catch (error) {
     assertIsError(error)
     if (error.message === "NEXT_REDIRECT") throw error
@@ -77,7 +76,7 @@ export async function updateOrganization(_: ErrorActionState, formData: FormData
     }
 
     revalidatePath(`/organizations/${organizationId}/settings`);
-    revalidatePath(`/organizations/${organizationId}`);
+    revalidatePath(`/organizations`);
     return { error: null };
   } catch (error) {
     console.error('Error updating organization:', error);

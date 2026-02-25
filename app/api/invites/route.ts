@@ -27,5 +27,4 @@ export async function PATCH(request: NextRequest) {
 
   revalidatePath("/organizations")
   return NextResponse.json({ organizationId: data.organization_id }, { status: 200 })
-  redirect("/organizations/" + data.organization_id + "/dashboard")
 }

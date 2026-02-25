@@ -7,7 +7,7 @@ export async function fetchMembers(organizationId: string): Promise<Organization
     const { data: memberships, error } = await supabase
       .from('organization_members')
       .select(`
-        user_id,
+        id,
         role (
           name
         ),
@@ -25,12 +25,12 @@ export async function fetchMembers(organizationId: string): Promise<Organization
     }
 
     const members = (memberships || []).map((m: any) => ({
-      id: m.user_id,
+      id: m.id,
       fullName: m.profiles.full_name,
       email: m.profiles.email,
       avatarUrl: m.profiles?.avatar_url ?? null,
       role: m.role.name.toLowerCase(),
-      createdAt: m.profiles.created_at,
+      memberSince: m.profiles.created_at,
     }));
 
     return members;

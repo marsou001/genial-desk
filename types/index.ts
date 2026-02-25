@@ -31,11 +31,10 @@ export type OrganizationView = {
 export type OrganizationMember = {
   id: string;
   role: UserRole;
-  organizationId: string;
   fullName: string | null;
   email: string;
   avatarUrl?: string | null;
-  createdAt: string;
+  memberSince: string;
 }
 
 export type InviteResult = 

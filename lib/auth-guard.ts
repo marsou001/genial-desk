@@ -45,7 +45,6 @@ export async function authGuard(
   }
 
   // Check permissions
-  console.log("requirePermission", requirePermission)
   if (requirePermission) {
     const role = await getUserRole(user.id, organizationId);
     if (!role) {

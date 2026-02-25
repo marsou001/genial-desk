@@ -1,20 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { authGuard } from '@/lib/auth-guard';
 import { createClient } from '@/lib/supabase/server';
-import { hasPermission, canManageMember } from '@/lib/permissions';
 
 /**
  * GET /api/organizations/[id]/members
  * List all members of an organization
  */
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const guard = await authGuard(request, {
-    requireAuth: true,
-    requireOrg: false,
+  const guard = await authGuard(id, {
     requirePermission: 'org:members:read',
   });
 
@@ -70,155 +64,25 @@ export async function GET(
   return NextResponse.json({ members: transformedMembers });
 }
 
-/**
- * POST /api/organizations/[id]/members
- * Invite a member to the organization
- */
-export async function POST(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const { id } = await params;
-  const guard = await authGuard(request, {
-    requireAuth: true,
-    requireOrg: false,
-    requirePermission: 'org:members:invite',
-  });
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id: organizationId } = await params
+  // const guard = await authGuard(organizationId, { requirePermission: "org:members:remove" })
+  // if (!guard.success) {
+  //   return guard.response;
+  // }
 
-  if (!guard.success) {
-    return guard.response;
+  const { id } = await request.json()
+
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from("organization_members")
+    .delete()
+    .eq("id", id)
+
+  if (error) {
+    console.log("Failed to remove member", error.message)
+    return NextResponse.json({ error: "Failed to remove member" }, { status: 500 })
   }
 
-  // Verify user has access and permission
-  const supabase = await createClient();
-  const { data: userMembership, error: membershipError } = await supabase
-    .from('organization_members')
-    .select('role')
-    .eq('user_id', guard.user.id)
-    .eq('organization_id', id)
-    .single();
-
-  if (membershipError || !userMembership) {
-    return NextResponse.json(
-      { error: 'Organization not found or access denied' },
-      { status: 404 }
-    );
-  }
-
-  try {
-    const body = await request.json();
-    const userId = body?.user_id as string;
-    const email = body?.email as string;
-    const role = (body?.role as string) || 'viewer';
-
-    let targetUserId: string | null = userId || null;
-
-    // If email is provided instead of user_id, find the user by email
-    if (!targetUserId && email) {
-      // Try to find user through organization_members join (if user is member of any org)
-      const { data: existingMember, error: memberError } = await supabase
-        .from('organization_members')
-        .select(`
-          user_id,
-          user:"auth.users"!inner (
-            id,
-            email
-          )
-        `)
-        .eq('user.email', email.toLowerCase().trim())
-        .limit(1)
-        .single();
-
-      if (!memberError && existingMember) {
-        targetUserId = existingMember.user_id;
-      } else {
-        // If user not found through members, try RPC function if it exists
-        const { data: rpcData, error: rpcError } = await supabase
-          .rpc('get_user_by_email', { user_email: email.toLowerCase().trim() })
-          .single();
-
-        if (!rpcError && rpcData) {
-          targetUserId = rpcData.id;
-        }
-      }
-    }
-
-    if (!targetUserId) {
-      return NextResponse.json(
-        { error: email ? 'User with this email not found. Please ensure the user has signed up first.' : 'user_id or email is required' },
-        { status: 400 }
-      );
-    }
-
-    const validRoles = ['owner', 'admin', 'analyst', 'viewer'];
-    if (!validRoles.includes(role)) {
-      return NextResponse.json(
-        { error: 'Invalid role' },
-        { status: 400 }
-      );
-    }
-
-    // Check if user can manage this role
-    if (!canManageMember(userMembership.role as any, role as any)) {
-      return NextResponse.json(
-        { error: 'You cannot invite members with this role' },
-        { status: 403 }
-      );
-    }
-
-    // Check if user already exists
-    const { data: existing } = await supabase
-      .from('organization_members')
-      .select('id')
-      .eq('user_id', targetUserId)
-      .eq('organization_id', id)
-      .single();
-
-    if (existing) {
-      return NextResponse.json(
-        { error: 'User is already a member of this organization' },
-        { status: 400 }
-      );
-    }
-
-    // Get role ID from role name if role is a string
-    let roleId: number | string = role;
-    if (typeof role === 'string') {
-      const { data: roleData, error: roleError } = await supabase
-        .from('roles')
-        .select('id')
-        .eq('name', role)
-        .single();
-
-      if (!roleError && roleData) {
-        roleId = roleData.id;
-      }
-    }
-
-    // Add member
-    const { data, error } = await supabase
-      .from('organization_members')
-      .insert({
-        user_id: targetUserId,
-        organization_id: id,
-        role: roleId,
-      })
-      .select()
-      .single();
-
-    if (error) {
-      return NextResponse.json(
-        { error: error.message },
-        { status: 500 }
-      );
-    }
-
-    return NextResponse.json({ success: true, member: data });
-  } catch (error) {
-    console.error('Error inviting member:', error);
-    return NextResponse.json(
-      { error: 'Failed to invite member' },
-      { status: 500 }
-    );
-  }
+  return NextResponse.json({ message: "Done" }, { status: 200 })
 }
