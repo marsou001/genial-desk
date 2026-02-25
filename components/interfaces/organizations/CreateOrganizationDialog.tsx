@@ -51,14 +51,15 @@ export default function CreateOrganizationDialog({ handleClose } : { handleClose
             <button
               type="submit"
               disabled={isPending || !isOrganizationNameValid}
-              className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-zinc-400 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
+              className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 cursor-pointer disabled:bg-zinc-400 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
             >
               {isPending ? 'Creating...' : 'Create'}
             </button>
             <button
               type="button"
               onClick={handleClose}
-              className="px-4 py-2 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-700 dark:hover:bg-zinc-600 text-zinc-900 dark:text-zinc-50 font-medium rounded-lg transition-colors"
+              disabled={isPending}
+              className="px-4 py-2 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-700 dark:hover:bg-zinc-600 text-zinc-900 dark:text-zinc-50 font-medium cursor-pointer disabled:cursor-not-allowed rounded-lg transition-colors"
             >
               Cancel
             </button>

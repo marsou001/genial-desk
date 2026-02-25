@@ -27,7 +27,7 @@ export default function OrganizationsList({ organizations }: { organizations: Or
           </button>
         </div>
       ) : (
-        <div className="space-y-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
           {organizations.map((org) => (
             <Link
               key={org.id}
@@ -55,7 +55,7 @@ export default function OrganizationsList({ organizations }: { organizations: Or
       {organizations.length > 0 && (
         <button
           onClick={() => setShowCreateDialog(true)}
-          className="w-full px-6 py-3 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-900 dark:text-zinc-50 font-medium rounded-lg transition-colors border border-zinc-300 dark:border-zinc-700"
+          className="cursor-pointer w-full px-6 py-3 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-900 dark:text-zinc-50 font-medium rounded-lg transition-colors border border-zinc-300 dark:border-zinc-700"
         >
           + Create New Organization
         </button>
