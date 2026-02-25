@@ -49,7 +49,6 @@ export default function InviteMemberDialog({
         
         <form ref={formRef} action={formAction} className="space-y-4">
           <input type="hidden" name="organization_id" value={organizationId} />
-          <input type="hidden" name="role" value="viewer" />
           
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
