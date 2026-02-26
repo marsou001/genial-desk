@@ -8,7 +8,7 @@ import { useParams, usePathname } from "next/navigation";
 export default function OrganizationSwitcher({ organizations }: { organizations: Organization[] }) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname()
-  const page = pathname.split("/")[3]
+  const page = pathname.split("/")[3] ?? "dashboard"
 
   const containerRef = useRef<HTMLDivElement>(null);
   
