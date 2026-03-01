@@ -73,11 +73,14 @@ export default function MembersList({
                   <tr key={member.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors">
                     <td className="px-4 py-3 whitespace-nowrap">
                       {member.avatarUrl ? (
-                        <Image
-                          src={member.avatarUrl}
-                          alt={"Avatar image of user with email " + member.email}
-                          className="h-10 w-10 rounded-full object-cover"
-                        />
+                        <div className="relative h-10 w-10">
+                          <Image
+                            src={member.avatarUrl}
+                            alt={"Avatar image of user with email " + member.email}
+                            fill
+                            className="rounded-full object-cover"
+                          />
+                        </div>
                       ) : (
                         <div className="h-10 w-10 rounded-full bg-zinc-200 dark:bg-zinc-600 flex items-center justify-center text-sm font-medium text-zinc-700 dark:text-zinc-200">
                           {initial(member)}
@@ -122,11 +125,14 @@ export default function MembersList({
               className="relative bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-4 flex items-center gap-3"
             >
               {member.avatarUrl ? (
-                <img
-                  src={member.avatarUrl}
-                  alt=""
-                  className="h-12 w-12 rounded-full object-cover shrink-0"
-                />
+                <div className="relative h-12 w-12">
+                  <Image
+                    src={member.avatarUrl}
+                    alt={"Avatar image of user with email " + member.email}
+                    fill
+                    className="rounded-full object-cover"
+                  />
+                </div>
               ) : (
                 <div className="h-12 w-12 rounded-full bg-zinc-200 dark:bg-zinc-600 flex items-center justify-center text-lg font-medium text-zinc-700 dark:text-zinc-200 shrink-0">
                   {initial(member)}
