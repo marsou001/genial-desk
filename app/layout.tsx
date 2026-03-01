@@ -32,14 +32,13 @@ export default function RootLayout({
         <Toaster
           theme="system"
           position="top-center"
-          duration={30000}
           toastOptions={{
             unstyled: true,
             className: "text-sm flex items-center gap-x-3 w-full p-3 rounded-md",
             classNames: {
               error: 'bg-red-600',
-              success: 'text-green-400',
-              warning: 'text-yellow-400',
+              success: 'bg-green-600',
+              warning: 'bg-yellow-400',
               info: 'bg-blue-400',
             },
           }}
