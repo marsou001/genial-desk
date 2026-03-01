@@ -22,6 +22,8 @@ export default function EditAvatar(
     .charAt(0)
     .toUpperCase();
 
+  const displayAvatar = state.avatarUrl ?? avatarUrl;
+
   function handleAvatarChange(e: ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files[0]) {
       const image = e.target.files[0]
@@ -51,9 +53,9 @@ export default function EditAvatar(
             alt="Preview avatar"
             className="block w-full h-full"
           />
-        ) : state.avatarUrl ? (
+        ) : displayAvatar ? (
           <Image
-            src={state.avatarUrl}
+            src={displayAvatar}
             alt="User avatar"
             fill
             className="rounded-full object-cover"
