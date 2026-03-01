@@ -11,6 +11,7 @@ export async function updateAvatarAction(
 ): Promise<EditAvatarActionState> {
   const avatarFile = formData.get("avatar") as File;
   const supabase = await createClient();
+  
   const { id } = await getUser()
   const prefix = getRandomPrefix()
   const fileName = prepareFileName(avatarFile.name)
