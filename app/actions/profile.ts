@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
 import { getUser } from '@/lib';
 import { EditAvatarActionState, EditProfileActionState } from '@/types';
-import { getRandomPrefix } from '@/lib/utils';
+import { getRandomPrefix, prepareFileName } from '@/lib/utils';
 
 export async function updateAvatarAction(
   _: EditAvatarActionState, formData: FormData
@@ -13,7 +13,8 @@ export async function updateAvatarAction(
   const supabase = await createClient();
   const { id } = await getUser()
   const prefix = getRandomPrefix()
-  const path = id + "/" + prefix + "-" + avatarFile.name
+  const fileName = prepareFileName(avatarFile.name)
+  const path = id + "/" + prefix + "-" + fileName
 
   const { error } = await supabase.storage
     .from("avatars")

@@ -30,3 +30,7 @@ export function getRandomPrefix() {
 
   return prefix;
 }
+
+export function prepareFileName(fileName: string) {
+  return fileName.replace(/[^a-zA-Z0-9_]/g, "_");
+}
