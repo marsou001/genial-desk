@@ -16,14 +16,22 @@ export default async function AppHeader() {
             <OrganizationSwitcher organizations={organizations} />
           </div>
         </div>
-        <form action={signOutAction}>
-          <button
-            type="submit"
+        <div className="flex items-center gap-3">
+          <Link
+            href="/profile"
             className="px-3 py-1.5 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
           >
-            Sign Out
-          </button>
-        </form>
+            Profile
+          </Link>
+          <form action={signOutAction}>
+            <button
+              type="submit"
+              className="px-3 py-1.5 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
+            >
+              Sign Out
+            </button>
+          </form>
+        </div>
       </div>
     </header>
   );

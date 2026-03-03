@@ -50,6 +50,13 @@ export type InviteView = {
   expiresAt: string;
 }
 
+export type ProfileData = {
+  id: string;
+  avatarUrl: string | null;
+  fullName: string | null;
+  email: string;
+};
+
 export type ErrorActionState = {
   error: string | null;
 }
@@ -63,6 +70,12 @@ export type InviteMemberActionState = {
   error: string | null;
   email: string;
   role: UserRole;
+}
+
+export type EditAvatarActionState = {
+  isSuccess: boolean;
+  error: string | null;
+  avatarUrl: string | null;
 }
 
 export type UserRole = 'owner' | 'admin' | 'analyst' | 'viewer';
