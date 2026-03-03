@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
 import { getUser } from '@/lib';
-import { EditAvatarActionState, EditProfileActionState } from '@/types';
+import { EditAvatarActionState } from '@/types';
 import { getRandomPrefix, prepareFileName } from '@/lib/utils';
 
 export async function updateAvatarAction(
@@ -11,7 +11,7 @@ export async function updateAvatarAction(
 ): Promise<EditAvatarActionState> {
   const avatarFile = formData.get("avatar") as File;
   const supabase = await createClient();
-  
+
   const { id } = await getUser()
   const prefix = getRandomPrefix()
   const fileName = prepareFileName(avatarFile.name)
@@ -31,46 +31,6 @@ export async function updateAvatarAction(
     .getPublicUrl(path)
 
   return { isSuccess: true, error: null, avatarUrl: publicUrl }
-}
-
-export async function updateProfileAction(
-  _: EditProfileActionState, formData: FormData
-): Promise<EditProfileActionState> {
-  const supabase = await createClient();
-  const user = await getUser();
-
-  const fullName = (formData.get('name') as string | null)?.trim() ?? null;
-  const email = (formData.get('email') as string | null)?.trim() ?? null;
-  const password = (formData.get('password') as string | null)?.trim() ?? null;
-
-  // Update profile row
-  const { error: updateProfileError } = await supabase
-    .from('profiles')
-    .update({
-      full_name: fullName,
-    })
-    .eq('id', user.id);
-
-  if (updateProfileError) {
-    console.log(updateProfileError.message)
-    return { error: "Failed to update profile", fullName, email, password }
-  }
-
-  // Update auth user for email/password if provided
-  if (email || password) {
-    const { error: updateUserError } = await supabase.auth.updateUser({
-      email: email || undefined,
-      password: password || undefined,
-    });
-
-    if (updateUserError) {
-      console.log(updateUserError.message)
-      return { error: "Failed to update user", fullName, email, password }
-    }
-  }
-
-  revalidatePath('/profile');
-  return { error: null, fullName, email, password }
 }
 
 export async function leaveOrganizationAction(formData: FormData) {
