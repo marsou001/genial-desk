@@ -40,17 +40,18 @@ export async function updateSession(request: NextRequest) {
   const isAuthRoute = request.nextUrl.pathname.startsWith('/confirm-email')
     || request.nextUrl.pathname.startsWith('/sign-up')
     || request.nextUrl.pathname.startsWith('/sign-in')
+    || request.nextUrl.pathname.startsWith('/forgot-password')
+    || request.nextUrl.pathname.startsWith('/reset-password')
 
   const isProtectedRoute = !isPublicRoute && !isAuthRoute
 
   if (!user && isProtectedRoute) {
     const fullPath = request.nextUrl.pathname + request.nextUrl.search
-    console.log("fullPath", fullPath)
     const url = request.nextUrl.clone()
     
     url.pathname = '/sign-in'
     url.search = ''
-    url.searchParams.set('redirectTo', fullPath)
+    url.searchParams.set('redirect_to', fullPath)
     
     return NextResponse.redirect(url)
   }
