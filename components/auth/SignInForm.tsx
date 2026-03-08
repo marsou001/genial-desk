@@ -3,6 +3,7 @@
 import { useActionState } from 'react';
 import { signInAction } from '@/app/actions/auth';
 import { ErrorActionState } from '@/types';
+import Link from 'next/link';
 
 export default function SignInForm({ redirectTo }: { redirectTo?: string }) {
   const [state, formAction, isPending] = useActionState<ErrorActionState, FormData>(signInAction, { error: null });
@@ -43,6 +44,10 @@ export default function SignInForm({ redirectTo }: { redirectTo?: string }) {
           <p className="text-sm text-red-800 dark:text-red-200">{state.error}</p>
         </div>
       )}
+
+      <div className="flex justify-end">
+        <Link href="/forgot-password" className="text-xs text-blue-400">Forgot password?</Link>
+      </div>
 
       <button
         type="submit"

@@ -16,6 +16,7 @@ export type Insights = {
 }
 
 export interface UserMembership {
+  id: string;
   organization_id: string;
   role: UserRole;
   organization_name: string;
@@ -59,6 +60,19 @@ export type ProfileData = {
 
 export type ErrorActionState = {
   error: string | null;
+}
+
+export type RequestPasswordResetActionState = {
+  isSuccess: boolean;
+  error: string | null;
+  email: string;
+}
+
+export type ResetPasswordActionState = {
+  isSuccess: boolean;
+  error: string | null;
+  password: string;
+  confirmPassword: string;
 }
 
 export type CreateOrganizationrActionState = {
