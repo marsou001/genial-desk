@@ -89,7 +89,6 @@ export async function inviteMember(_: InviteMemberActionState, formData: FormDat
     return { isSuccess: false, error: 'Organization ID is required', email, role };
   }
   
-  /* tslint:disable-next-line */
   if (!(role === "admin" || role === "analyst" || role === "viewer")) {
     return { isSuccess: false, error: 'Invalid role', email, role };
   }
