@@ -81,6 +81,7 @@ export type CreateOrganizationrActionState = {
 }
 
 export type InviteMemberActionState = {
+  isSuccess: boolean;
   error: string | null;
   email: string;
   role: Exclude<UserRole, "owner">;

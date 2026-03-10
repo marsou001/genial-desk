@@ -2,6 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { useActionState, useState, useRef, useEffect } from "react"
+import { toast } from "sonner";
 import { InviteMemberActionState } from "@/types"
 import { inviteMember } from "@/app/actions/organizations"
 
@@ -12,7 +13,7 @@ export default function InviteMemberDialog({
 }) {
   const [state, formAction, isPending] = useActionState<InviteMemberActionState, FormData>(
     inviteMember, 
-    { error: null, email: "", role: "viewer" }
+    { isSuccess: false, error: null, email: "", role: "viewer" }
   )
   const [isEmailValid, setIsEmailValid] = useState(false)
   const emailInputRef = useRef<HTMLInputElement>(null)
@@ -39,6 +40,15 @@ export default function InviteMemberDialog({
       return () => clearTimeout(timer);
     }
   }, [state.error, isPending, handleClose]);
+
+  useEffect(() => {
+    if (isPending) return;
+    if (state.error !== null) {
+      toast.error(state.error)
+    } else if (state.isSuccess) {
+      toast.success("User with email " + state.email + " has been invited to join your organization")
+    }
+  })
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -84,12 +94,6 @@ export default function InviteMemberDialog({
               <option value="viewer">Viewer</option>
             </select>
           </div>
-
-          {!isPending && state.error !== null && (
-            <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-              <p className="text-sm text-red-800 dark:text-red-200">{state.error}</p>
-            </div>
-          )}
 
           <div className="flex gap-3">
             <button

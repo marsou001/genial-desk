@@ -82,21 +82,21 @@ export async function inviteMember(_: InviteMemberActionState, formData: FormDat
   const role = (formData.get('role') as Exclude<UserRole, "owner">) || 'viewer';
 
   if (!email || !isEmailValid(email)) {
-    return { error: 'Valid email is required', email, role };
+    return { isSuccess: false, error: 'Valid email is required', email, role };
   }
 
   if (!organizationId) {
-    return { error: 'Organization ID is required', email, role };
+    return { isSuccess: false, error: 'Organization ID is required', email, role };
   }
   
   /* tslint:disable-next-line */
   if (!(role === "admin" || role === "analyst" || role === "viewer")) {
-    return { error: 'Invalid role', email, role };
+    return { isSuccess: false, error: 'Invalid role', email, role };
   }
 
   const validRoles = ['owner', 'admin', 'analyst', 'viewer'];
   if (!validRoles.includes(role)) {
-    return { error: 'Invalid role', email, role };
+    return { isSuccess: false, error: 'Invalid role', email, role };
   }
 
   const guard = await authGuard(organizationId, {
@@ -104,7 +104,7 @@ export async function inviteMember(_: InviteMemberActionState, formData: FormDat
   })
 
   if (!guard.success) {
-    return { error: (await guard.response.json()).error, email, role }
+    return { isSuccess: false, error: (await guard.response.json()).error, email, role }
   }
 
   try {
@@ -127,6 +127,7 @@ export async function inviteMember(_: InviteMemberActionState, formData: FormDat
 
     if (!memberError && existingMember) {
       return ({ 
+        isSuccess: false,
         error: `User with email ${existingMember.profiles.email} is already a member of your organization`,
         email,
         role,
@@ -141,7 +142,7 @@ export async function inviteMember(_: InviteMemberActionState, formData: FormDat
       .single();
 
     if (roleError || !roleData) {
-      return { error: 'Invalid role', email, role };
+      return { isSuccess: false, error: 'Invalid role', email, role };
     }
     
     const user = await getUser();
@@ -164,7 +165,7 @@ export async function inviteMember(_: InviteMemberActionState, formData: FormDat
 
     if (inviteError) {
       console.log(inviteError.message)
-      return { error: 'Failed to create invite', email, role };
+      return { isSuccess: false, error: 'Failed to create invite', email, role };
     }
      
     // Get organization's name
@@ -176,20 +177,20 @@ export async function inviteMember(_: InviteMemberActionState, formData: FormDat
 
     if (organizationError) {
       console.log(organizationError.message)
-      return { error: 'Failed to fetch organization', email, role };
+      return { isSuccess: false, error: 'Failed to fetch organization', email, role };
     }
 
     const { error: sendEmailError } = await sendInviteMemberEmail(email, organizationData.name, role, inviteToken);
     
     if (sendEmailError) {
       console.log("Failed to send invite", sendEmailError.message)
-      return { error: "Failed to send invite", email, role }
+      return { isSuccess: false, error: "Failed to send invite", email, role }
     }
 
-    return { error: null, email: "", role }
+    return { isSuccess: true, error: null, email, role }
   } catch (error) {
     assertIsError(error);
     console.error('Error inviting member:', error);
-    return { error: 'Failed to invite member', email, role };
+    return { isSuccess: false, error: 'Failed to invite member', email, role };
   }
 }
