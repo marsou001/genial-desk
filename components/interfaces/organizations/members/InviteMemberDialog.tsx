@@ -77,7 +77,7 @@ export default function InviteMemberDialog({
               name="role"
               required
               defaultValue="viewer"
-              className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg cursor-pointer bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="admin">Admin</option>
               <option value="analyst">Analyst</option>
@@ -95,14 +95,14 @@ export default function InviteMemberDialog({
             <button
               type="submit"
               disabled={isPending || !isEmailValid}
-              className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-zinc-400 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
+              className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 cursor-pointer disabled:bg-zinc-400 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
             >
               {isPending ? 'Inviting...' : 'Invite'}
             </button>
             <button
               type="button"
               onClick={handleClose}
-              className="px-4 py-2 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-700 dark:hover:bg-zinc-600 text-zinc-900 dark:text-zinc-50 font-medium rounded-lg transition-colors"
+              className="px-4 py-2 cursor-pointer bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-700 dark:hover:bg-zinc-600 text-zinc-900 dark:text-zinc-50 font-medium rounded-lg transition-colors"
             >
               Cancel
             </button>
