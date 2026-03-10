@@ -79,7 +79,7 @@ export async function updateOrganization(_: ErrorActionState, formData: FormData
 export async function inviteMember(_: InviteMemberActionState, formData: FormData): Promise<InviteMemberActionState> {
   const email = (formData.get('email') as string)?.trim().toLowerCase();
   const organizationId = formData.get('organization_id') as string;
-  const role = (formData.get('role') as UserRole) || 'viewer';
+  const role = (formData.get('role') as Exclude<UserRole, "owner">) || 'viewer';
 
   if (!email || !isEmailValid(email)) {
     return { error: 'Valid email is required', email, role };
@@ -87,6 +87,11 @@ export async function inviteMember(_: InviteMemberActionState, formData: FormDat
 
   if (!organizationId) {
     return { error: 'Organization ID is required', email, role };
+  }
+  
+  /* tslint:disable-next-line */
+  if (!(role === "admin" || role === "analyst" || role === "viewer")) {
+    return { error: 'Invalid role', email, role };
   }
 
   const validRoles = ['owner', 'admin', 'analyst', 'viewer'];

@@ -83,7 +83,7 @@ export type CreateOrganizationrActionState = {
 export type InviteMemberActionState = {
   error: string | null;
   email: string;
-  role: UserRole;
+  role: Exclude<UserRole, "owner">;
 }
 
 export type EditAvatarActionState = {
