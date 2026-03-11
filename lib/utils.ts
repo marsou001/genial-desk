@@ -1,4 +1,4 @@
-import { SearchParams } from "@/types";
+import type { OrganizationMember, SearchParams, UserRole } from "@/types";
 
 export function isEmailValid(email: string) {
   const trimmedEmail = email.trim();
@@ -33,4 +33,29 @@ export function getRandomPrefix() {
 
 export function prepareFileName(fileName: string) {
   return fileName.replace(/[^a-zA-Z0-9_]/g, "_");
+}
+
+export function formatDate(dateString: string) {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+};
+
+export function getRoleColor(role: UserRole) {
+  switch (role.toLowerCase()) {
+    case 'owner':
+      return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300';
+    case 'admin':
+      return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300';
+    case 'analyst':
+      return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300';
+    default:
+      return 'bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-300';
+  }
+};
+
+export function getAvatarPlaceholderInitial(member: OrganizationMember) {
+  return (member.fullName ?? member.email).charAt(0).toUpperCase();
 }
