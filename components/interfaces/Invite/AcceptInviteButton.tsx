@@ -46,7 +46,9 @@ export default function AcceptInviteButton({ inviteToken }: { inviteToken: strin
           hover:shadow-xl hover:shadow-indigo-500/30
           hover:-translate-y-0.5
           active:translate-y-0 active:shadow-md
+          cursor-pointer
           disabled:opacity-60 disabled:cursor-not-allowed
+          disabled:cursor-not-allowed
           flex items-center justify-center gap-2
         "
       >
