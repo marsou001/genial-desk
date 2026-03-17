@@ -34,10 +34,7 @@ export default function MembersMobileCards({
           </div>
           <div className="min-w-0 flex-1">
             <div className="text-sm font-medium text-zinc-900 dark:text-zinc-50 truncate">
-              {member.fullName ?? "-"}
-            </div>
-            <div className="text-xs text-zinc-500 dark:text-zinc-400 truncate">
-              {member.email}
+              {member.fullName ?? member.email}
             </div>
             <div className="flex flex-wrap items-center gap-2 mt-1">
               <span className={`px-2 py-0.5 rounded-full text-xs font-medium capitalize ${getRoleColor(member.role)}`}>
