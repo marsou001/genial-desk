@@ -3,36 +3,23 @@ import { OrganizationMember } from '@/types';
 
 export async function fetchMembers(organizationId: string): Promise<OrganizationMember[]> {
   const supabase = await createClient()
+  
   try {
-    const { data: memberships, error } = await supabase
-      .from('organization_members')
-      .select(`
-        id,
-        created_at,
-        role (
-          name
-        ),
-        profiles (
-          full_name,
-          email,
-          avatar_url
-        )
-      `)
-      .eq('organization_id', organizationId);
-
-    if (error) {
+    const { data, error } = await supabase.rpc("get_organization_members", {
+      org_id: organizationId
+    })
+    
+    if (error !== null) {
       throw new Error(error.message)
     }
 
-    const members = (memberships || []).map((m: any) => ({
-      id: m.id,
-      fullName: m.profiles.full_name,
-      email: m.profiles.email,
-      avatarUrl: m.profiles?.avatar_url ?? null,
-      role: m.role.name.toLowerCase(),
+    const members = data.map((m: any) => ({
+      ...m,
+      fullName: m.full_name,
+      avatarUrl: m.avatar_url,
       memberSince: m.created_at,
-    }));
-
+    }))
+    
     return members;
   } catch (error) {
     console.error('Failed to fetch organizations:', error);
