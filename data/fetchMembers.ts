@@ -15,8 +15,10 @@ export async function fetchMembers(organizationId: string): Promise<Organization
 
     const members = data.map((m: any) => ({
       ...m,
+      organizationId: m.organization_id,
       userId: m.user_id,
       fullName: m.full_name,
+      role: m.role_name,
       avatarUrl: m.avatar_url,
       memberSince: m.created_at,
     }))

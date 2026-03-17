@@ -31,6 +31,7 @@ export type OrganizationView = {
 
 export type OrganizationMember = {
   id: string;
+  organizationId: string;
   userId: string;
   role: UserRole;
   fullName: string | null;
