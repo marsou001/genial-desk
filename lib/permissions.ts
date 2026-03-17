@@ -169,3 +169,10 @@ export function canExportData(role: UserRole): boolean {
 export function canManageReports(role: UserRole): boolean {
   return hasAnyPermission(role, ['reports:create', 'reports:update', 'reports:delete']);
 }
+
+/**
+ * Check if user can remove members
+ */
+export function canRemoveMembers(role: UserRole): boolean {
+  return hasPermission(role, "org:members:remove");
+}

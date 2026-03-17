@@ -2,12 +2,17 @@ import { formatDate, getAvatarPlaceholderInitial, getRoleColor } from "@/lib/uti
 import type { OrganizationMember } from "@/types";
 import Image from "next/image";
 import RemoveMember from "./RemoveMember";
+import { canRemoveMembers } from "@/lib/permissions";
+import { getUser } from "@/lib";
 
-export default function MembersMobileCards({ 
+export default async function MembersMobileCards({ 
   members, 
 }: { 
   members: OrganizationMember[];
 }) {
+  const user = await getUser();
+  const userMembership = members.find((member) => member.userId === user.id)!;
+
   return (
     <div className="md:hidden space-y-3 p-4">
       {members.map((member) => (
@@ -29,9 +34,11 @@ export default function MembersMobileCards({
               {getAvatarPlaceholderInitial(member)}
             </div>
           )}
-          <div className="absolute top-2 right-2">
-            <RemoveMember id={member.id} />
-          </div>
+          {canRemoveMembers(userMembership.role) && (
+            <div className="absolute top-2 right-2">
+              <RemoveMember member={member} />
+            </div>
+          )}
           <div className="min-w-0 flex-1">
             <div className="text-sm font-medium text-zinc-900 dark:text-zinc-50 truncate">
               {member.fullName ?? member.email}

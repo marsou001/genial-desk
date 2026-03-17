@@ -2,12 +2,33 @@ import { formatDate, getAvatarPlaceholderInitial, getRoleColor } from "@/lib/uti
 import type { OrganizationMember } from "@/types";
 import Image from "next/image";
 import RemoveMember from "./RemoveMember";
+import { getUser, getUserRole } from "@/lib";
+import { canRemoveMembers } from "@/lib/permissions";
 
-export default function MembersDesktopTable({ 
+export default async function MembersDesktopTable({ 
   members, 
 }: { 
   members: OrganizationMember[];
 }) {
+  const user = await getUser();
+  const userMembership = members.find((member) => member.userId === user.id)!;
+  
+  // function canRemoveMembers(member: OrganizationMember) {
+  //   const isUser = member.id === userMembership.id;
+  //   const isOwner = member.role === "owner";
+  //   const hasPermission = permissions.canRemoveMembers(userMembership.role);
+  //   return !isUser && !isOwner && hasPermission;
+  // }
+  // const role = await getUserRole(id)
+  // async function isUser(member: OrganizationMember) {
+  //   const { id } = await getUser();
+  //   return member.userId === id;
+  // }
+  // function isOwner(member: OrganizationMember) {
+  //   return member.role === "owner"
+  // }
+
+  // function
   return (
     <div className="hidden md:block bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden">
       <div className="overflow-x-auto">
@@ -29,9 +50,9 @@ export default function MembersDesktopTable({
               <th className="px-4 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
                 Joined
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-                
-              </th>
+              {canRemoveMembers(userMembership.role) && (
+                <th className="px-4 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider" />
+              )}
             </tr>
           </thead>
           <tbody className="divide-y divide-zinc-200 dark:divide-zinc-700">
@@ -73,9 +94,11 @@ export default function MembersDesktopTable({
                     {formatDate(member.memberSince)}
                   </div>
                 </td>
-                <td className="px-4 py-3 whitespace-nowrap">
-                  <RemoveMember id={member.id} />
-                </td>
+                {canRemoveMembers(userMembership.role) && (
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <RemoveMember member={member} />
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
