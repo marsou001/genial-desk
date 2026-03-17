@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { authGuard } from '@/lib/auth-guard';
 import { createClient } from '@/lib/supabase/server';
+import { getUser } from '@/lib';
 
 /**
  * GET /api/organizations/[id]/members
@@ -74,6 +75,27 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
   const { id } = await request.json()
 
   const supabase = await createClient()
+
+  const { data: membership, error: membershipError } = await supabase
+    .from("organization_members")
+    .select("role:roles (name), user_id")
+    .eq("id", id)
+    .single()
+
+  if (membershipError) {
+    console.log("Failed to fetch membership", membershipError.message)
+    return NextResponse.json({ error: "Failed to remove member" }, { status: 500 });
+  }
+  
+  if (membership.role.name === "owner") {
+    return NextResponse.json({ error: "Can't remove the owner of an organization" }, { status: 400 })
+  }
+  
+  const user = await getUser();
+  if (membership.user_id === user.id) {
+    return NextResponse.json({ error: "Can't leave organization from outside settings page" }, { status: 400 })
+  }
+
   const { error } = await supabase
     .from("organization_members")
     .delete()

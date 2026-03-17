@@ -3,6 +3,7 @@
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react"
 import { Trash } from "lucide-react"
+import { toast } from "sonner";
 import { OrganizationMember } from "@/types";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { useUserClient } from "@/hooks/useUserClient";
@@ -27,13 +28,10 @@ export default function RemoveMember({ member }: { member: OrganizationMember })
 
       if (!response.ok) {
         const errorBody = await response.json()
-        // TODO: toast
-        alert(errorBody.error)
-        console.log(errorBody.error)
+        toast.error(errorBody.error)
       }
     } catch {
-      // TODO: toast
-      alert("Failed to invite member")
+      toast.error("Failed to invite member")
     } finally {
       setIsDeleting(false)
     }
