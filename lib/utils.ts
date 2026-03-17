@@ -59,3 +59,7 @@ export function getRoleColor(role: UserRole) {
 export function getAvatarPlaceholderInitial(member: OrganizationMember) {
   return (member.fullName ?? member.email).charAt(0).toUpperCase();
 }
+
+export function reload(ms = 1000) {
+  setTimeout(() => window.location.reload(), ms);
+}

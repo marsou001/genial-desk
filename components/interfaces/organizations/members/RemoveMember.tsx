@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { OrganizationMember } from "@/types";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { useUserClient } from "@/hooks/useUserClient";
+import { reload } from "@/lib/utils";
 
 export default function RemoveMember({ member }: { member: OrganizationMember }) {
   const [canRemoveMember, setCanRemoveMember] = useState(false);
@@ -29,6 +30,9 @@ export default function RemoveMember({ member }: { member: OrganizationMember })
       if (!response.ok) {
         const errorBody = await response.json()
         toast.error(errorBody.error)
+      } else {
+        toast.info("Membership successfully removed")
+        reload();
       }
     } catch {
       toast.error("Failed to invite member")
