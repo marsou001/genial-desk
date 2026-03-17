@@ -15,6 +15,7 @@ export async function fetchMembers(organizationId: string): Promise<Organization
 
     const members = data.map((m: any) => ({
       ...m,
+      userId: m.user_id,
       fullName: m.full_name,
       avatarUrl: m.avatar_url,
       memberSince: m.created_at,
