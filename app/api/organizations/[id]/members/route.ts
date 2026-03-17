@@ -66,10 +66,10 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
 
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id: organizationId } = await params
-  // const guard = await authGuard(organizationId, { requirePermission: "org:members:remove" })
-  // if (!guard.success) {
-  //   return guard.response;
-  // }
+  const guard = await authGuard(organizationId, { requirePermission: "org:members:remove" })
+  if (!guard.success) {
+    return guard.response;
+  }
 
   const { id } = await request.json()
 
