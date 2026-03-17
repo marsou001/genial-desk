@@ -13,22 +13,6 @@ export default async function MembersDesktopTable({
   const user = await getUser();
   const userMembership = members.find((member) => member.userId === user.id)!;
   
-  // function canRemoveMembers(member: OrganizationMember) {
-  //   const isUser = member.id === userMembership.id;
-  //   const isOwner = member.role === "owner";
-  //   const hasPermission = permissions.canRemoveMembers(userMembership.role);
-  //   return !isUser && !isOwner && hasPermission;
-  // }
-  // const role = await getUserRole(id)
-  // async function isUser(member: OrganizationMember) {
-  //   const { id } = await getUser();
-  //   return member.userId === id;
-  // }
-  // function isOwner(member: OrganizationMember) {
-  //   return member.role === "owner"
-  // }
-
-  // function
   return (
     <div className="hidden md:block bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden">
       <div className="overflow-x-auto">
