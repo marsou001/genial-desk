@@ -8,8 +8,6 @@ export default function MembersList({
 }: { 
   members: OrganizationMember[];
 }) {
-  
-
   return (
     <>
       <div className="space-y-4">
