@@ -171,6 +171,13 @@ export function canManageReports(role: UserRole): boolean {
 }
 
 /**
+ * Check if user can invite members
+ */
+export function canInviteMembers(role: UserRole): boolean {
+  return hasPermission(role, "org:members:invite");
+}
+
+/**
  * Check if user can remove members
  */
 export function canRemoveMembers(role: UserRole): boolean {
