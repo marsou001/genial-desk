@@ -154,6 +154,5 @@ export async function DELETE(
       { status: 500 }
     );
   }
-
-  return NextResponse.json({ success: true });
+  return NextResponse.json({ success: true }, { status: 200 });
 }
