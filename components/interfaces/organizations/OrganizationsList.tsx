@@ -21,7 +21,7 @@ export default function OrganizationsList({ organizations }: { organizations: Or
           </p>
           <button
             onClick={() => setShowCreateDialog(true)}
-            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium cursor-pointer rounded-lg transition-colors"
           >
             Create Organization
           </button>
