@@ -33,19 +33,3 @@ export async function updateAvatarAction(
   return { isSuccess: true, error: null, avatarUrl: publicUrl }
 }
 
-export async function leaveOrganizationAction(formData: FormData) {
-  const supabase = await createClient();
-  const user = await getUser();
-  const organizationId = formData.get('organization_id') as string;
-
-  if (!organizationId) return;
-
-  await supabase
-    .from('organization_members')
-    .delete()
-    .eq('user_id', user.id)
-    .eq('organization_id', organizationId);
-
-  revalidatePath('/profile');
-}
-
