@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react"
+import { toast } from "sonner";
 
 export default function AcceptInviteButton({ inviteToken }: { inviteToken: string }) {
   const [isAccepting, setIsAccepting] = useState(false);
@@ -21,9 +22,7 @@ export default function AcceptInviteButton({ inviteToken }: { inviteToken: strin
 
     const responseObject = await response.json()
     if (!response.ok) {
-      // TODO: toast
-      alert(responseObject.error)
-      console.log(responseObject)
+      toast.error(responseObject.error)
     } else {
       router.push("/organizations/" + responseObject.organizationId + "/dashboard")
     }
