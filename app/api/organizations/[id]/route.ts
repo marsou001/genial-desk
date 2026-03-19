@@ -148,8 +148,9 @@ export async function DELETE(
     .eq('id', id);
 
   if (error) {
+    console.log("Error deleting organization ==> ", error.message)
     return NextResponse.json(
-      { error: error.message },
+      { error: "Error deleting organization" },
       { status: 500 }
     );
   }
