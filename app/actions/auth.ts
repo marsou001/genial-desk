@@ -4,7 +4,6 @@ import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { ErrorActionState, RequestPasswordResetActionState, ResetPasswordActionState } from '@/types';
-import { isValidElement } from 'react';
 import { isEmailValid } from '@/lib/utils';
 
 export async function signInAction(_: ErrorActionState, formData: FormData) {
