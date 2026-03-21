@@ -111,7 +111,7 @@ export default function OrganizationSettings({ organization }: OrganizationSetti
             type="button"
             disabled={isDeleting}
             onClick={deleteOrganization}
-            className="px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-zinc-400 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
+            className="px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-zinc-400 cursor-pointer disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
           >
             {isDeleting ? 'Deleting...' : 'Delete Organization'}
           </button>
