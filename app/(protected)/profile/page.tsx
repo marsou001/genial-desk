@@ -4,6 +4,7 @@ import { UserMembership, ProfileData, UserRole } from '@/types';
 import EditAvatar from '@/components/interfaces/Profile/EditAvatar';
 import EditNameForm from '@/components/interfaces/Profile/EditNameForm';
 import UserMembershipsList from '@/components/interfaces/Profile/UserMemberships';
+import SignOutButton from '@/components/interfaces/Profile/SignOutButton';
 
 async function getProfileAndMemberships() {
   const supabase = await createClient();
@@ -50,6 +51,7 @@ export default async function ProfilePage() {
       <EditAvatar avatarUrl={profile.avatarUrl} fullName={profile.fullName} email={profile.email} />
       <EditNameForm profile={profile} />
       <UserMembershipsList memberships={memberships} />
+      <SignOutButton />
     </div>
   );
 }

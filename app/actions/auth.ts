@@ -48,9 +48,14 @@ export async function signUpAction(_: ErrorActionState, formData: FormData) {
   redirect(redirectTo ?? '/organizations');
 }
 
-export async function signOutAction() {
+export async function signOutAction(_: ErrorActionState): Promise<ErrorActionState> {
   const supabase = await createClient();
-  await supabase.auth.signOut();
+  const { error } = await supabase.auth.signOut();
+
+  if (error) {
+    console.log("Error signing out user ==> ", error.message);
+    return { error: "Error signing out" }
+  }
 
   revalidatePath('/');
   redirect('/sign-in');
