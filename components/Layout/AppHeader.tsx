@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { fetchOrganizations } from '@/data/fetchOrganizations';
 import OrganizationSwitcher from './OrganizationSwitcher';
 import UserAvatar from '../common/UserAvatar';
+import AppLogo from '../common/AppLogo';
 
 export default async function AppHeader() {
   const organizations = await fetchOrganizations();
@@ -9,9 +10,7 @@ export default async function AppHeader() {
     <header className="sticky top-0 z-10 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
       <div className="h-16 flex items-center justify-between px-6">
         <div className="flex items-center gap-4">
-          <Link href="/organizations" className="text-xl font-bold text-zinc-900 dark:text-zinc-50">
-            GenialDesk
-          </Link>
+          <AppLogo />
           <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
             <OrganizationSwitcher organizations={organizations} />
           </div>
