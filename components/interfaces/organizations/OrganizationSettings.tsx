@@ -1,9 +1,10 @@
 'use client';
 
 import { useActionState, useState, useRef } from 'react';
+import { toast } from 'sonner';
 import { updateOrganization } from '@/app/actions/organizations';
 import { ErrorActionState } from '@/types';
-import { redirect } from 'next/navigation';
+import { reload } from '@/lib/utils';
 
 interface OrganizationSettingsProps {
   organization: { id: number; name: string };
@@ -41,15 +42,14 @@ export default function OrganizationSettings({ organization }: OrganizationSetti
       })
   
       if (!response.ok) {
-        // TODO: toast error
         const errorMessage = await response.json()
-        console.log("yyy", errorMessage.error)
+        return toast.error(errorMessage.error)
       } else {
-        redirect("/organizations")
+        toast.info(organization.name + " has beed successfully deleted")
+        reload()
       }
     } catch {
-      // TODO: toast error
-      console.log("Failed to delete organization")
+      return toast.error("Failed to delete organization")
     } finally {
       setIsDeleting(false)
     }

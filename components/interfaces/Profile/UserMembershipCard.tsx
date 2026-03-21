@@ -1,6 +1,5 @@
 "use client"
 
-import { redirect } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { UserMembership } from "@/types";
