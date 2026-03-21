@@ -12,6 +12,12 @@ export default function UserMembershipCard({ membership }: { membership: UserMem
   const isOwner = membership.role === "owner"
 
   async function deleteOrganization() {
+    const isConfirmed = window.confirm(
+      `Delete "${membership.organization_name}"? This will permanently delete the organization and all of its data. This action cannot be undone.`
+    );
+
+    if (!isConfirmed) return;
+
     setIsLeaving(true)
 
     try {
@@ -38,6 +44,12 @@ export default function UserMembershipCard({ membership }: { membership: UserMem
       toast.error("Can't do that!")
       return;
     }
+
+    const isConfirmed = window.confirm(
+      `Leave "${membership.organization_name}"? You will lose access to this organization.`
+    );
+
+    if (!isConfirmed) return;
 
     setIsLeaving(true)
 

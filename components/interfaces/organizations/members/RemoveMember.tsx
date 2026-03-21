@@ -16,6 +16,12 @@ export default function RemoveMember({ member }: { member: OrganizationMember })
   const getUser = useUserClient();
 
   async function remove() {
+    const isConfirmed = window.confirm(
+      `Remove ${member.email} from this organization? This action cannot be undone.`
+    );
+
+    if (!isConfirmed) return;
+
     setIsDeleting(true)
 
     try {

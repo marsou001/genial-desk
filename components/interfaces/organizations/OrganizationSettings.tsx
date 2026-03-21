@@ -4,7 +4,6 @@ import { useActionState, useState, useRef } from 'react';
 import { updateOrganization } from '@/app/actions/organizations';
 import { ErrorActionState } from '@/types';
 import { redirect } from 'next/navigation';
-import { assertIsError } from '@/types/typeguards';
 
 interface OrganizationSettingsProps {
   organization: { id: number; name: string };
@@ -28,6 +27,12 @@ export default function OrganizationSettings({ organization }: OrganizationSetti
   }
 
   async function deleteOrganization() {
+    const isConfirmed = window.confirm(
+      `Delete "${organization.name}"? This will permanently delete the organization and all of its data. This action cannot be undone.`
+    );
+
+    if (!isConfirmed) return;
+
     setIsDeleting(true)
 
     try {
