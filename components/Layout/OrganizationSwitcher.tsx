@@ -1,8 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { OrganizationView as Organization } from "@/types";
-import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 
 export default function OrganizationSwitcher({ organizations }: { organizations: Organization[] }) {
@@ -31,7 +31,14 @@ export default function OrganizationSwitcher({ organizations }: { organizations:
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  return (
+  return organizations.length === 0 ? (
+    <Link
+      href="/organizations"
+      className="px-4 py-2 rounded-lg cursor-pointer border bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 transition"
+    >
+      All organizations
+    </Link>
+  ) : (
     <div ref={containerRef} className="relative inline-block text-left">
       {/* Trigger */}
       <button
