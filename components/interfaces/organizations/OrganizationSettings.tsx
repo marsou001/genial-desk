@@ -5,6 +5,8 @@ import { toast } from 'sonner';
 import { updateOrganization } from '@/app/actions/organizations';
 import { ErrorActionState } from '@/types';
 import { reload } from '@/lib/utils';
+import { usePermissions } from '@/context/permissions-context';
+import PermissionGate from '@/components/common/PermissionGate';
 
 interface OrganizationSettingsProps {
   organization: { id: number; name: string };
@@ -57,7 +59,6 @@ export default function OrganizationSettings({ organization }: OrganizationSetti
 
   return (
     <>
-    
       <div className="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200 dark:border-zinc-700 mb-6 p-6">
         <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50 mb-4">
           Organization Information
@@ -102,21 +103,23 @@ export default function OrganizationSettings({ organization }: OrganizationSetti
           </div>
         </form>
       </div>
-      <div className="bg-white dark:bg-zinc-800 rounded-xl border border-red-200 dark:border-red-700 p-6">
-        <h2 className="text-lg font-semibold text-red-900 dark:text-red-50 mb-4">
-          Danger Zone
-        </h2>
-        <div className="flex gap-3">
-          <button
-            type="button"
-            disabled={isDeleting}
-            onClick={deleteOrganization}
-            className="px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-zinc-400 cursor-pointer disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
-          >
-            {isDeleting ? 'Deleting...' : 'Delete Organization'}
-          </button>
+      <PermissionGate permission="org:delete">
+        <div className="bg-white dark:bg-zinc-800 rounded-xl border border-red-200 dark:border-red-700 p-6">
+          <h2 className="text-lg font-semibold text-red-900 dark:text-red-50 mb-4">
+            Danger Zone
+          </h2>
+          <div className="flex gap-3">
+            <button
+              type="button"
+              disabled={isDeleting}
+              onClick={deleteOrganization}
+              className="px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-zinc-400 cursor-pointer disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
+            >
+              {isDeleting ? 'Deleting...' : 'Delete Organization'}
+            </button>
+          </div>
         </div>
-      </div>
+      </PermissionGate>
     </>
   );
 }

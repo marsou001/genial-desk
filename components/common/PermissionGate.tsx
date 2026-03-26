@@ -1,14 +1,13 @@
 'use client';
 
 import { ReactNode } from 'react';
-import { hasPermission, Permission } from '@/lib/permissions';
+import { Permission } from '@/lib/permissions';
+import { usePermissions } from '@/context/permissions-context';
 
 interface PermissionGateProps {
-  role: string;
-  permission: Permission | Permission[];
-  requireAll?: boolean;
-  fallback?: ReactNode;
+  permission: Permission;
   children: ReactNode;
+  fallback?: ReactNode;
 }
 
 /**
@@ -16,21 +15,10 @@ interface PermissionGateProps {
  * Only renders children if user has the required permission(s)
  */
 export default function PermissionGate({
-  role,
   permission,
-  requireAll = false,
-  fallback = null,
   children,
+  fallback = null,
 }: PermissionGateProps) {
-  const permissions = Array.isArray(permission) ? permission : [permission];
-  
-  const hasAccess = requireAll
-    ? permissions.every((perm) => hasPermission(role as any, perm))
-    : permissions.some((perm) => hasPermission(role as any, perm));
-
-  if (!hasAccess) {
-    return <>{fallback}</>;
-  }
-
-  return <>{children}</>;
+  const hasAccess = usePermissions(permission);
+  return hasAccess ? <>{children}</> : <>{fallback}</>
 }

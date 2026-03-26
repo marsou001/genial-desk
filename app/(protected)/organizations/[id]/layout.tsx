@@ -1,7 +1,8 @@
 import { redirect } from 'next/navigation';
-import { getUser, verifyOrganizationAccess } from '@/lib';
+import { getUser, getUserRole, verifyOrganizationAccess } from '@/lib';
 import { fetchOrganization } from '@/data/fetchOrganization';
 import AppSidebar from '@/components/Layout/AppSidebar';
+import { PermissionsProvider } from '@/context/permissions-context';
 
 export default async function OrganizationLayout({
   children,
@@ -24,11 +25,15 @@ export default async function OrganizationLayout({
     redirect('/organizations');
   }
 
+  const role = await getUserRole(user.id, organizationId) ?? "viewer"
+
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900 flex">
       <AppSidebar />
       <div className="flex-1 flex flex-col">
-        <main className="flex-1">{children}</main>
+        <PermissionsProvider value={{ role }}>
+          <main className="flex-1">{children}</main>
+        </PermissionsProvider>
       </div>
     </div>
   );
