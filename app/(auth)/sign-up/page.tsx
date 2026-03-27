@@ -1,5 +1,5 @@
-import Link from 'next/link';
-import SignUpForm from '@/components/auth/SignUpForm';
+import Link from "next/link";
+import SignUpForm from "@/components/auth/SignUpForm";
 
 export default async function SignUpPage({
   searchParams,
@@ -7,7 +7,11 @@ export default async function SignUpPage({
   searchParams: Promise<{ redirect_to: string | undefined }>;
 }) {
   const { redirect_to } = await searchParams;
-  const signInLink = "/sign-in" + (redirect_to !== undefined ? "?redirect_to=" + encodeURIComponent(redirect_to) : "")
+  const signInLink =
+    "/sign-in" +
+    (redirect_to !== undefined
+      ? "?redirect_to=" + encodeURIComponent(redirect_to)
+      : "");
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 px-4">
@@ -21,12 +25,12 @@ export default async function SignUpPage({
               Create your account
             </p>
           </div>
-          
+
           <SignUpForm redirectTo={redirect_to} />
 
           <div className="mt-6 text-center text-sm">
             <p className="text-zinc-600 dark:text-zinc-400">
-              Already have an account?{' '}
+              Already have an account?{" "}
               <Link
                 href={signInLink}
                 className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
@@ -38,5 +42,5 @@ export default async function SignUpPage({
         </div>
       </div>
     </div>
-  )
+  );
 }

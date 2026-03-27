@@ -42,12 +42,14 @@ Open [http://localhost:3000](http://localhost:3000) to see the app.
 ## 📊 CSV Upload Format
 
 Your CSV file should have a column named one of:
+
 - `feedback`
 - `comment`
 - `text`
 - `message`
 
 Example CSV:
+
 ```csv
 feedback,source
 "Love the new feature!","Survey"

@@ -1,7 +1,18 @@
 "use client";
 
-import { Stats } from '@/types';
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Stats } from "@/types";
+import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
 export default function ChartsGrid({ stats }: { stats: Stats }) {
   const topTopics = Object.entries(stats.byTopic)
@@ -21,15 +32,20 @@ export default function ChartsGrid({ stats }: { stats: Stats }) {
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
             <XAxis
               dataKey="date"
-              tick={{ fill: '#6b7280', fontSize: 12 }}
-              tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+              tick={{ fill: "#6b7280", fontSize: 12 }}
+              tickFormatter={(value) =>
+                new Date(value).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                })
+              }
             />
-            <YAxis tick={{ fill: '#6b7280', fontSize: 12 }} />
+            <YAxis tick={{ fill: "#6b7280", fontSize: 12 }} />
             <Tooltip
               contentStyle={{
-                backgroundColor: '#fff',
-                border: '1px solid #e5e7eb',
-                borderRadius: '8px',
+                backgroundColor: "#fff",
+                border: "1px solid #e5e7eb",
+                borderRadius: "8px",
               }}
               labelFormatter={(value) => new Date(value).toLocaleDateString()}
             />
@@ -38,7 +54,7 @@ export default function ChartsGrid({ stats }: { stats: Stats }) {
               dataKey="count"
               stroke="#3b82f6"
               strokeWidth={2}
-              dot={{ fill: '#3b82f6', r: 4 }}
+              dot={{ fill: "#3b82f6", r: 4 }}
             />
           </LineChart>
         </ResponsiveContainer>
@@ -55,17 +71,17 @@ export default function ChartsGrid({ stats }: { stats: Stats }) {
               <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
               <XAxis
                 dataKey="topic"
-                tick={{ fill: '#6b7280', fontSize: 12 }}
+                tick={{ fill: "#6b7280", fontSize: 12 }}
                 angle={-45}
                 textAnchor="end"
                 height={80}
               />
-              <YAxis tick={{ fill: '#6b7280', fontSize: 12 }} />
+              <YAxis tick={{ fill: "#6b7280", fontSize: 12 }} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#fff',
-                  border: '1px solid #e5e7eb',
-                  borderRadius: '8px',
+                  backgroundColor: "#fff",
+                  border: "1px solid #e5e7eb",
+                  borderRadius: "8px",
                 }}
               />
               <Bar dataKey="count" fill="#3b82f6" radius={[8, 8, 0, 0]} />
@@ -78,5 +94,5 @@ export default function ChartsGrid({ stats }: { stats: Stats }) {
         )}
       </div>
     </div>
-  )
+  );
 }

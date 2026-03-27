@@ -1,8 +1,8 @@
-import { redirect } from 'next/navigation';
-import { getUser, getUserRole, verifyOrganizationAccess } from '@/lib';
-import { fetchOrganization } from '@/data/fetchOrganization';
-import AppSidebar from '@/components/Layout/AppSidebar';
-import { PermissionsProvider } from '@/context/permissions-context';
+import { redirect } from "next/navigation";
+import { getUser, getUserRole, verifyOrganizationAccess } from "@/lib";
+import { fetchOrganization } from "@/data/fetchOrganization";
+import AppSidebar from "@/components/Layout/AppSidebar";
+import { PermissionsProvider } from "@/context/permissions-context";
 
 export default async function OrganizationLayout({
   children,
@@ -16,16 +16,16 @@ export default async function OrganizationLayout({
   const hasAccess = await verifyOrganizationAccess(user.id, organizationId);
   if (!hasAccess) {
     // TODO: toast error
-    redirect('/organizations');
+    redirect("/organizations");
   }
-  
+
   const organization = await fetchOrganization(organizationId);
   if (!organization) {
     // TODO: toast error
-    redirect('/organizations');
+    redirect("/organizations");
   }
 
-  const role = await getUserRole(user.id, organizationId) ?? "viewer"
+  const role = (await getUserRole(user.id, organizationId)) ?? "viewer";
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900 flex">

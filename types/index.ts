@@ -7,13 +7,13 @@ export type Stats = {
   };
   byTopic: Record<string, number>;
   volumeOverTime: Array<{ date: string; count: number }>;
-}
+};
 
 export type Insights = {
   data: string;
   count: number;
   period: string;
-}
+};
 
 export interface UserMembership {
   id: string;
@@ -27,7 +27,7 @@ export type OrganizationView = {
   name: string;
   role: UserRole;
   created_at: string;
-}
+};
 
 export type OrganizationMember = {
   id: string;
@@ -38,20 +38,20 @@ export type OrganizationMember = {
   email: string;
   avatarUrl?: string | null;
   memberSince: string;
-}
+};
 
-export type InviteResult = 
+export type InviteResult =
   | { status: "ok"; invite: InviteView }
   | { status: "not_found" }
   | { status: "expired" }
-  | { status: "accepted" }
+  | { status: "accepted" };
 
 export type InviteView = {
   id: string;
   organization: string;
   role: UserRole;
   expiresAt: string;
-}
+};
 
 export type ProfileData = {
   id: string;
@@ -63,42 +63,42 @@ export type ProfileData = {
 
 export type ErrorActionState = {
   error: string | null;
-}
+};
 
 export type RequestPasswordResetActionState = {
   isSuccess: boolean;
   error: string | null;
   email: string;
-}
+};
 
 export type ResetPasswordActionState = {
   isSuccess: boolean;
   error: string | null;
   password: string;
   confirmPassword: string;
-}
+};
 
 export type CreateOrganizationrActionState = {
   error: string | null;
   name: string;
-}
+};
 
 export type InviteMemberActionState = {
   isSuccess: boolean;
   error: string | null;
   email: string;
   role: Exclude<UserRole, "owner">;
-}
+};
 
 export type EditAvatarActionState = {
   isSuccess: boolean;
   error: string | null;
   avatarUrl: string | null;
-}
+};
 
-export type UserRole = 'owner' | 'admin' | 'analyst' | 'viewer';
+export type UserRole = "owner" | "admin" | "analyst" | "viewer";
 
 // TODO: check if used
 export type SearchParams = {
-  [key: string]: string
-}
+  [key: string]: string;
+};

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useState } from "react";
 import InviteMemberDialog from "./InviteMemberDialog";
@@ -15,7 +15,9 @@ export default function InviteUsers() {
         Invite Users
       </button>
 
-      {showInviteDialog && <InviteMemberDialog handleClose={() => setShowInviteDialog(false)} />}
+      {showInviteDialog && (
+        <InviteMemberDialog handleClose={() => setShowInviteDialog(false)} />
+      )}
     </>
-  )
+  );
 }

@@ -1,5 +1,5 @@
-import Link from 'next/link';
-import ResetPasswordForm from '@/components/auth/ResetPasswordForm';
+import Link from "next/link";
+import ResetPasswordForm from "@/components/auth/ResetPasswordForm";
 
 export default async function ResetPasswordPage() {
   return (
@@ -30,4 +30,3 @@ export default async function ResetPasswordPage() {
     </div>
   );
 }
-

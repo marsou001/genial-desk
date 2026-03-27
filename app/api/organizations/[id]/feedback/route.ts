@@ -1,15 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
-import { analyzeFeedback } from '@/lib/openai';
-import { authGuard } from '@/lib/auth-guard';
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+import { analyzeFeedback } from "@/lib/openai";
+import { authGuard } from "@/lib/auth-guard";
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
-  const { id } = await params
+  const { id } = await params;
   const guard = await authGuard(id, {
-    requirePermission: 'data:create',
+    requirePermission: "data:create",
   });
 
   if (!guard.success) {
@@ -19,13 +19,15 @@ export async function POST(
   try {
     const body = await request.json();
     const text = (body?.text as string | undefined)?.trim();
-    const source = (body?.source as string | undefined)?.trim() || 'Manual Entry';
+    const source =
+      (body?.source as string | undefined)?.trim() || "Manual Entry";
 
     if (!text || text.length < 10) {
       return NextResponse.json(
         {
           success: false,
-          error: 'Feedback is too short. Please provide at least a short sentence so we can analyze it.',
+          error:
+            "Feedback is too short. Please provide at least a short sentence so we can analyze it.",
         },
         { status: 400 },
       );
@@ -38,7 +40,7 @@ export async function POST(
 
     // Insert into database (scoped to organization)
     const { data, error } = await supabase
-      .from('feedbacks')
+      .from("feedbacks")
       .insert({
         text,
         source,
@@ -66,7 +68,7 @@ export async function POST(
       feedback: data,
     });
   } catch (error) {
-    console.error('Manual feedback error:', error);
+    console.error("Manual feedback error:", error);
     return NextResponse.json(
       {
         success: false,
@@ -76,4 +78,3 @@ export async function POST(
     );
   }
 }
-

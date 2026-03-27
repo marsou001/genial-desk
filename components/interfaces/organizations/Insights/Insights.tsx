@@ -15,11 +15,13 @@ export default function Insights({
 
   async function fetchInsights() {
     setLoading(true);
-    const response = await fetch(`/api/organizations/${organizationId}/insights/weekly?days=7`);
+    const response = await fetch(
+      `/api/organizations/${organizationId}/insights/weekly?days=7`,
+    );
     if (!response.ok) {
-      const errorMessage = await response.json()
+      const errorMessage = await response.json();
       // TODO: toast
-      console.log(errorMessage.error)
+      console.log(errorMessage.error);
       setLoading(false);
       return;
     }
@@ -28,7 +30,7 @@ export default function Insights({
     setLoading(false);
   }
 
-  if (loading) return <div className="text-center">Loading...</div>
+  if (loading) return <div className="text-center">Loading...</div>;
 
   return (
     <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-8 rounded-lg border border-blue-200 dark:border-blue-800 shadow-sm">
@@ -42,7 +44,7 @@ export default function Insights({
       </div>
       <div className="prose prose-sm max-w-none dark:prose-invert">
         <div className="text-zinc-700 dark:text-zinc-300 leading-relaxed whitespace-pre-line">
-          {insights.data.split('\n').map((paragraph, i) => (
+          {insights.data.split("\n").map((paragraph, i) => (
             <p key={i} className="mb-4 last:mb-0">
               {paragraph}
             </p>
@@ -56,5 +58,5 @@ export default function Insights({
         Refresh Insights
       </button>
     </div>
-  )
+  );
 }

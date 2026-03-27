@@ -1,5 +1,5 @@
-import { EmailConfirmationProvider } from '@/context/email-confirmation-context';
-import { getUser } from '@/lib';
+import { EmailConfirmationProvider } from "@/context/email-confirmation-context";
+import { getUser } from "@/lib";
 
 export default async function ProtectedPagesLayout({
   children,
@@ -10,6 +10,8 @@ export default async function ProtectedPagesLayout({
   const isEmailConfirmed = user.email_confirmed_at !== null;
 
   return (
-    <EmailConfirmationProvider value={isEmailConfirmed}>{children}</EmailConfirmationProvider>
+    <EmailConfirmationProvider value={isEmailConfirmed}>
+      {children}
+    </EmailConfirmationProvider>
   );
 }

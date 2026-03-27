@@ -1,12 +1,16 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { OrganizationView } from '@/types';
-import CreateOrganizationDialog from './CreateOrganizationDialog';
-import { useIsEmailConfirmed } from '@/context/email-confirmation-context';
+import { useState } from "react";
+import Link from "next/link";
+import { OrganizationView } from "@/types";
+import CreateOrganizationDialog from "./CreateOrganizationDialog";
+import { useIsEmailConfirmed } from "@/context/email-confirmation-context";
 
-export default function OrganizationsList({ organizations }: { organizations: OrganizationView[] }) {
+export default function OrganizationsList({
+  organizations,
+}: {
+  organizations: OrganizationView[];
+}) {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const isEmailConfirmed = useIsEmailConfirmed();
 
@@ -46,9 +50,7 @@ export default function OrganizationsList({ organizations }: { organizations: Or
                     Role: <span>{org.role.toLowerCase()}</span>
                   </p>
                 </div>
-                <div className="text-blue-600 dark:text-blue-400">
-                  →
-                </div>
+                <div className="text-blue-600 dark:text-blue-400">→</div>
               </div>
             </Link>
           ))}
@@ -65,7 +67,11 @@ export default function OrganizationsList({ organizations }: { organizations: Or
         </button>
       )}
 
-      {showCreateDialog && <CreateOrganizationDialog handleClose={() => setShowCreateDialog(false)} />}
+      {showCreateDialog && (
+        <CreateOrganizationDialog
+          handleClose={() => setShowCreateDialog(false)}
+        />
+      )}
     </>
   );
 }

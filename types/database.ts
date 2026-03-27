@@ -5,7 +5,7 @@ export interface Feedback {
   text: string;
   source: string;
   topic: string;
-  sentiment: 'positive' | 'neutral' | 'negative';
+  sentiment: "positive" | "neutral" | "negative";
   summary: string;
   keywords: string[];
   created_at: string;

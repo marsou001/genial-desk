@@ -5,16 +5,21 @@ import { useState, useRef, useEffect } from "react";
 import { OrganizationView as Organization } from "@/types";
 import { useParams, usePathname } from "next/navigation";
 
-export default function OrganizationSwitcher({ organizations }: { organizations: Organization[] }) {
+export default function OrganizationSwitcher({
+  organizations,
+}: {
+  organizations: Organization[];
+}) {
   const [isOpen, setIsOpen] = useState(false);
-  const pathname = usePathname()
-  const page = pathname.split("/")[3] ?? "dashboard"
+  const pathname = usePathname();
+  const page = pathname.split("/")[3] ?? "dashboard";
 
   const containerRef = useRef<HTMLDivElement>(null);
-  
-  const { id: currentOrganizationId } = useParams()
-  const currentOrganization = currentOrganizationId ?
-    organizations.find((org) => org.id === currentOrganizationId) : null;
+
+  const { id: currentOrganizationId } = useParams();
+  const currentOrganization = currentOrganizationId
+    ? organizations.find((org) => org.id === currentOrganizationId)
+    : null;
 
   // Close when clicking outside
   useEffect(() => {
@@ -58,9 +63,7 @@ export default function OrganizationSwitcher({ organizations }: { organizations:
               <Link
                 href="/organizations"
                 className={`inline-block w-full text-left px-4 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 focus:outline-none focus:bg-zinc-100 dark:focus:bg-zinc-800 ${
-                  !currentOrganizationId
-                    ? "font-semibold"
-                    : ""
+                  !currentOrganizationId ? "font-semibold" : ""
                 }`}
               >
                 All organizations
@@ -75,9 +78,7 @@ export default function OrganizationSwitcher({ organizations }: { organizations:
                 <Link
                   href={`/organizations/${org.id}/${page}`}
                   className={`inline-block w-full text-left px-4 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 focus:outline-none focus:bg-zinc-100 dark:focus:bg-zinc-800 ${
-                    org.id === currentOrganizationId
-                      ? "font-semibold"
-                      : ""
+                    org.id === currentOrganizationId ? "font-semibold" : ""
                   }`}
                 >
                   {org.name}

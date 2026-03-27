@@ -20,7 +20,7 @@ export default function Error({
           An unexpected error occurred. You can try again, or refresh the page.
         </p>
 
-        {process.env.NODE_ENV === 'development' && (
+        {process.env.NODE_ENV === "development" && (
           <pre className="mb-6 max-h-48 overflow-auto rounded-lg bg-black/80 p-3 text-left text-xs text-red-400">
             {error.message}
           </pre>

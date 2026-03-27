@@ -1,25 +1,25 @@
-import { UserRole } from '@/types';
+import { UserRole } from "@/types";
 
 export type Permission =
-  | 'org:read'
-  | 'org:update'
-  | 'org:delete'
-  | 'org:billing'
-  | 'org:members:read'
-  | 'org:members:invite'
-  | 'org:members:update'
-  | 'org:members:remove'
-  | 'data:read'
-  | 'data:create'
-  | 'data:update'
-  | 'data:delete'
-  | 'data:export'
-  | 'insights:read'
-  | 'insights:create'
-  | 'reports:read'
-  | 'reports:create'
-  | 'reports:update'
-  | 'reports:delete';
+  | "org:read"
+  | "org:update"
+  | "org:delete"
+  | "org:billing"
+  | "org:members:read"
+  | "org:members:invite"
+  | "org:members:update"
+  | "org:members:remove"
+  | "data:read"
+  | "data:create"
+  | "data:update"
+  | "data:delete"
+  | "data:export"
+  | "insights:read"
+  | "insights:create"
+  | "reports:read"
+  | "reports:create"
+  | "reports:update"
+  | "reports:delete";
 
 /**
  * Role-based permission matrix
@@ -27,77 +27,77 @@ export type Permission =
 const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
   owner: [
     // Organization
-    'org:read',
-    'org:update',
-    'org:delete',
-    'org:billing',
-    'org:members:read',
-    'org:members:invite',
-    'org:members:update',
-    'org:members:remove',
+    "org:read",
+    "org:update",
+    "org:delete",
+    "org:billing",
+    "org:members:read",
+    "org:members:invite",
+    "org:members:update",
+    "org:members:remove",
     // Data
-    'data:read',
-    'data:create',
-    'data:update',
-    'data:delete',
-    'data:export',
+    "data:read",
+    "data:create",
+    "data:update",
+    "data:delete",
+    "data:export",
     // Insights & Reports
-    'insights:read',
-    'insights:create',
-    'reports:read',
-    'reports:create',
-    'reports:update',
-    'reports:delete',
+    "insights:read",
+    "insights:create",
+    "reports:read",
+    "reports:create",
+    "reports:update",
+    "reports:delete",
   ],
   admin: [
     // Organization (limited)
-    'org:read',
-    'org:update',
-    'org:members:read',
-    'org:members:invite',
-    'org:members:update',
-    'org:members:remove',
+    "org:read",
+    "org:update",
+    "org:members:read",
+    "org:members:invite",
+    "org:members:update",
+    "org:members:remove",
     // Data
-    'data:read',
-    'data:create',
-    'data:update',
-    'data:delete',
-    'data:export',
+    "data:read",
+    "data:create",
+    "data:update",
+    "data:delete",
+    "data:export",
     // Insights & Reports
-    'insights:read',
-    'insights:create',
-    'reports:read',
-    'reports:create',
-    'reports:update',
-    'reports:delete',
+    "insights:read",
+    "insights:create",
+    "reports:read",
+    "reports:create",
+    "reports:update",
+    "reports:delete",
   ],
   analyst: [
     // Organization (read-only)
-    'org:read',
-    'org:members:read',
+    "org:read",
+    "org:members:read",
     // Data (full access)
-    'data:read',
-    'data:create',
-    'data:update',
-    'data:delete',
-    'data:export',
+    "data:read",
+    "data:create",
+    "data:update",
+    "data:delete",
+    "data:export",
     // Insights & Reports
-    'insights:read',
-    'insights:create',
-    'reports:read',
-    'reports:create',
-    'reports:update',
-    'reports:delete',
+    "insights:read",
+    "insights:create",
+    "reports:read",
+    "reports:create",
+    "reports:update",
+    "reports:delete",
   ],
   viewer: [
     // Organization (read-only)
-    'org:read',
-    'org:members:read',
+    "org:read",
+    "org:members:read",
     // Data (read-only)
-    'data:read',
+    "data:read",
     // Insights (read-only)
-    'insights:read',
-    'reports:read',
+    "insights:read",
+    "reports:read",
   ],
 };
 
@@ -111,14 +111,20 @@ export function hasPermission(role: UserRole, permission: Permission): boolean {
 /**
  * Check if a role has any of the specified permissions
  */
-export function hasAnyPermission(role: UserRole, permissions: Permission[]): boolean {
+export function hasAnyPermission(
+  role: UserRole,
+  permissions: Permission[],
+): boolean {
   return permissions.some((perm) => hasPermission(role, perm));
 }
 
 /**
  * Check if a role has all of the specified permissions
  */
-export function hasAllPermissions(role: UserRole, permissions: Permission[]): boolean {
+export function hasAllPermissions(
+  role: UserRole,
+  permissions: Permission[],
+): boolean {
   return permissions.every((perm) => hasPermission(role, perm));
 }
 
@@ -135,10 +141,10 @@ export function getRolePermissions(role: UserRole): Permission[] {
  */
 export function canManageMember(
   userRole: UserRole,
-  targetRole: UserRole
+  targetRole: UserRole,
 ): boolean {
-  if (userRole === 'owner') return true;
-  if (userRole === 'admin' && targetRole !== 'owner') return true;
+  if (userRole === "owner") return true;
+  if (userRole === "admin" && targetRole !== "owner") return true;
   return false;
 }
 
@@ -146,28 +152,32 @@ export function canManageMember(
  * Check if user can delete organization
  */
 export function canDeleteOrganization(role: UserRole): boolean {
-  return role === 'owner';
+  return role === "owner";
 }
 
 /**
  * Check if user can manage billing
  */
 export function canManageBilling(role: UserRole): boolean {
-  return role === 'owner';
+  return role === "owner";
 }
 
 /**
  * Check if user can export data
  */
 export function canExportData(role: UserRole): boolean {
-  return hasPermission(role, 'data:export');
+  return hasPermission(role, "data:export");
 }
 
 /**
  * Check if user can create/edit reports
  */
 export function canManageReports(role: UserRole): boolean {
-  return hasAnyPermission(role, ['reports:create', 'reports:update', 'reports:delete']);
+  return hasAnyPermission(role, [
+    "reports:create",
+    "reports:update",
+    "reports:delete",
+  ]);
 }
 
 /**

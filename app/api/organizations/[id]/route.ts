@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { authGuard } from '@/lib/auth-guard';
-import { createClient } from '@/lib/supabase/server';
-import { hasPermission } from '@/lib/permissions';
+import { NextRequest, NextResponse } from "next/server";
+import { authGuard } from "@/lib/auth-guard";
+import { createClient } from "@/lib/supabase/server";
+import { hasPermission } from "@/lib/permissions";
 
 /**
  * GET /api/organizations/[id]
@@ -9,7 +9,7 @@ import { hasPermission } from '@/lib/permissions';
  */
 export async function GET(
   _: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
   const guard = await authGuard(id);
@@ -21,23 +21,25 @@ export async function GET(
   // Verify user has access to this organization
   const supabase = await createClient();
   const { data: membership, error } = await supabase
-    .from('organization_members')
-    .select(`
+    .from("organization_members")
+    .select(
+      `
       role,
       organizations!inner (
         id,
         name,
         created_at
       )
-    `)
-    .eq('user_id', guard.user.id)
-    .eq('organization_id', id)
+    `,
+    )
+    .eq("user_id", guard.user.id)
+    .eq("organization_id", id)
     .single();
 
   if (error || !membership) {
     return NextResponse.json(
-      { error: 'Organization not found or access denied' },
-      { status: 404 }
+      { error: "Organization not found or access denied" },
+      { status: 404 },
     );
   }
 
@@ -55,11 +57,11 @@ export async function GET(
  */
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
   const guard = await authGuard(id, {
-    requirePermission: 'org:update',
+    requirePermission: "org:update",
   });
 
   if (!guard.success) {
@@ -69,23 +71,23 @@ export async function PATCH(
   // Verify user has access and permission
   const supabase = await createClient();
   const { data: membership, error: membershipError } = await supabase
-    .from('organization_members')
-    .select('role')
-    .eq('user_id', guard.user.id)
-    .eq('organization_id', id)
+    .from("organization_members")
+    .select("role")
+    .eq("user_id", guard.user.id)
+    .eq("organization_id", id)
     .single();
 
   if (membershipError || !membership) {
     return NextResponse.json(
-      { error: 'Organization not found or access denied' },
-      { status: 404 }
+      { error: "Organization not found or access denied" },
+      { status: 404 },
     );
   }
 
-  if (!hasPermission(membership.role as any, 'org:update')) {
+  if (!hasPermission(membership.role as any, "org:update")) {
     return NextResponse.json(
-      { error: 'Insufficient permissions' },
-      { status: 403 }
+      { error: "Insufficient permissions" },
+      { status: 403 },
     );
   }
 
@@ -95,31 +97,28 @@ export async function PATCH(
 
     if (!name || name.length < 2) {
       return NextResponse.json(
-        { error: 'Organization name must be at least 2 characters' },
-        { status: 400 }
+        { error: "Organization name must be at least 2 characters" },
+        { status: 400 },
       );
     }
 
     const { data, error } = await supabase
-      .from('organizations')
+      .from("organizations")
       .update({ name })
-      .eq('id', id)
+      .eq("id", id)
       .select()
       .single();
 
     if (error) {
-      return NextResponse.json(
-        { error: error.message },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
     return NextResponse.json({ success: true, organization: data });
   } catch (error) {
-    console.error('Error updating organization:', error);
+    console.error("Error updating organization:", error);
     return NextResponse.json(
-      { error: 'Failed to update organization' },
-      { status: 500 }
+      { error: "Failed to update organization" },
+      { status: 500 },
     );
   }
 }
@@ -130,11 +129,11 @@ export async function PATCH(
  */
 export async function DELETE(
   _: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
   const guard = await authGuard(id, {
-    requirePermission: 'org:delete',
+    requirePermission: "org:delete",
   });
 
   if (!guard.success) {
@@ -142,16 +141,13 @@ export async function DELETE(
   }
 
   const supabase = await createClient();
-  const { error } = await supabase
-    .from('organizations')
-    .delete()
-    .eq('id', id);
+  const { error } = await supabase.from("organizations").delete().eq("id", id);
 
   if (error) {
-    console.log("Error deleting organization ==> ", error.message)
+    console.log("Error deleting organization ==> ", error.message);
     return NextResponse.json(
       { error: "Error deleting organization" },
-      { status: 500 }
+      { status: 500 },
     );
   }
   return NextResponse.json({ success: true }, { status: 200 });

@@ -7,9 +7,9 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: process.env.NEXT_PUBLIC_APP_HOSTNAME!,
-      }
-    ]
-  }
+      },
+    ],
+  },
 };
 
 export default nextConfig;

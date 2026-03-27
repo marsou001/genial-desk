@@ -6,49 +6,49 @@ export async function fetchStats(
 ): Promise<Stats> {
   try {
     if (!organizationId) {
-      throw new Error("No organization Id was found")
+      throw new Error("No organization Id was found");
     }
 
     const supabase = await createClient();
 
     const { data: feedbacks, error } = await supabase
-      .from('feedbacks')
-      .select('topic, sentiment, created_at')
-      .eq('organization_id', organizationId);
+      .from("feedbacks")
+      .select("topic, sentiment, created_at")
+      .eq("organization_id", organizationId);
 
     if (error) {
       throw new Error(error.message);
     }
 
     if (!feedbacks || feedbacks.length === 0) {
-      return ({
+      return {
         total: 0,
         bySentiment: { positive: 0, neutral: 0, negative: 0 },
         byTopic: {},
         volumeOverTime: [],
-      });
+      };
     }
 
     // Calculate sentiment distribution
     const bySentiment = {
       positive: 0,
       neutral: 0,
-      negative: 0
+      negative: 0,
     };
 
-    feedbacks.forEach(f => {
-      if (f.sentiment === 'positive') {
+    feedbacks.forEach((f) => {
+      if (f.sentiment === "positive") {
         bySentiment.positive++;
-      } else if (f.sentiment === 'neutral') {
+      } else if (f.sentiment === "neutral") {
         bySentiment.neutral++;
-      } else if (f.sentiment === 'negative') {
+      } else if (f.sentiment === "negative") {
         bySentiment.negative++;
       }
-    })
+    });
 
     // Calculate topic distribution
     const topicCounts: Record<string, number> = {};
-    feedbacks.forEach(f => {
+    feedbacks.forEach((f) => {
       topicCounts[f.topic] = (topicCounts[f.topic] || 0) + 1;
     });
 
@@ -58,22 +58,22 @@ export async function fetchStats(
     for (let i = 29; i >= 0; i--) {
       const date = new Date(now);
       date.setDate(date.getDate() - i);
-      const dateStr = date.toISOString().split('T')[0];
-      const count = feedbacks.filter(f => {
-        const feedbackDate = new Date(f.created_at).toISOString().split('T')[0];
+      const dateStr = date.toISOString().split("T")[0];
+      const count = feedbacks.filter((f) => {
+        const feedbackDate = new Date(f.created_at).toISOString().split("T")[0];
         return feedbackDate === dateStr;
       }).length;
       volumeOverTime.push({ date: dateStr, count });
     }
 
-    return ({
+    return {
       total: feedbacks.length,
       bySentiment,
       byTopic: topicCounts,
       volumeOverTime,
-    });
+    };
   } catch (error) {
-    console.log('Failed to fetch stats: ', error)
-    throw new Error('Failed to fetch stats');
+    console.log("Failed to fetch stats: ", error);
+    throw new Error("Failed to fetch stats");
   }
 }

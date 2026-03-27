@@ -34,12 +34,13 @@ export default function RootLayout({
           position="top-center"
           toastOptions={{
             unstyled: true,
-            className: "text-sm flex items-center gap-x-3 w-full p-3 rounded-md",
+            className:
+              "text-sm flex items-center gap-x-3 w-full p-3 rounded-md",
             classNames: {
-              error: 'bg-red-600',
-              success: 'bg-green-600',
-              warning: 'bg-yellow-400',
-              info: 'bg-blue-400',
+              error: "bg-red-600",
+              success: "bg-green-600",
+              warning: "bg-yellow-400",
+              info: "bg-blue-400",
             },
           }}
         />

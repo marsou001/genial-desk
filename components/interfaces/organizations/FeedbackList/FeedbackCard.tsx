@@ -3,12 +3,12 @@ import { Feedback } from "@/types/database";
 export default function FeedbackCard({ feedback }: { feedback: Feedback }) {
   const getSentimentColor = (sentiment: string) => {
     switch (sentiment) {
-      case 'positive':
-        return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300';
-      case 'negative':
-        return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300';
+      case "positive":
+        return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300";
+      case "negative":
+        return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300";
       default:
-        return 'bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-300';
+        return "bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-300";
     }
   };
 
@@ -19,7 +19,9 @@ export default function FeedbackCard({ feedback }: { feedback: Feedback }) {
     >
       <div className="flex items-start justify-between mb-3">
         <div className="flex gap-2 flex-wrap">
-          <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${getSentimentColor(feedback.sentiment)}`}>
+          <span
+            className={`px-2.5 py-1 rounded-full text-xs font-medium ${getSentimentColor(feedback.sentiment)}`}
+          >
             {feedback.sentiment}
           </span>
           <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
@@ -52,5 +54,5 @@ export default function FeedbackCard({ feedback }: { feedback: Feedback }) {
         </div>
       )}
     </div>
-  )
+  );
 }

@@ -1,18 +1,22 @@
-import { formatDate, getAvatarPlaceholderInitial, getRoleColor } from "@/lib/utils";
+import {
+  formatDate,
+  getAvatarPlaceholderInitial,
+  getRoleColor,
+} from "@/lib/utils";
 import type { OrganizationMember } from "@/types";
 import Image from "next/image";
 import RemoveMember from "./RemoveMember";
 import { getUser, getUserRole } from "@/lib";
 import { canRemoveMembers } from "@/lib/permissions";
 
-export default async function MembersDesktopTable({ 
-  members, 
-}: { 
+export default async function MembersDesktopTable({
+  members,
+}: {
   members: OrganizationMember[];
 }) {
   const user = await getUser();
   const userMembership = members.find((member) => member.userId === user.id)!;
-  
+
   return (
     <div className="hidden md:block bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden">
       <div className="overflow-x-auto">
@@ -41,7 +45,10 @@ export default async function MembersDesktopTable({
           </thead>
           <tbody className="divide-y divide-zinc-200 dark:divide-zinc-700">
             {members.map((member) => (
-              <tr key={member.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors">
+              <tr
+                key={member.id}
+                className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
+              >
                 <td className="px-4 py-3 whitespace-nowrap">
                   {member.avatarUrl ? (
                     <div className="relative h-10 w-10">
@@ -69,7 +76,9 @@ export default async function MembersDesktopTable({
                   </div>
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap">
-                  <span className={`px-2.5 py-1 rounded-full text-xs font-medium capitalize ${getRoleColor(member.role)}`}>
+                  <span
+                    className={`px-2.5 py-1 rounded-full text-xs font-medium capitalize ${getRoleColor(member.role)}`}
+                  >
                     {member.role}
                   </span>
                 </td>
@@ -89,5 +98,5 @@ export default async function MembersDesktopTable({
         </table>
       </div>
     </div>
-  )
+  );
 }

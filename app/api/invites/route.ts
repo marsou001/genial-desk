@@ -4,26 +4,35 @@ import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 
 export async function PATCH(request: NextRequest) {
-  const body = await request.json()
+  const body = await request.json();
   const inviteToken = body.invite_token;
-  const hashedToken = crypto.createHash("sha256").update(inviteToken).digest("hex");
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(inviteToken)
+    .digest("hex");
 
-  const now = new Date()
-  const acceptedAt = now.toISOString()
+  const now = new Date();
+  const acceptedAt = now.toISOString();
 
-  const supabase = await createClient()
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from("invites")
-    .update({"accepted_at": acceptedAt})
+    .update({ accepted_at: acceptedAt })
     .eq("token_hash", hashedToken)
     .select()
-    .single()
+    .single();
 
   if (error) {
-    console.log("Error accepting invite", error.message)
-    return NextResponse.json({ error: "Error accepting invite" }, { status: 500 })
+    console.log("Error accepting invite", error.message);
+    return NextResponse.json(
+      { error: "Error accepting invite" },
+      { status: 500 },
+    );
   }
 
-  revalidatePath("/organizations")
-  return NextResponse.json({ organizationId: data.organization_id }, { status: 200 })
+  revalidatePath("/organizations");
+  return NextResponse.json(
+    { organizationId: data.organization_id },
+    { status: 200 },
+  );
 }

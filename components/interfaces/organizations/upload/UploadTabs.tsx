@@ -1,26 +1,28 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import CSVUpload from './CSVUpload';
-import ManualFeedbackForm from './ManualFeedbackForm';
+import { useState } from "react";
+import CSVUpload from "./CSVUpload";
+import ManualFeedbackForm from "./ManualFeedbackForm";
 
-type TabKey = 'csv' | 'manual';
+type TabKey = "csv" | "manual";
 
 const TABS: { key: TabKey; label: string; description: string }[] = [
   {
-    key: 'csv',
-    label: 'Bulk CSV Upload',
-    description: 'Import many feedback items at once from support tools, surveys, or exports.',
+    key: "csv",
+    label: "Bulk CSV Upload",
+    description:
+      "Import many feedback items at once from support tools, surveys, or exports.",
   },
   {
-    key: 'manual',
-    label: 'Manual Entry',
-    description: 'Capture individual customer quotes from calls, chats, or interviews.',
+    key: "manual",
+    label: "Manual Entry",
+    description:
+      "Capture individual customer quotes from calls, chats, or interviews.",
   },
 ];
 
 export default function UploadTabs() {
-  const [activeTab, setActiveTab] = useState<TabKey>('csv');
+  const [activeTab, setActiveTab] = useState<TabKey>("csv");
 
   const activeConfig = TABS.find((tab) => tab.key === activeTab)!;
 
@@ -51,8 +53,8 @@ export default function UploadTabs() {
               onClick={() => setActiveTab(tab.key)}
               className={`flex-1 rounded-full px-4 py-1.5 text-xs font-medium transition-all ${
                 activeTab === tab.key
-                  ? 'bg-white text-zinc-900 shadow-sm dark:bg-zinc-900 dark:text-zinc-50'
-                  : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100'
+                  ? "bg-white text-zinc-900 shadow-sm dark:bg-zinc-900 dark:text-zinc-50"
+                  : "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
               }`}
             >
               {tab.label}
@@ -66,9 +68,8 @@ export default function UploadTabs() {
       </div>
 
       <div className="rounded-xl border border-dashed border-zinc-300 bg-zinc-50/60 p-4 dark:border-zinc-700 dark:bg-zinc-900/40">
-        {activeTab === 'csv' ? <CSVUpload /> : <ManualFeedbackForm />}
+        {activeTab === "csv" ? <CSVUpload /> : <ManualFeedbackForm />}
       </div>
     </div>
   );
 }
-

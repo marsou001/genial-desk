@@ -1,9 +1,14 @@
 import { UserRole } from "@/types";
 import { resend } from "./resend";
 
-export async function sendInviteMemberEmail(email: string, organization: string, role: UserRole, inviteToken: string) {
+export async function sendInviteMemberEmail(
+  email: string,
+  organization: string,
+  role: UserRole,
+  inviteToken: string,
+) {
   const response = await resend.emails.send({
-    from: process.env.RESEND_DOMAIN || 'onboarding@resend.dev',
+    from: process.env.RESEND_DOMAIN || "onboarding@resend.dev",
     to: email,
     subject: `You've been invited to join ${organization}`,
     html: `
@@ -19,8 +24,8 @@ export async function sendInviteMemberEmail(email: string, organization: string,
       </p>
 
       <p>If you weren't expecting this, you can ignore this email.</p>
-    `
-  })
+    `,
+  });
 
-  return response
+  return response;
 }

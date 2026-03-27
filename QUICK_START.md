@@ -14,6 +14,7 @@
 ### Setup (5 minutes)
 
 1. **Install dependencies:**
+
    ```bash
    npm install
    ```
@@ -29,6 +30,7 @@
    - Create API key
 
 4. **Create `.env.local`:**
+
    ```env
    NEXT_PUBLIC_SUPABASE_URL=your_url_here
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_key_here
@@ -37,6 +39,7 @@
    ```
 
 5. **Run the app:**
+
    ```bash
    npm run dev
    ```
@@ -50,12 +53,14 @@
 ### CSV Format
 
 Your CSV needs a column with one of these names:
+
 - `feedback`
 - `comment`
 - `text`
 - `message`
 
 Example:
+
 ```csv
 feedback,source
 "Great product!","Survey"
@@ -65,6 +70,7 @@ feedback,source
 ### Features Overview
 
 **Dashboard:**
+
 - Total feedback count
 - Sentiment breakdown (positive/neutral/negative)
 - Volume over time chart
@@ -72,17 +78,20 @@ feedback,source
 - Sentiment distribution pie chart
 
 **Upload:**
+
 - Drag & drop CSV files
 - Automatic AI analysis
 - Real-time processing status
 - Error handling
 
 **Feedback:**
+
 - View all feedback items
 - Filter by topic and sentiment
 - See AI-generated summaries and keywords
 
 **Weekly Insights:**
+
 - AI-generated weekly summary
 - Highlights trends and patterns
 - Actionable insights

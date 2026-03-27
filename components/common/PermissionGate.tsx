@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { ReactNode } from 'react';
-import { Permission } from '@/lib/permissions';
-import { usePermissions } from '@/context/permissions-context';
+import { ReactNode } from "react";
+import { Permission } from "@/lib/permissions";
+import { usePermissions } from "@/context/permissions-context";
 
 interface PermissionGateProps {
   permission: Permission;
@@ -20,5 +20,5 @@ export default function PermissionGate({
   fallback = null,
 }: PermissionGateProps) {
   const hasAccess = usePermissions(permission);
-  return hasAccess ? <>{children}</> : <>{fallback}</>
+  return hasAccess ? <>{children}</> : <>{fallback}</>;
 }

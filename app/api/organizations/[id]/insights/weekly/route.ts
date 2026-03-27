@@ -1,15 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
-import { generateWeeklyInsights } from '@/lib/openai';
-import { authGuard } from '@/lib/auth-guard';
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+import { generateWeeklyInsights } from "@/lib/openai";
+import { authGuard } from "@/lib/auth-guard";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
-  const { id } = await params
+  const { id } = await params;
   const guard = await authGuard(id, {
-    requirePermission: 'insights:read',
+    requirePermission: "insights:read",
   });
 
   if (!guard.success) {
@@ -18,19 +18,21 @@ export async function GET(
 
   try {
     const { searchParams } = new URL(request.url);
-    const days = parseInt(searchParams.get('days') || '7');
+    const days = parseInt(searchParams.get("days") || "7");
 
     const supabase = await createClient();
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
 
     let query = supabase
-      .from('feedbacks')
-      .select('text, topic, sentiment')
-      .eq('organization_id', guard.organizationId)
-      .gte('created_at', startDate.toISOString());
+      .from("feedbacks")
+      .select("text, topic, sentiment")
+      .eq("organization_id", guard.organizationId)
+      .gte("created_at", startDate.toISOString());
 
-    const { data: feedbacks, error } = await query.order('created_at', { ascending: false });
+    const { data: feedbacks, error } = await query.order("created_at", {
+      ascending: false,
+    });
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
@@ -38,7 +40,7 @@ export async function GET(
 
     if (!feedbacks || feedbacks.length === 0) {
       return NextResponse.json({
-        data: 'No feedback available for this period.',
+        data: "No feedback available for this period.",
         count: 0,
         period: `${days} days`,
       });
@@ -52,10 +54,15 @@ export async function GET(
       period: `${days} days`,
     });
   } catch (error) {
-    console.error('Insights error:', error);
+    console.error("Insights error:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to generate insights' },
-      { status: 500 }
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to generate insights",
+      },
+      { status: 500 },
     );
   }
 }

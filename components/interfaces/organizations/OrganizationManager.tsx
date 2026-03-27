@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { hasPermission, Permission } from '@/lib/permissions';
+import { useState, useEffect } from "react";
+import { hasPermission, Permission } from "@/lib/permissions";
 
 interface Organization {
   id: string;
@@ -23,7 +23,7 @@ export default function OrganizationManager() {
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateOrg, setShowCreateOrg] = useState(false);
-  const [newOrgName, setNewOrgName] = useState('');
+  const [newOrgName, setNewOrgName] = useState("");
 
   useEffect(() => {
     fetchOrganizations();
@@ -37,7 +37,7 @@ export default function OrganizationManager() {
 
   const fetchOrganizations = async () => {
     try {
-      const response = await fetch('/api/organizations');
+      const response = await fetch("/api/organizations");
       if (response.ok) {
         const data = await response.json();
         setOrganizations(data.organizations || []);
@@ -46,7 +46,7 @@ export default function OrganizationManager() {
         }
       }
     } catch (error) {
-      console.error('Failed to fetch organizations:', error);
+      console.error("Failed to fetch organizations:", error);
     } finally {
       setLoading(false);
     }
@@ -54,19 +54,22 @@ export default function OrganizationManager() {
 
   const fetchMembers = async () => {
     if (!selectedOrg) return;
-    
+
     try {
-      const response = await fetch(`/api/organizations/${selectedOrg.id}/members`, {
-        headers: {
-          'x-organization-id': selectedOrg.id,
+      const response = await fetch(
+        `/api/organizations/${selectedOrg.id}/members`,
+        {
+          headers: {
+            "x-organization-id": selectedOrg.id,
+          },
         },
-      });
+      );
       if (response.ok) {
         const data = await response.json();
         setMembers(data.members || []);
       }
     } catch (error) {
-      console.error('Failed to fetch members:', error);
+      console.error("Failed to fetch members:", error);
     }
   };
 
@@ -74,9 +77,9 @@ export default function OrganizationManager() {
     if (!newOrgName.trim()) return;
 
     try {
-      const response = await fetch('/api/organizations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/organizations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: newOrgName }),
       });
 
@@ -84,20 +87,20 @@ export default function OrganizationManager() {
         const data = await response.json();
         setOrganizations([...organizations, data.organization]);
         setSelectedOrg(data.organization);
-        setNewOrgName('');
+        setNewOrgName("");
         setShowCreateOrg(false);
       } else {
         const error = await response.json();
-        alert(error.error || 'Failed to create organization');
+        alert(error.error || "Failed to create organization");
       }
     } catch (error) {
-      console.error('Failed to create organization:', error);
-      alert('Failed to create organization');
+      console.error("Failed to create organization:", error);
+      alert("Failed to create organization");
     }
   };
 
   const userRole = selectedOrg?.role as any;
-  const canManageMembers = hasPermission(userRole, 'org:members:read');
+  const canManageMembers = hasPermission(userRole, "org:members:read");
 
   if (loading) {
     return <div className="text-center py-8">Loading...</div>;
@@ -125,7 +128,7 @@ export default function OrganizationManager() {
             onChange={(e) => setNewOrgName(e.target.value)}
             placeholder="Organization name"
             className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 mb-3"
-            onKeyDown={(e) => e.key === 'Enter' && handleCreateOrg()}
+            onKeyDown={(e) => e.key === "Enter" && handleCreateOrg()}
           />
           <div className="flex gap-2">
             <button
@@ -137,7 +140,7 @@ export default function OrganizationManager() {
             <button
               onClick={() => {
                 setShowCreateOrg(false);
-                setNewOrgName('');
+                setNewOrgName("");
               }}
               className="px-4 py-2 bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-700 dark:hover:bg-zinc-600 text-zinc-900 dark:text-zinc-50 text-sm font-medium rounded-lg transition-colors"
             >
@@ -169,8 +172,8 @@ export default function OrganizationManager() {
                   onClick={() => setSelectedOrg(org)}
                   className={`p-4 rounded-lg border cursor-pointer transition-colors ${
                     selectedOrg?.id === org.id
-                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/20'
-                      : 'border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900'
+                      ? "border-blue-500 bg-blue-50 dark:bg-blue-950/20"
+                      : "border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900"
                   }`}
                 >
                   <div className="flex items-center justify-between">

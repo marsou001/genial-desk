@@ -1,5 +1,5 @@
-import { fetchOrganization } from '@/data/fetchOrganization';
-import OrganizationSettings from '@/components/interfaces/organizations/OrganizationSettings';
+import { fetchOrganization } from "@/data/fetchOrganization";
+import OrganizationSettings from "@/components/interfaces/organizations/OrganizationSettings";
 
 export default async function OrganizationSettingsPage({
   params,
@@ -12,7 +12,9 @@ export default async function OrganizationSettingsPage({
   if (!organization) {
     return (
       <div className="p-8">
-        <p className="text-zinc-600 dark:text-zinc-400">Organization not found.</p>
+        <p className="text-zinc-600 dark:text-zinc-400">
+          Organization not found.
+        </p>
       </div>
     );
   }

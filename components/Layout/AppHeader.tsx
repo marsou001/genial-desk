@@ -1,8 +1,8 @@
-import Link from 'next/link';
-import { fetchOrganizations } from '@/data/fetchOrganizations';
-import OrganizationSwitcher from './OrganizationSwitcher';
-import UserAvatar from '../common/UserAvatar';
-import AppLogo from '../common/AppLogo';
+import Link from "next/link";
+import { fetchOrganizations } from "@/data/fetchOrganizations";
+import OrganizationSwitcher from "./OrganizationSwitcher";
+import UserAvatar from "../common/UserAvatar";
+import AppLogo from "../common/AppLogo";
 
 export default async function AppHeader() {
   const organizations = await fetchOrganizations();

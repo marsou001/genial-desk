@@ -1,5 +1,5 @@
-import Link from 'next/link';
-import ForgotPasswordForm from '@/components/auth/ForgotPasswordForm';
+import Link from "next/link";
+import ForgotPasswordForm from "@/components/auth/ForgotPasswordForm";
 
 export default function ForgotPasswordPage() {
   return (
@@ -11,7 +11,8 @@ export default function ForgotPasswordPage() {
               Forgot password
             </h1>
             <p className="text-sm text-zinc-600 dark:text-zinc-400">
-              Enter the email associated with your account and we'll send you a reset link.
+              Enter the email associated with your account and we'll send you a
+              reset link.
             </p>
           </div>
 
@@ -30,4 +31,3 @@ export default function ForgotPasswordPage() {
     </div>
   );
 }
-

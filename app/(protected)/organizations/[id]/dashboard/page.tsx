@@ -21,7 +21,8 @@ export default async function Dashboard({
             Welcome to GenialDesk!
           </h2>
           <p className="text-zinc-600 dark:text-zinc-400 mb-6">
-            Upload your first CSV file to start analyzing customer feedback with AI.
+            Upload your first CSV file to start analyzing customer feedback with
+            AI.
           </p>
           <Link
             href={`/organizations/${organizationId}/upload`}

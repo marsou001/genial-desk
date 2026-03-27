@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import { useParams } from "next/navigation";
+import { useState } from "react";
 
 interface UploadResult {
   success: boolean;
@@ -12,18 +12,18 @@ interface UploadResult {
 
 export default function CSVUpload() {
   const [file, setFile] = useState<File | null>(null);
-  const [source, setSource] = useState('CSV Upload');
+  const [source, setSource] = useState("CSV Upload");
   const [uploading, setUploading] = useState(false);
   const [result, setResult] = useState<UploadResult | null>(null);
 
-  const { id: organizationId } = useParams()
+  const { id: organizationId } = useParams();
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0]);
       setResult(null);
     }
-  };
+  }
 
   async function handleUpload(e: React.SubmitEvent<HTMLFormElement>) {
     if (!file) return;
@@ -34,16 +34,19 @@ export default function CSVUpload() {
 
     try {
       const formData = new FormData();
-      formData.append('file', file);
-      formData.append('source', source);
+      formData.append("file", file);
+      formData.append("source", source);
 
-      const response = await fetch(`/api/organizations/${organizationId}/upload`, {
-        method: 'POST',
-        body: formData,
-      });
+      const response = await fetch(
+        `/api/organizations/${organizationId}/upload`,
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
 
       if (!response.ok) {
-        const errorMessage = await response.json()
+        const errorMessage = await response.json();
         // TODO: toast
         setResult({
           success: false,
@@ -58,12 +61,12 @@ export default function CSVUpload() {
       setResult({
         success: false,
         processed: 0,
-        errors: ['Upload failed'],
+        errors: ["Upload failed"],
       });
     } finally {
       setUploading(false);
     }
-  };
+  }
 
   return (
     <div className="space-y-4">
@@ -115,7 +118,7 @@ export default function CSVUpload() {
             />
           </label>
         </div>
-      </form >
+      </form>
 
       <button
         type="submit"
@@ -123,22 +126,22 @@ export default function CSVUpload() {
         disabled={!file || uploading}
         className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-zinc-400 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
       >
-        {uploading ? 'Processing...' : 'Upload & Analyze'}
+        {uploading ? "Processing..." : "Upload & Analyze"}
       </button>
 
       {result && (
         <div
           className={`p-4 rounded-lg ${
             result.success
-              ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800'
-              : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'
+              ? "bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800"
+              : "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800"
           }`}
         >
           <p
             className={`font-medium ${
               result.success
-                ? 'text-green-800 dark:text-green-200'
-                : 'text-red-800 dark:text-red-200'
+                ? "text-green-800 dark:text-green-200"
+                : "text-red-800 dark:text-red-200"
             }`}
           >
             {result.success && result.feedbacks && result.feedbacks.length > 0

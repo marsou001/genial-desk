@@ -1,72 +1,81 @@
-"use client"
+"use client";
 
-import { useState, SubmitEvent, ChangeEvent } from "react"
-import { toast } from "sonner"
-import { ProfileData } from "@/types"
+import { useState, SubmitEvent, ChangeEvent } from "react";
+import { toast } from "sonner";
+import { ProfileData } from "@/types";
 import { useIsDirty } from "@/hooks/useIsDirty";
 
 export default function EditNameForm({ profile }: { profile: ProfileData }) {
   const [fullName, setFullName] = useState(profile.fullName ?? "");
   const [isEditing, setIsEditing] = useState(false);
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null);
 
-  const { isDirty, setInitialValue } = useIsDirty(profile.fullName ?? "", fullName)
+  const { isDirty, setInitialValue } = useIsDirty(
+    profile.fullName ?? "",
+    fullName,
+  );
 
   function handleNameChange(e: ChangeEvent<HTMLInputElement>) {
-    setError(null)
-    setFullName(e.target.value)
+    setError(null);
+    setFullName(e.target.value);
   }
 
   function validate() {
-    setError(null)
-    let error: string | null = null
-    const trimmedFullName = fullName.trim()
-    
+    setError(null);
+    let error: string | null = null;
+    const trimmedFullName = fullName.trim();
+
     if (trimmedFullName.length < 3) {
-      error = "Name needs to be at least 3 characters long"
+      error = "Name needs to be at least 3 characters long";
     }
 
-    return error
+    return error;
   }
 
   async function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
-    e.preventDefault()
-    
-    const error = validate()
-    if (error !== null) {
-      setError(error)
-      return
-    };
+    e.preventDefault();
 
-    setIsEditing(true)
+    const error = validate();
+    if (error !== null) {
+      setError(error);
+      return;
+    }
+
+    setIsEditing(true);
 
     try {
       const response = await fetch("/api/profiles/" + profile.id, {
         method: "PATCH",
         body: JSON.stringify({ full_name: fullName }),
         headers: {
-          "Content-Type": "application/json"
-        }
-      })
+          "Content-Type": "application/json",
+        },
+      });
       if (!response.ok) {
-        const errorMessage = await response.json()
-        toast.error(errorMessage.error)
+        const errorMessage = await response.json();
+        toast.error(errorMessage.error);
       } else {
-        setInitialValue(fullName)
-        toast.success("Name updated successfully")
+        setInitialValue(fullName);
+        toast.success("Name updated successfully");
       }
     } catch {
-      toast.error("Something went wrong while editing your name")
+      toast.error("Something went wrong while editing your name");
     } finally {
-      setIsEditing(false)
+      setIsEditing(false);
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 p-6 border border-zinc-200 dark:border-zinc-800 rounded-lg">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4 p-6 border border-zinc-200 dark:border-zinc-800 rounded-lg"
+    >
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-1.5">
-          <label htmlFor="full_name" className="block text-sm font-medium text-zinc-700 dark:text-zinc-200">
+          <label
+            htmlFor="full_name"
+            className="block text-sm font-medium text-zinc-700 dark:text-zinc-200"
+          >
             Name
           </label>
           <input
@@ -78,7 +87,9 @@ export default function EditNameForm({ profile }: { profile: ProfileData }) {
             className="w-full rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 mb-2 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-50 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Your name"
           />
-          {error !== null && <span className="text-red-600 text-sm">{error}</span>}
+          {error !== null && (
+            <span className="text-red-600 text-sm">{error}</span>
+          )}
         </div>
       </div>
 
@@ -92,5 +103,5 @@ export default function EditNameForm({ profile }: { profile: ProfileData }) {
         </button>
       </div>
     </form>
-  )
+  );
 }

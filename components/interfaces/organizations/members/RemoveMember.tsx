@@ -1,15 +1,19 @@
-"use client"
+"use client";
 
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react"
-import { Trash } from "lucide-react"
+import { useEffect, useState } from "react";
+import { Trash } from "lucide-react";
 import { toast } from "sonner";
 import { OrganizationMember } from "@/types";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { useUserClient } from "@/hooks/useUserClient";
 import { reload } from "@/lib/utils";
 
-export default function RemoveMember({ member }: { member: OrganizationMember }) {
+export default function RemoveMember({
+  member,
+}: {
+  member: OrganizationMember;
+}) {
   const [canRemoveMember, setCanRemoveMember] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const { id: organizationId } = useParams();
@@ -17,39 +21,42 @@ export default function RemoveMember({ member }: { member: OrganizationMember })
 
   async function remove() {
     const isConfirmed = window.confirm(
-      `Remove ${member.email} from this organization? This action cannot be undone.`
+      `Remove ${member.email} from this organization? This action cannot be undone.`,
     );
 
     if (!isConfirmed) return;
 
-    setIsDeleting(true)
+    setIsDeleting(true);
 
     try {
-      const response = await fetch(`/api/organizations/${organizationId}/members`, {
-        method: "DELETE",
-        body: JSON.stringify({ id: member.id }),
-        headers: {
-          "Content-Type": "application/json"
-        }
-      })
+      const response = await fetch(
+        `/api/organizations/${organizationId}/members`,
+        {
+          method: "DELETE",
+          body: JSON.stringify({ id: member.id }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
 
       if (!response.ok) {
-        const errorBody = await response.json()
-        toast.error(errorBody.error)
+        const errorBody = await response.json();
+        toast.error(errorBody.error);
       } else {
-        toast.info("Membership successfully removed")
+        toast.info("Membership successfully removed");
         reload();
       }
     } catch {
-      toast.error("Failed to invite member")
+      toast.error("Failed to invite member");
     } finally {
-      setIsDeleting(false)
+      setIsDeleting(false);
     }
   }
 
   useEffect(() => {
     async function canRemoveMember() {
-      const user = await getUser()
+      const user = await getUser();
       if (!user) return false;
       const isUser = member.userId === user.id;
       const isOwner = member.role === "owner";
@@ -75,5 +82,5 @@ export default function RemoveMember({ member }: { member: OrganizationMember })
         {isDeleting ? <LoadingSpinner /> : <Trash size={16} />}
       </button>
     </>
-  )
+  );
 }

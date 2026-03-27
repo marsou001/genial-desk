@@ -1,15 +1,16 @@
-import { createClient } from '@/lib/supabase/server';
-import { getUser } from '@/lib';
-import { OrganizationView } from '@/types';
+import { createClient } from "@/lib/supabase/server";
+import { getUser } from "@/lib";
+import { OrganizationView } from "@/types";
 
 export async function fetchOrganizations(): Promise<OrganizationView[]> {
-  const supabase = await createClient()
-  const user = await getUser()
+  const supabase = await createClient();
+  const user = await getUser();
 
   try {
     const { data: memberships, error } = await supabase
-      .from('organization_members')
-      .select(`
+      .from("organization_members")
+      .select(
+        `
         organization_id,
         role:roles (
           name
@@ -19,11 +20,12 @@ export async function fetchOrganizations(): Promise<OrganizationView[]> {
           name,
           created_at
         )
-      `)
-      .eq('user_id', user.id);
+      `,
+      )
+      .eq("user_id", user.id);
 
     if (error) {
-      throw new Error(error.message)
+      throw new Error(error.message);
     }
 
     const organizations = (memberships || []).map((m: any) => ({
@@ -35,7 +37,7 @@ export async function fetchOrganizations(): Promise<OrganizationView[]> {
 
     return organizations;
   } catch (error) {
-    console.error('Failed to fetch organizations:', error);
-    throw new Error("Failed to fetch organizations")
+    console.error("Failed to fetch organizations:", error);
+    throw new Error("Failed to fetch organizations");
   }
 }

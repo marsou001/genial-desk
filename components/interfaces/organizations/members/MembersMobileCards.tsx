@@ -1,13 +1,17 @@
-import { formatDate, getAvatarPlaceholderInitial, getRoleColor } from "@/lib/utils";
+import {
+  formatDate,
+  getAvatarPlaceholderInitial,
+  getRoleColor,
+} from "@/lib/utils";
 import type { OrganizationMember } from "@/types";
 import Image from "next/image";
 import RemoveMember from "./RemoveMember";
 import { canRemoveMembers } from "@/lib/permissions";
 import { getUser } from "@/lib";
 
-export default async function MembersMobileCards({ 
-  members, 
-}: { 
+export default async function MembersMobileCards({
+  members,
+}: {
   members: OrganizationMember[];
 }) {
   const user = await getUser();
@@ -44,7 +48,9 @@ export default async function MembersMobileCards({
               {member.fullName ?? member.email}
             </div>
             <div className="flex flex-wrap items-center gap-2 mt-1">
-              <span className={`px-2 py-0.5 rounded-full text-xs font-medium capitalize ${getRoleColor(member.role)}`}>
+              <span
+                className={`px-2 py-0.5 rounded-full text-xs font-medium capitalize ${getRoleColor(member.role)}`}
+              >
                 {member.role}
               </span>
               <span className="text-xs text-zinc-500 dark:text-zinc-400">
@@ -55,5 +61,5 @@ export default async function MembersMobileCards({
         </div>
       ))}
     </div>
-  )
+  );
 }

@@ -1,18 +1,26 @@
-'use client';
+"use client";
 
-import { useActionState } from 'react';
-import { signInAction } from '@/app/actions/auth';
-import { ErrorActionState } from '@/types';
-import Link from 'next/link';
+import { useActionState } from "react";
+import { signInAction } from "@/app/actions/auth";
+import { ErrorActionState } from "@/types";
+import Link from "next/link";
 
 export default function SignInForm({ redirectTo }: { redirectTo?: string }) {
-  const [state, formAction, isPending] = useActionState<ErrorActionState, FormData>(signInAction, { error: null });
+  const [state, formAction, isPending] = useActionState<
+    ErrorActionState,
+    FormData
+  >(signInAction, { error: null });
 
   return (
     <form action={formAction} className="space-y-4">
-      {redirectTo !== undefined && <input type="hidden" name="redirect_to" value={redirectTo} />}
+      {redirectTo !== undefined && (
+        <input type="hidden" name="redirect_to" value={redirectTo} />
+      )}
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+        <label
+          htmlFor="email"
+          className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
+        >
           Email
         </label>
         <input
@@ -26,7 +34,10 @@ export default function SignInForm({ redirectTo }: { redirectTo?: string }) {
       </div>
 
       <div>
-        <label htmlFor="password" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+        <label
+          htmlFor="password"
+          className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
+        >
           Password
         </label>
         <input
@@ -41,12 +52,16 @@ export default function SignInForm({ redirectTo }: { redirectTo?: string }) {
 
       {state.error && (
         <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-          <p className="text-sm text-red-800 dark:text-red-200">{state.error}</p>
+          <p className="text-sm text-red-800 dark:text-red-200">
+            {state.error}
+          </p>
         </div>
       )}
 
       <div className="flex justify-end">
-        <Link href="/forgot-password" className="text-xs text-blue-400">Forgot password?</Link>
+        <Link href="/forgot-password" className="text-xs text-blue-400">
+          Forgot password?
+        </Link>
       </div>
 
       <button
@@ -54,7 +69,7 @@ export default function SignInForm({ redirectTo }: { redirectTo?: string }) {
         disabled={isPending}
         className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-zinc-400 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
       >
-        {isPending ? 'Signing in...' : 'Sign In'}
+        {isPending ? "Signing in..." : "Sign In"}
       </button>
     </form>
   );

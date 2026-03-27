@@ -1,7 +1,11 @@
 import { UserMembership } from "@/types";
 import UserMembershipCard from "./UserMembershipCard";
 
-export default function UserMembershipsList({ memberships }: { memberships: UserMembership[] }) {
+export default function UserMembershipsList({
+  memberships,
+}: {
+  memberships: UserMembership[];
+}) {
   return (
     <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-6">
       <div className="flex items-center justify-between mb-4">
@@ -25,5 +29,5 @@ export default function UserMembershipsList({ memberships }: { memberships: User
         </div>
       )}
     </div>
-  )
+  );
 }

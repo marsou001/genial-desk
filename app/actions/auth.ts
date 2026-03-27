@@ -1,15 +1,20 @@
-'use server';
+"use server";
 
-import { createClient } from '@/lib/supabase/server';
-import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
-import { ErrorActionState, RequestPasswordResetActionState, ResetPasswordActionState } from '@/types';
-import { isEmailValid } from '@/lib/utils';
+import { createClient } from "@/lib/supabase/server";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import {
+  ErrorActionState,
+  RequestPasswordResetActionState,
+  ResetPasswordActionState,
+} from "@/types";
+import { isEmailValid } from "@/lib/utils";
+import { getUser } from "@/lib";
 
 export async function signInAction(_: ErrorActionState, formData: FormData) {
-  const email = formData.get('email') as string;
-  const password = formData.get('password') as string;
-  const redirectTo = formData.get('redirect_to') as string | undefined;
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+  const redirectTo = formData.get("redirect_to") as string | undefined;
   const supabase = await createClient();
 
   const { error } = await supabase.auth.signInWithPassword({
@@ -21,14 +26,14 @@ export async function signInAction(_: ErrorActionState, formData: FormData) {
     return { error: error.message };
   }
 
-  revalidatePath('/');
-  redirect(redirectTo ?? '/organizations');
+  revalidatePath("/");
+  redirect(redirectTo ?? "/organizations");
 }
 
 export async function signUpAction(_: ErrorActionState, formData: FormData) {
-  const email = formData.get('email') as string;
-  const password = formData.get('password') as string;
-  const redirectTo = formData.get('redirect_to') as string | undefined;
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+  const redirectTo = formData.get("redirect_to") as string | undefined;
   const supabase = await createClient();
 
   const { error } = await supabase.auth.signUp({
@@ -43,28 +48,49 @@ export async function signUpAction(_: ErrorActionState, formData: FormData) {
     return { error: error.message };
   }
 
-  revalidatePath('/');
-  redirect('/email-confirmation');
+  revalidatePath("/");
+  redirect("/email-confirmation");
 }
 
-export async function signOutAction(_: ErrorActionState): Promise<ErrorActionState> {
+export async function signOutAction(
+  _: ErrorActionState,
+): Promise<ErrorActionState> {
   const supabase = await createClient();
   const { error } = await supabase.auth.signOut();
 
   if (error) {
     console.log("Error signing out user ==> ", error.message);
-    return { error: "Error signing out" }
+    return { error: "Error signing out" };
   }
 
-  revalidatePath('/');
-  redirect('/sign-in');
+  revalidatePath("/");
+  redirect("/sign-in");
+}
+
+export async function confirmEmail(_: ErrorActionState) {
+  const { email } = await getUser();
+  const supabase = await createClient();
+  const { error } = await supabase.auth.resend({
+    type: "signup",
+    email: email!,
+  });
+
+  if (error) {
+    console.error(
+      "An error occurred while resending the email:",
+      error.message,
+    );
+    return { error: "An error occurred while resending the email" };
+  }
+
+  return { error: null };
 }
 
 export async function requestPasswordResetAction(
   _: RequestPasswordResetActionState,
   formData: FormData,
 ) {
-  const email = formData.get('email') as string;
+  const email = formData.get("email") as string;
 
   if (!email || !isEmailValid(email)) {
     return { isSuccess: false, error: "A valid email is required", email };
@@ -92,15 +118,25 @@ export async function resetPasswordAction(
   _: ResetPasswordActionState,
   formData: FormData,
 ) {
-  const password = formData.get('password') as string;
-  const confirmPassword = formData.get('confirm_password') as string;
+  const password = formData.get("password") as string;
+  const confirmPassword = formData.get("confirm_password") as string;
 
   if (!password || !confirmPassword) {
-    return { isSuccess: false, error: 'Password and confirmation are required.', password, confirmPassword };
+    return {
+      isSuccess: false,
+      error: "Password and confirmation are required.",
+      password,
+      confirmPassword,
+    };
   }
 
   if (password !== confirmPassword) {
-    return { isSuccess: false, error: 'Passwords do not match.', password, confirmPassword };
+    return {
+      isSuccess: false,
+      error: "Passwords do not match.",
+      password,
+      confirmPassword,
+    };
   }
 
   const supabase = await createClient();
@@ -109,11 +145,16 @@ export async function resetPasswordAction(
   });
 
   if (resetPasswordError) {
-    return { isSuccess: false, error: resetPasswordError.message, password, confirmPassword };
+    return {
+      isSuccess: false,
+      error: resetPasswordError.message,
+      password,
+      confirmPassword,
+    };
   }
 
   // Ensure any existing session is cleared and send user to sign-in
   await supabase.auth.signOut();
-  revalidatePath('/');
-  redirect('/sign-in');
+  revalidatePath("/");
+  redirect("/sign-in");
 }

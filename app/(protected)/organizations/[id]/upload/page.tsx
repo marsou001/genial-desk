@@ -8,8 +8,9 @@ export default function UploadPage() {
           Bring customer feedback into GenialDesk
         </h1>
         <p className="text-sm text-zinc-600 dark:text-zinc-400 max-w-2xl">
-          Upload feedback in bulk from CSV exports or capture individual customer quotes manually.
-          Every entry is enriched with AI-powered topics, sentiment, and summaries.
+          Upload feedback in bulk from CSV exports or capture individual
+          customer quotes manually. Every entry is enriched with AI-powered
+          topics, sentiment, and summaries.
         </p>
       </div>
 
@@ -38,5 +39,5 @@ export default function UploadPage() {
         <UploadTabs />
       </div>
     </section>
-  )
+  );
 }

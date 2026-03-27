@@ -1,32 +1,38 @@
-"use client"
+"use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react"
+import { useState } from "react";
 import { toast } from "sonner";
 
-export default function AcceptInviteButton({ inviteToken }: { inviteToken: string }) {
+export default function AcceptInviteButton({
+  inviteToken,
+}: {
+  inviteToken: string;
+}) {
   const [isAccepting, setIsAccepting] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
 
   async function acceptInvite() {
-    setIsAccepting(true)
+    setIsAccepting(true);
     const response = await fetch(`/api/invites`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        invite_token: inviteToken
-      })
-    })
+        invite_token: inviteToken,
+      }),
+    });
 
-    const responseObject = await response.json()
+    const responseObject = await response.json();
     if (!response.ok) {
-      toast.error(responseObject.error)
+      toast.error(responseObject.error);
     } else {
-      router.push("/organizations/" + responseObject.organizationId + "/dashboard")
+      router.push(
+        "/organizations/" + responseObject.organizationId + "/dashboard",
+      );
     }
-    setIsAccepting(false)
+    setIsAccepting(false);
   }
 
   return (
@@ -57,5 +63,5 @@ export default function AcceptInviteButton({ inviteToken }: { inviteToken: strin
         {isAccepting ? "Accepting..." : "Accept Invitation"}
       </button>
     </div>
-  )
+  );
 }

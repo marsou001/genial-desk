@@ -6,7 +6,9 @@ import { signOutAction } from "@/app/actions/auth";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 
 export default function SignOutButton() {
-  const [state, formAction, isPending] = useActionState(signOutAction, { error: null })
+  const [state, formAction, isPending] = useActionState(signOutAction, {
+    error: null,
+  });
 
   useEffect(() => {
     if (isPending) return;
@@ -23,5 +25,5 @@ export default function SignOutButton() {
         {isPending ? <LoadingSpinner className="border-zinc-50" /> : "Sign Out"}
       </button>
     </form>
-  )
+  );
 }

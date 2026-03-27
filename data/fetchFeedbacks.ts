@@ -11,18 +11,18 @@ export async function fetchFeedbacks(
 
     const supabase = await createClient();
     const { error, data } = await supabase
-      .from('feedbacks')
-      .select('*')
-      .eq('organization_id', organizationId)
-      .order('created_at', { ascending: false })
+      .from("feedbacks")
+      .select("*")
+      .eq("organization_id", organizationId)
+      .order("created_at", { ascending: false });
 
     if (error) {
       throw new Error(error.message);
     }
 
-    return data || []
+    return data || [];
   } catch (error) {
-    console.log('Failed to fetch feedbacks: ', error)
-    throw new Error('Failed to fetch feedbacks');
+    console.log("Failed to fetch feedbacks: ", error);
+    throw new Error("Failed to fetch feedbacks");
   }
 }

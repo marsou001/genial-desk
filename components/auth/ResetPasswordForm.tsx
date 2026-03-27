@@ -1,17 +1,22 @@
-'use client';
+"use client";
 
-import { useActionState, useEffect } from 'react';
-import { toast } from 'sonner';
-import { resetPasswordAction } from '@/app/actions/auth';
-import type { ResetPasswordActionState } from '@/types';
-import { useSearchParams } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
+import { useActionState, useEffect } from "react";
+import { toast } from "sonner";
+import { resetPasswordAction } from "@/app/actions/auth";
+import type { ResetPasswordActionState } from "@/types";
+import { useSearchParams } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 export default function ResetPasswordForm() {
-  const [state, formAction, isPending] = useActionState<ResetPasswordActionState, FormData>(
-    resetPasswordAction,
-    { isSuccess: false, error: null, password: "", confirmPassword: "" },
-  );
+  const [state, formAction, isPending] = useActionState<
+    ResetPasswordActionState,
+    FormData
+  >(resetPasswordAction, {
+    isSuccess: false,
+    error: null,
+    password: "",
+    confirmPassword: "",
+  });
   const params = useSearchParams();
 
   const supabase = createClient();
@@ -27,9 +32,9 @@ export default function ResetPasswordForm() {
       const { error } = await supabase.auth.exchangeCodeForSession(code);
 
       if (error) {
-        console.log(error.message)
+        console.log(error.message);
       }
-    };
+    }
 
     startAuthSession(code);
   }, [params]);
@@ -37,11 +42,11 @@ export default function ResetPasswordForm() {
   useEffect(() => {
     if (isPending) return;
     if (state.error !== null) {
-      toast.error(state.error)
+      toast.error(state.error);
     } else if (state.isSuccess) {
-      toast.info("Your password has been successfully changed")
+      toast.info("Your password has been successfully changed");
     }
-  }, [isPending, state])
+  }, [isPending, state]);
 
   return (
     <form action={formAction} className="space-y-4">
@@ -93,9 +98,8 @@ export default function ResetPasswordForm() {
         disabled={isPending}
         className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-zinc-400 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
       >
-        {isPending ? 'Updating password...' : 'Update password'}
+        {isPending ? "Updating password..." : "Update password"}
       </button>
     </form>
   );
 }
-

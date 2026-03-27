@@ -1,17 +1,37 @@
-'use client';
+"use client";
 
-import { useActionState } from 'react';
-import { signUpAction } from '@/app/actions/auth';
-import { ErrorActionState } from '@/types';
+import { useActionState, useEffect } from "react";
+import { toast } from "sonner";
+import { signUpAction } from "@/app/actions/auth";
+import { ErrorActionState } from "@/types";
 
 export default function SignUpForm({ redirectTo }: { redirectTo?: string }) {
-  const [state, formAction, isPending] = useActionState<ErrorActionState, FormData>(signUpAction, { error: null });
+  const [state, formAction, isPending] = useActionState<
+    ErrorActionState,
+    FormData
+  >(signUpAction, { error: null });
+
+  useEffect(() => {
+    if (isPending) return;
+    if (state.error !== null) {
+      toast.error(state.error);
+    } else {
+      toast.success(
+        "The confirmation email has been resent. Check your inbox!",
+      );
+    }
+  }, [isPending, state]);
 
   return (
     <form action={formAction} className="space-y-4">
-      {redirectTo !== undefined && <input type="hidden" name="redirect_to" value={redirectTo} />}
+      {redirectTo !== undefined && (
+        <input type="hidden" name="redirect_to" value={redirectTo} />
+      )}
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+        <label
+          htmlFor="email"
+          className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
+        >
           Email
         </label>
         <input
@@ -25,7 +45,10 @@ export default function SignUpForm({ redirectTo }: { redirectTo?: string }) {
       </div>
 
       <div>
-        <label htmlFor="password" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+        <label
+          htmlFor="password"
+          className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
+        >
           Password
         </label>
         <input
@@ -39,18 +62,12 @@ export default function SignUpForm({ redirectTo }: { redirectTo?: string }) {
         />
       </div>
 
-      {state.error !== null && (
-        <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-          <p className="text-sm text-red-800 dark:text-red-200">{state.error}</p>
-        </div>
-      )}
-
       <button
         type="submit"
         disabled={isPending}
         className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-zinc-400 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
       >
-        {isPending ? 'Creating account...' : 'Sign Up'}
+        {isPending ? "Creating account..." : "Sign Up"}
       </button>
     </form>
   );

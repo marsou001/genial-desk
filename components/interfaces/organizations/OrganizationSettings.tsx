@@ -1,59 +1,61 @@
-'use client';
+"use client";
 
-import { useActionState, useState, useRef } from 'react';
-import { toast } from 'sonner';
-import { updateOrganization } from '@/app/actions/organizations';
-import { ErrorActionState } from '@/types';
-import { reload } from '@/lib/utils';
-import { usePermissions } from '@/context/permissions-context';
-import PermissionGate from '@/components/common/PermissionGate';
+import { useActionState, useState, useRef } from "react";
+import { toast } from "sonner";
+import { updateOrganization } from "@/app/actions/organizations";
+import { ErrorActionState } from "@/types";
+import { reload } from "@/lib/utils";
+import { usePermissions } from "@/context/permissions-context";
+import PermissionGate from "@/components/common/PermissionGate";
 
 interface OrganizationSettingsProps {
   organization: { id: number; name: string };
 }
 
-export default function OrganizationSettings({ organization }: OrganizationSettingsProps) {
-  const [state, formAction, isPending] = useActionState<ErrorActionState, FormData>(
-    updateOrganization,
-    { error: null }
-  );
-  const [isOrganizationNameValid, setIsOrganizationNameValid] = useState(false)
-  const [isDeleting, setIsDeleting] = useState(false)
-  const nameInputRef = useRef<HTMLInputElement>(null)
+export default function OrganizationSettings({
+  organization,
+}: OrganizationSettingsProps) {
+  const [state, formAction, isPending] = useActionState<
+    ErrorActionState,
+    FormData
+  >(updateOrganization, { error: null });
+  const [isOrganizationNameValid, setIsOrganizationNameValid] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const nameInputRef = useRef<HTMLInputElement>(null);
 
   function validateName() {
-    const isOrganizationNameValid = 
+    const isOrganizationNameValid =
       nameInputRef.current !== null &&
       nameInputRef.current.value.trim().length > 2 &&
-      nameInputRef.current.value.trim() !== organization.name
+      nameInputRef.current.value.trim() !== organization.name;
     setIsOrganizationNameValid(isOrganizationNameValid);
   }
 
   async function deleteOrganization() {
     const isConfirmed = window.confirm(
-      `Delete "${organization.name}"? This will permanently delete the organization and all of its data. This action cannot be undone.`
+      `Delete "${organization.name}"? This will permanently delete the organization and all of its data. This action cannot be undone.`,
     );
 
     if (!isConfirmed) return;
 
-    setIsDeleting(true)
+    setIsDeleting(true);
 
     try {
       const response = await fetch("/api/organizations/" + organization.id, {
         method: "DELETE",
-      })
-  
+      });
+
       if (!response.ok) {
-        const errorMessage = await response.json()
-        return toast.error(errorMessage.error)
+        const errorMessage = await response.json();
+        return toast.error(errorMessage.error);
       } else {
-        toast.info(organization.name + " has beed successfully deleted")
-        reload()
+        toast.info(organization.name + " has beed successfully deleted");
+        reload();
       }
     } catch {
-      return toast.error("Failed to delete organization")
+      return toast.error("Failed to delete organization");
     } finally {
-      setIsDeleting(false)
+      setIsDeleting(false);
     }
   }
 
@@ -88,7 +90,9 @@ export default function OrganizationSettings({ organization }: OrganizationSetti
 
           {state.error !== null && (
             <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-              <p className="text-sm text-red-800 dark:text-red-200">{state.error}</p>
+              <p className="text-sm text-red-800 dark:text-red-200">
+                {state.error}
+              </p>
             </div>
           )}
 
@@ -98,7 +102,7 @@ export default function OrganizationSettings({ organization }: OrganizationSetti
               disabled={isPending || !isOrganizationNameValid}
               className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-zinc-400 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
             >
-              {isPending ? 'Saving...' : 'Save Changes'}
+              {isPending ? "Saving..." : "Save Changes"}
             </button>
           </div>
         </form>
@@ -115,7 +119,7 @@ export default function OrganizationSettings({ organization }: OrganizationSetti
               onClick={deleteOrganization}
               className="px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-zinc-400 cursor-pointer disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
             >
-              {isDeleting ? 'Deleting...' : 'Delete Organization'}
+              {isDeleting ? "Deleting..." : "Delete Organization"}
             </button>
           </div>
         </div>

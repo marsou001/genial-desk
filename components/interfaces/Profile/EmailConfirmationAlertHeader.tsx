@@ -12,8 +12,9 @@ export default function EmailConfirmationAlertHeader() {
         Email confirmation required
       </p>
       <p id="email-confirmation-alert-description" className="mt-1 text-sm">
-        Your email is not confirmed yet. Certain actions are disabled until you confirm your email.
+        Your email is not confirmed yet. Certain actions are disabled until you
+        confirm your email.
       </p>
     </header>
-  )
+  );
 }

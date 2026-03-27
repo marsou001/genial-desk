@@ -1,28 +1,28 @@
-'use client';
+"use client";
 
 import { useParams } from "next/navigation";
-import { useActionState, useState, useRef, useEffect } from "react"
+import { useActionState, useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
-import { InviteMemberActionState } from "@/types"
-import { inviteMember } from "@/app/actions/organizations"
+import { InviteMemberActionState } from "@/types";
+import { inviteMember } from "@/app/actions/organizations";
 
-export default function InviteMemberDialog({ 
-  handleClose 
-}: { 
-  handleClose: () => void 
+export default function InviteMemberDialog({
+  handleClose,
+}: {
+  handleClose: () => void;
 }) {
-  const [state, formAction, isPending] = useActionState<InviteMemberActionState, FormData>(
-    inviteMember, 
-    { isSuccess: false, error: null, email: "", role: "viewer" }
-  )
-  const [isEmailValid, setIsEmailValid] = useState(false)
-  const emailInputRef = useRef<HTMLInputElement>(null)
-  const formRef = useRef<HTMLFormElement>(null)
+  const [state, formAction, isPending] = useActionState<
+    InviteMemberActionState,
+    FormData
+  >(inviteMember, { isSuccess: false, error: null, email: "", role: "viewer" });
+  const [isEmailValid, setIsEmailValid] = useState(false);
+  const emailInputRef = useRef<HTMLInputElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
-  const { id: organizationId } = useParams()
+  const { id: organizationId } = useParams();
 
   function validateEmail() {
-    const email = emailInputRef.current?.value.trim() || '';
+    const email = emailInputRef.current?.value.trim() || "";
     const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const isValid = regex.test(email);
     setIsEmailValid(isValid);
@@ -44,11 +44,15 @@ export default function InviteMemberDialog({
   useEffect(() => {
     if (isPending) return;
     if (state.error !== null) {
-      toast.error(state.error)
+      toast.error(state.error);
     } else if (state.isSuccess) {
-      toast.success("User with email " + state.email + " has been invited to join your organization")
+      toast.success(
+        "User with email " +
+          state.email +
+          " has been invited to join your organization",
+      );
     }
-  })
+  });
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -56,12 +60,15 @@ export default function InviteMemberDialog({
         <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50 mb-4">
           Invite User
         </h2>
-        
+
         <form ref={formRef} action={formAction} className="space-y-4">
           <input type="hidden" name="organization_id" value={organizationId} />
-          
+
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
+            >
               Email Address
             </label>
             <input
@@ -77,9 +84,12 @@ export default function InviteMemberDialog({
               autoFocus
             />
           </div>
-          
+
           <div>
-            <label htmlFor="role" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+            <label
+              htmlFor="role"
+              className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
+            >
               Role
             </label>
             <select
@@ -101,7 +111,7 @@ export default function InviteMemberDialog({
               disabled={isPending || !isEmailValid}
               className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 cursor-pointer disabled:bg-zinc-400 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
             >
-              {isPending ? 'Inviting...' : 'Invite'}
+              {isPending ? "Inviting..." : "Invite"}
             </button>
             <button
               type="button"
@@ -114,5 +124,5 @@ export default function InviteMemberDialog({
         </form>
       </div>
     </div>
-  )
+  );
 }

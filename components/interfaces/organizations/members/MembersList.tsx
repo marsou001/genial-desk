@@ -1,18 +1,18 @@
-import type { OrganizationMember } from '@/types';
-import InviteUsers from './InviteUsers';
-import MembersDesktopTable from './MembersDesktopTable';
-import MembersMobileCards from './MembersMobileCards';
-import { getUser, getUserRole } from '@/lib';
-import { canInviteMembers } from '@/lib/permissions';
+import type { OrganizationMember } from "@/types";
+import InviteUsers from "./InviteUsers";
+import MembersDesktopTable from "./MembersDesktopTable";
+import MembersMobileCards from "./MembersMobileCards";
+import { getUser, getUserRole } from "@/lib";
+import { canInviteMembers } from "@/lib/permissions";
 
-export default async function MembersList({ 
-  members, 
-}: { 
+export default async function MembersList({
+  members,
+}: {
   members: OrganizationMember[];
 }) {
-  const { id } = await getUser()
-  const role = await getUserRole(id, members[0].organizationId) ?? "viewer"
-  
+  const { id } = await getUser();
+  const role = (await getUserRole(id, members[0].organizationId)) ?? "viewer";
+
   return (
     <>
       <div className="space-y-4">

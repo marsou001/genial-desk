@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server';
-import { User } from '@supabase/supabase-js';
-import { getUser, getUserRole, verifyOrganizationAccess } from '.';
-import { hasPermission, Permission } from './permissions';
+import { NextResponse } from "next/server";
+import { User } from "@supabase/supabase-js";
+import { getUser, getUserRole, verifyOrganizationAccess } from ".";
+import { hasPermission, Permission } from "./permissions";
 
 export interface AuthGuardOptions {
   requirePermission?: Permission | Permission[];
@@ -14,7 +14,7 @@ export interface AuthGuardOptions {
  */
 export async function authGuard(
   organizationId: string,
-  options: AuthGuardOptions = {}
+  options: AuthGuardOptions = {},
 ): Promise<
   | {
       success: true;
@@ -24,10 +24,7 @@ export async function authGuard(
     }
   | { success: false; response: NextResponse }
 > {
-  const {
-    requirePermission,
-    allowMultiplePermissions = true,
-  } = options;
+  const { requirePermission, allowMultiplePermissions = true } = options;
 
   // Check authentication
   const user = await getUser();
@@ -38,8 +35,8 @@ export async function authGuard(
     return {
       success: false,
       response: NextResponse.json(
-        { error: 'Forbidden. You do not have access to this organization.' },
-        { status: 403 }
+        { error: "Forbidden. You do not have access to this organization." },
+        { status: 403 },
       ),
     };
   }
@@ -51,8 +48,8 @@ export async function authGuard(
       return {
         success: false,
         response: NextResponse.json(
-          { error: 'Unable to determine your role in this organization.' },
-          { status: 403 }
+          { error: "Unable to determine your role in this organization." },
+          { status: 403 },
         ),
       };
     }
@@ -69,8 +66,8 @@ export async function authGuard(
       return {
         success: false,
         response: NextResponse.json(
-          { error: 'Forbidden. You do not have the required permissions.' },
-          { status: 403 }
+          { error: "Forbidden. You do not have the required permissions." },
+          { status: 403 },
         ),
       };
     }
@@ -80,6 +77,6 @@ export async function authGuard(
     success: true,
     user,
     organizationId,
-    role: (await getUserRole(user.id, organizationId)) || '',
+    role: (await getUserRole(user.id, organizationId)) || "",
   };
 }

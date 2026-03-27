@@ -1,4 +1,4 @@
-import AppHeader from '@/components/Layout/AppHeader';
+import AppHeader from "@/components/Layout/AppHeader";
 
 export default function ProfileLayout({
   children,
@@ -12,4 +12,3 @@ export default function ProfileLayout({
     </div>
   );
 }
-

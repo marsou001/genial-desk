@@ -1,18 +1,18 @@
-import { redirect } from "next/navigation"
-import { createClient } from "./supabase/server"
-import { NextRequest } from "next/server"
-import { UserRole } from "@/types"
+import { redirect } from "next/navigation";
+import { createClient } from "./supabase/server";
+import { NextRequest } from "next/server";
+import { UserRole } from "@/types";
 
 export async function getUser() {
-  const supabase = await createClient()
-  const { data: userData, error: userError } = await supabase.auth.getUser()
+  const supabase = await createClient();
+  const { data: userData, error: userError } = await supabase.auth.getUser();
   if (userError) {
-    console.log("error getting user: ", userError.message)
-    redirect("/sign-in")
+    console.log("error getting user: ", userError.message);
+    redirect("/sign-in");
   }
 
-  const { user } = userData
-  return user
+  const { user } = userData;
+  return user;
 }
 
 // export async function getUserMemberships() {
@@ -29,12 +29,12 @@ export async function getUser() {
 //       projects(name)
 //     `)
 //     .eq('user_id', user.id);
-  
+
 //   if (membershipError) {
 //     console.error('Error fetching memberships:', membershipError);
 //     return null;
 //   }
-  
+
 //   // Transform memberships
 //   const transformedMemberships: UserMembership[] = (memberships || []).map((m: any) => ({
 //     organization_id: m.organization_id,
@@ -43,11 +43,11 @@ export async function getUser() {
 //     organization_name: m.organizations?.name || '',
 //     project_name: m.projects?.name || null,
 //   }));
-  
+
 //   if (transformedMemberships.length === 0) {
 //     return null; // User must belong to at least one organization
 //   }
-  
+
 //   return {
 //     id: user.id,
 //     email: user.email,
@@ -60,17 +60,17 @@ export async function getUser() {
  */
 export async function verifyOrganizationAccess(
   userId: string,
-  organizationId: string
+  organizationId: string,
 ): Promise<boolean> {
   try {
     const supabase = await createClient();
     const { data, error } = await supabase
-      .from('organization_members')
-      .select('id')
-      .eq('user_id', userId)
-      .eq('organization_id', organizationId)
+      .from("organization_members")
+      .select("id")
+      .eq("user_id", userId)
+      .eq("organization_id", organizationId)
       .single();
-    
+
     return !error && !!data;
   } catch {
     return false;
@@ -82,15 +82,15 @@ export async function verifyOrganizationAccess(
  */
 export async function getUserRole(
   userId: string,
-  organizationId: string
+  organizationId: string,
 ): Promise<UserRole | null> {
   try {
     const supabase = await createClient();
     const { data, error } = await supabase
-      .from('organization_members')
-      .select('role (name)')
-      .eq('user_id', userId)
-      .eq('organization_id', organizationId)
+      .from("organization_members")
+      .select("role (name)")
+      .eq("user_id", userId)
+      .eq("organization_id", organizationId)
       .single();
     if (error || !data) return null;
     return data.role.name as UserRole;
@@ -102,7 +102,9 @@ export async function getUserRole(
 /**
  * Get the current organization context from headers
  */
-export async function getOrganizationContext(request: NextRequest): Promise<string | null> {
-  const orgId = request.headers.get('x-organization-id');
+export async function getOrganizationContext(
+  request: NextRequest,
+): Promise<string | null> {
+  const orgId = request.headers.get("x-organization-id");
   return orgId;
 }

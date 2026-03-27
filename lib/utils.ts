@@ -7,24 +7,25 @@ export function isEmailValid(email: string) {
 }
 
 export function isSafeRedirect(path: string) {
-  return path?.startsWith('/') && !path.startsWith('//')
+  return path?.startsWith("/") && !path.startsWith("//");
 }
 
 // TODO: check if used
 export function getTextSearchParams(searchParams: SearchParams) {
-  let stringParams = "?"
+  let stringParams = "?";
   for (const param in searchParams) {
-    stringParams += param + "=" + encodeURIComponent(searchParams[param])
+    stringParams += param + "=" + encodeURIComponent(searchParams[param]);
   }
-  return stringParams
+  return stringParams;
 }
 
 export function getRandomPrefix() {
   const characters = "abcdefghijklmnopqrstuvwxyz0123456789_";
   let prefix = "";
-  
+
   for (let i = 0; i < 6; i++) {
-    const randomCharacter = characters[Math.floor(Math.random() * characters.length)];
+    const randomCharacter =
+      characters[Math.floor(Math.random() * characters.length)];
     prefix += randomCharacter;
   }
 
@@ -36,25 +37,25 @@ export function prepareFileName(fileName: string) {
 }
 
 export function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
+  return new Date(dateString).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   });
-};
+}
 
 export function getRoleColor(role: UserRole) {
   switch (role.toLowerCase()) {
-    case 'owner':
-      return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300';
-    case 'admin':
-      return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300';
-    case 'analyst':
-      return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300';
+    case "owner":
+      return "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300";
+    case "admin":
+      return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300";
+    case "analyst":
+      return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300";
     default:
-      return 'bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-300';
+      return "bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-300";
   }
-};
+}
 
 export function getAvatarPlaceholderInitial(member: OrganizationMember) {
   return (member.fullName ?? member.email).charAt(0).toUpperCase();
