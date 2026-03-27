@@ -58,6 +58,7 @@ export type ProfileData = {
   avatarUrl: string | null;
   fullName: string | null;
   email: string;
+  isEmailConfirmed: boolean;
 };
 
 export type ErrorActionState = {
