@@ -35,7 +35,7 @@ export async function signUpAction(_: ErrorActionState, formData: FormData) {
     email,
     password,
     options: {
-      emailRedirectTo: undefined, // No email verification for now
+      emailRedirectTo: redirectTo, // No email verification for now
     },
   });
 
@@ -44,7 +44,7 @@ export async function signUpAction(_: ErrorActionState, formData: FormData) {
   }
 
   revalidatePath('/');
-  redirect(redirectTo ?? '/organizations');
+  redirect('/email-confirmation');
 }
 
 export async function signOutAction(_: ErrorActionState): Promise<ErrorActionState> {
