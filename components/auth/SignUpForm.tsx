@@ -55,7 +55,7 @@ export default function SignUpForm() {
       <button
         type="submit"
         disabled={isPending || state.isSuccess}
-        className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-zinc-400 disabled:cursor-not-allowed text-white font-medium rounded-lg cursor-pointer disabled:cursor-not-allowed transition-colors"
+        className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-zinc-400 text-white font-medium rounded-lg cursor-pointer disabled:cursor-not-allowed transition-colors"
       >
         {isPending ? "Creating account..." : "Sign Up"}
       </button>
