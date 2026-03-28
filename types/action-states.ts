@@ -1,7 +1,5 @@
 import { UserRole } from ".";
 
-export type ErrorActionState = ActionStateBaseWithoutSuccess & {};
-
 export type AuthActionState = ActionStateBase & {
   email: string;
   password: string;
@@ -16,7 +14,7 @@ export type ResetPasswordActionState = ActionStateBase & {
   confirmPassword: string;
 };
 
-export type CreateOrganizationrActionState = ActionStateBaseWithoutSuccess & {
+export type CreateOrganizationrActionState = ActionStateBase & {
   name: string;
 };
 
@@ -31,9 +29,5 @@ export type EditAvatarActionState = ActionStateBase & {
 
 export type ActionStateBase = {
   isSuccess: boolean;
-  error: string | null;
-}
-
-export type ActionStateBaseWithoutSuccess = {
   error: string | null;
 }
