@@ -1,4 +1,5 @@
-import { useActionState, useState, useRef } from "react";
+import { useState, useRef } from "react";
+import { useActionWithToast } from "@/hooks/useActionWithToast";
 import { CreateOrganizationrActionState } from "@/types/action-states";
 import { createOrganization } from "@/app/actions/organizations";
 
@@ -7,12 +8,14 @@ export default function CreateOrganizationDialog({
 }: {
   handleClose: () => void;
 }) {
-  const [state, formAction, isPending] = useActionState<
-    CreateOrganizationrActionState,
-    FormData
-  >(createOrganization, { error: null, name: "" });
   const [isOrganizationNameValid, setIsOrganizationNameValid] = useState(false);
   const nameInputRef = useRef<HTMLInputElement>(null);
+  const { state, formAction, isPending } =
+    useActionWithToast<CreateOrganizationrActionState>(
+      createOrganization,
+      { isSuccess: false, error: null, name: "" },
+      "Organization created successfully",
+    );
 
   function validateName() {
     const isOrganizationNameValid =
@@ -50,14 +53,6 @@ export default function CreateOrganizationDialog({
               autoFocus
             />
           </div>
-
-          {!isPending && state.error !== null && (
-            <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-              <p className="text-sm text-red-800 dark:text-red-200">
-                {state.error}
-              </p>
-            </div>
-          )}
 
           <div className="flex gap-3">
             <button
