@@ -3,7 +3,7 @@
 import { useActionState, useState, useRef } from "react";
 import { toast } from "sonner";
 import { updateOrganization } from "@/app/actions/organizations";
-import { ErrorActionState } from "@/types";
+import { ErrorActionState } from "@/types/action-states";
 import { reload } from "@/lib/utils";
 import { usePermissions } from "@/context/permissions-context";
 import PermissionGate from "@/components/common/PermissionGate";

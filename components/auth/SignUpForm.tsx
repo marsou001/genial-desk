@@ -3,7 +3,7 @@
 import { useActionState, useEffect } from "react";
 import { toast } from "sonner";
 import { signUpAction } from "@/app/actions/auth";
-import { AuthActionState } from "@/types";
+import { AuthActionState } from "@/types/action-states";
 import { useActionWithToast } from "@/hooks/useActionWithToast";
 
 export default function SignUpForm() {

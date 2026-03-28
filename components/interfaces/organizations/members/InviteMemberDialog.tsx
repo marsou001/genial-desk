@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 import { useActionState, useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
-import { InviteMemberActionState } from "@/types";
+import { InviteMemberActionState } from "@/types/action-states";
 import { inviteMember } from "@/app/actions/organizations";
 
 export default function InviteMemberDialog({

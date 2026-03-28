@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib";
-import { EditAvatarActionState } from "@/types";
+import { EditAvatarActionState } from "@/types/action-states";
 import { getRandomPrefix, prepareFileName } from "@/lib/utils";
 
 export async function updateAvatarAction(

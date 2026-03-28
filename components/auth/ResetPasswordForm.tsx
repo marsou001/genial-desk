@@ -3,7 +3,7 @@
 import { useActionState, useEffect } from "react";
 import { toast } from "sonner";
 import { resetPasswordAction } from "@/app/actions/auth";
-import type { ResetPasswordActionState } from "@/types";
+import type { ResetPasswordActionState } from "@/types/action-states";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 

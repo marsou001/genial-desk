@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useState, useRef, useEffect } from "react";
-import { ErrorActionState } from "@/types";
+import { ErrorActionState } from "@/types/action-states";
 import { inviteMember } from "@/app/actions/organizations";
 
 export default function InviteMemberDialog({

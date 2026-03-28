@@ -61,48 +61,6 @@ export type ProfileData = {
   isEmailConfirmed: boolean;
 };
 
-export type ErrorActionState = {
-  error: string | null;
-};
-
-export type AuthActionState = {
-  error: string | null;
-  email: string;
-  password: string;
-  isSuccess: boolean;
-}
-
-export type RequestPasswordResetActionState = {
-  isSuccess: boolean;
-  error: string | null;
-  email: string;
-};
-
-export type ResetPasswordActionState = {
-  isSuccess: boolean;
-  error: string | null;
-  password: string;
-  confirmPassword: string;
-};
-
-export type CreateOrganizationrActionState = {
-  error: string | null;
-  name: string;
-};
-
-export type InviteMemberActionState = {
-  isSuccess: boolean;
-  error: string | null;
-  email: string;
-  role: Exclude<UserRole, "owner">;
-};
-
-export type EditAvatarActionState = {
-  isSuccess: boolean;
-  error: string | null;
-  avatarUrl: string | null;
-};
-
 export type UserRole = "owner" | "admin" | "analyst" | "viewer";
 
 // TODO: check if used

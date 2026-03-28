@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useActionState, useState, ChangeEvent, useEffect } from "react";
-import { EditAvatarActionState } from "@/types";
+import { EditAvatarActionState } from "@/types/action-states";
 import { updateAvatarAction } from "@/app/actions/profile";
 import { toast } from "sonner";
 

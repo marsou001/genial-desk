@@ -1,9 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState } from "react";
 import { signInAction } from "@/app/actions/auth";
-import { ErrorActionState } from "@/types";
-import Link from "next/link";
+import { ErrorActionState } from "@/types/action-states";
 
 export default function SignInForm({ redirectTo }: { redirectTo?: string }) {
   const [state, formAction, isPending] = useActionState<

@@ -3,7 +3,7 @@
 import { useActionState, useEffect } from "react";
 import { toast } from "sonner";
 import { requestPasswordResetAction } from "@/app/actions/auth";
-import type { RequestPasswordResetActionState } from "@/types";
+import type { RequestPasswordResetActionState } from "@/types/action-states";
 
 export default function ForgotPasswordForm() {
   const [state, formAction, isPending] = useActionState<

@@ -1,5 +1,5 @@
 import { useActionState, useState, useRef } from "react";
-import { CreateOrganizationrActionState } from "@/types";
+import { CreateOrganizationrActionState } from "@/types/action-states";
 import { createOrganization } from "@/app/actions/organizations";
 
 export default function CreateOrganizationDialog({

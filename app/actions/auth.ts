@@ -8,7 +8,7 @@ import {
   ErrorActionState,
   RequestPasswordResetActionState,
   ResetPasswordActionState,
-} from "@/types";
+} from "@/types/action-states";
 import { isEmailValid } from "@/lib/utils";
 import { getUser } from "@/lib";
 

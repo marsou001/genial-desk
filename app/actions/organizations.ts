@@ -11,8 +11,8 @@ import {
   ErrorActionState,
   CreateOrganizationrActionState,
   InviteMemberActionState,
-  UserRole,
-} from "@/types";
+} from "@/types/action-states";
+import { UserRole } from "@/types";
 import { assertIsError } from "@/types/typeguards";
 import { sendInviteMemberEmail } from "@/lib/emails";
 
