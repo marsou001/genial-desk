@@ -1,15 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
 import { signInAction } from "@/app/actions/auth";
-import { ErrorActionState } from "@/types/action-states";
+import { AuthActionState } from "@/types/action-states";
+import { useActionWithToast } from "@/hooks/useActionWithToast";
 
 export default function SignInForm({ redirectTo }: { redirectTo?: string }) {
-  const [state, formAction, isPending] = useActionState<
-    ErrorActionState,
-    FormData
-  >(signInAction, { error: null });
+  const { state, formAction, isPending } = useActionWithToast<AuthActionState>(
+    signInAction,
+    { isSuccess: false, error: null, email: "", password: "" },
+    "Signed in successfully",
+  );
 
   return (
     <form action={formAction} className="space-y-4">
@@ -50,14 +51,6 @@ export default function SignInForm({ redirectTo }: { redirectTo?: string }) {
         />
       </div>
 
-      {state.error && (
-        <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-          <p className="text-sm text-red-800 dark:text-red-200">
-            {state.error}
-          </p>
-        </div>
-      )}
-
       <div className="flex justify-end">
         <Link href="/forgot-password" className="text-xs text-blue-400">
           Forgot password?
@@ -66,7 +59,7 @@ export default function SignInForm({ redirectTo }: { redirectTo?: string }) {
 
       <button
         type="submit"
-        disabled={isPending}
+        disabled={isPending || state.isSuccess}
         className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-zinc-400 cursor-pointer disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
       >
         {isPending ? "Signing in..." : "Sign In"}
