@@ -4,15 +4,15 @@ import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import {
+  ActionStateBase,
   AuthActionState,
-  ErrorActionState,
   RequestPasswordResetActionState,
   ResetPasswordActionState,
 } from "@/types/action-states";
 import { isEmailValid } from "@/lib/utils";
 import { getUser } from "@/lib";
 
-export async function signInAction(_: ErrorActionState, formData: FormData) {
+export async function signInAction(_: AuthActionState, formData: FormData) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const redirectTo = formData.get("redirect_to") as string | undefined;
@@ -24,7 +24,7 @@ export async function signInAction(_: ErrorActionState, formData: FormData) {
   });
 
   if (error) {
-    return { error: error.message };
+    return { isSuccess: false, error: error.message, email, password };
   }
 
   revalidatePath("/");
@@ -52,37 +52,18 @@ export async function signUpAction(_: AuthActionState, formData: FormData) {
 }
 
 export async function signOutAction(
-  _: ErrorActionState,
-): Promise<ErrorActionState> {
+  _: ActionStateBase,
+): Promise<ActionStateBase> {
   const supabase = await createClient();
   const { error } = await supabase.auth.signOut();
 
   if (error) {
     console.log("Error signing out user ==> ", error.message);
-    return { error: "Error signing out" };
+    return { isSuccess: false, error: "Error signing out" };
   }
 
   revalidatePath("/");
   redirect("/sign-in");
-}
-
-export async function confirmEmail(_: ErrorActionState) {
-  const { email } = await getUser();
-  const supabase = await createClient();
-  const { error } = await supabase.auth.resend({
-    type: "signup",
-    email: email!,
-  });
-
-  if (error) {
-    console.error(
-      "An error occurred while resending the email:",
-      error.message,
-    );
-    return { error: "An error occurred while resending the email" };
-  }
-
-  return { error: null };
 }
 
 export async function requestPasswordResetAction(
