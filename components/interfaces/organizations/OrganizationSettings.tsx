@@ -3,9 +3,8 @@
 import { useActionState, useState, useRef } from "react";
 import { toast } from "sonner";
 import { updateOrganization } from "@/app/actions/organizations";
-import { ErrorActionState } from "@/types/action-states";
+import { CreateOrganizationrActionState } from "@/types/action-states";
 import { reload } from "@/lib/utils";
-import { usePermissions } from "@/context/permissions-context";
 import PermissionGate from "@/components/common/PermissionGate";
 
 interface OrganizationSettingsProps {
@@ -16,9 +15,9 @@ export default function OrganizationSettings({
   organization,
 }: OrganizationSettingsProps) {
   const [state, formAction, isPending] = useActionState<
-    ErrorActionState,
+    CreateOrganizationrActionState,
     FormData
-  >(updateOrganization, { error: null });
+  >(updateOrganization, { isSuccess: false, error: null, name: "" });
   const [isOrganizationNameValid, setIsOrganizationNameValid] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const nameInputRef = useRef<HTMLInputElement>(null);

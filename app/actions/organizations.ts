@@ -8,7 +8,6 @@ import { authGuard } from "@/lib/auth-guard";
 import { createClient } from "@/lib/supabase/server";
 import { isEmailValid } from "@/lib/utils";
 import {
-  ErrorActionState,
   CreateOrganizationrActionState,
   InviteMemberActionState,
 } from "@/types/action-states";
@@ -24,11 +23,11 @@ export async function createOrganization(
   const user = await getUser();
 
   if (!user) {
-    return { error: "Unauthorized", name };
+    return { isSuccess: false, error: "Unauthorized", name };
   }
 
   if (!name || name.trim().length < 2) {
-    return { error: "Organization name must be at least 3 characters", name };
+    return { isSuccess: false, error: "Organization name must be at least 3 characters", name };
   }
 
   const orgId = crypto.randomUUID();
@@ -41,7 +40,7 @@ export async function createOrganization(
 
   if (orgError) {
     console.log("Error creating organization", orgError.message);
-    return { error: "Error creating organization", name };
+    return { isSuccess: false, error: "Error creating organization", name };
   }
 
   revalidatePath("/organizations");
@@ -49,9 +48,9 @@ export async function createOrganization(
 }
 
 export async function updateOrganization(
-  _: ErrorActionState,
+  _: CreateOrganizationrActionState,
   formData: FormData,
-): Promise<ErrorActionState> {
+): Promise<CreateOrganizationrActionState> {
   const name = (formData.get("name") as string)?.trim();
   const organizationId = formData.get("organization_id") as string;
 
@@ -60,11 +59,11 @@ export async function updateOrganization(
   });
 
   if (!guard.success) {
-    return { error: (await guard.response.json()).error };
+    return { isSuccess: false, error: (await guard.response.json()).error, name };
   }
 
   if (!name || name.length < 3) {
-    return { error: "Organization name must be at least 3 characters" };
+    return { isSuccess: false, error: "Organization name must be at least 3 characters", name };
   }
 
   try {
@@ -75,15 +74,15 @@ export async function updateOrganization(
       .eq("id", organizationId);
 
     if (error) {
-      return { error: error.message };
+      return { isSuccess: false, error: error.message, name };
     }
 
     revalidatePath(`/organizations/${organizationId}/settings`);
     revalidatePath(`/organizations`);
-    return { error: null };
+    return { isSuccess: true, error: null, name };
   } catch (error) {
     console.error("Error updating organization:", error);
-    return { error: "Failed to update organization" };
+    return { isSuccess: false, error: "Failed to update organization", name };
   }
 }
 

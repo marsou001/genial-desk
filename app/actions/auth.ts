@@ -10,7 +10,6 @@ import {
   ResetPasswordActionState,
 } from "@/types/action-states";
 import { isEmailValid } from "@/lib/utils";
-import { getUser } from "@/lib";
 
 export async function signInAction(_: AuthActionState, formData: FormData) {
   const email = formData.get("email") as string;
