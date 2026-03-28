@@ -1,23 +1,26 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useActionState, useState, useRef, useEffect } from "react";
-import { toast } from "sonner";
+import { useState, useRef, useEffect } from "react";
 import { InviteMemberActionState } from "@/types/action-states";
 import { inviteMember } from "@/app/actions/organizations";
+import { useActionWithToast } from "@/hooks/useActionWithToast";
 
 export default function InviteMemberDialog({
   handleClose,
 }: {
   handleClose: () => void;
 }) {
-  const [state, formAction, isPending] = useActionState<
-    InviteMemberActionState,
-    FormData
-  >(inviteMember, { isSuccess: false, error: null, email: "", role: "viewer" });
   const [isEmailValid, setIsEmailValid] = useState(false);
   const emailInputRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
+
+  const { state, formAction, isPending } =
+    useActionWithToast<InviteMemberActionState>(
+      inviteMember,
+      { isSuccess: false, error: null, email: "", role: "viewer" },
+      `User with email ${emailInputRef.current?.value.trim()} has been invited to join your organization`,
+    );
 
   const { id: organizationId } = useParams();
 
@@ -30,7 +33,7 @@ export default function InviteMemberDialog({
 
   // Close dialog on successful invite
   useEffect(() => {
-    if (state.error === null && !isPending && emailInputRef.current?.value) {
+    if (!isPending && state.isSuccess) {
       const timer = setTimeout(() => {
         handleClose();
         if (formRef.current) {
@@ -39,20 +42,7 @@ export default function InviteMemberDialog({
       }, 500);
       return () => clearTimeout(timer);
     }
-  }, [state.error, isPending, handleClose]);
-
-  useEffect(() => {
-    if (isPending) return;
-    if (state.error !== null) {
-      toast.error(state.error);
-    } else if (state.isSuccess) {
-      toast.success(
-        "User with email " +
-          state.email +
-          " has been invited to join your organization",
-      );
-    }
-  });
+  }, [isPending, state, handleClose]);
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
