@@ -1,4 +1,4 @@
-import { UserRole } from ".";
+import { InviteStatus, UserRole } from ".";
 
 export interface Feedback {
   id: string;
@@ -30,7 +30,8 @@ export interface Invite {
   id: string;
   organization_id: string;
   email: string;
-  role: Role["name"];
+  role: number;
+  status: InviteStatus;
   invited_by: string;
   token_hash: string;
   created_at: string;

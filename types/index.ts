@@ -63,6 +63,8 @@ export type ProfileData = {
 
 export type UserRole = "owner" | "admin" | "analyst" | "viewer";
 
+export type InviteStatus = "pending" | "sent" | "failed" | "accepted" | "rejected";
+
 // TODO: check if used
 export type SearchParams = {
   [key: string]: string;

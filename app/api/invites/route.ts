@@ -17,7 +17,7 @@ export async function PATCH(request: NextRequest) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("invites")
-    .update({ accepted_at: acceptedAt })
+    .update({ accepted_at: acceptedAt, status: "accepted" })
     .eq("token_hash", hashedToken)
     .select()
     .single();
