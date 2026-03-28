@@ -7,11 +7,6 @@ export default async function SignInPage({
   searchParams: Promise<{ redirect_to: string | undefined }>;
 }) {
   const { redirect_to } = await searchParams;
-  const signUpLink =
-    "/sign-up" +
-    (redirect_to !== undefined
-      ? "?redirect_to=" + encodeURIComponent(redirect_to)
-      : "");
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 px-4">
@@ -32,7 +27,7 @@ export default async function SignInPage({
             <p className="text-zinc-600 dark:text-zinc-400">
               Don't have an account?{" "}
               <Link
-                href={signUpLink}
+                href="/sign-up"
                 className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
               >
                 Sign up
