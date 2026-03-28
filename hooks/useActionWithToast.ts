@@ -1,13 +1,8 @@
+import { ActionStateBase } from "@/types/action-states";
 import { useActionState, useEffect } from "react";
 import { toast } from "sonner";
 
-type ActionState = {
-  error: string | null;
-  isSuccess: boolean;
-  [k: string]: any;
-};
-
-export function useActionWithToast<State extends ActionState>(
+export function useActionWithToast<State extends ActionStateBase>(
   action: (state: Awaited<State>, formData: FormData) => State | Promise<State>,
   initState: Awaited<State>,
   successMessage: string,
