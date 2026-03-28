@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import {
+  AuthActionState,
   ErrorActionState,
   RequestPasswordResetActionState,
   ResetPasswordActionState,
@@ -30,26 +31,24 @@ export async function signInAction(_: ErrorActionState, formData: FormData) {
   redirect(redirectTo ?? "/organizations");
 }
 
-export async function signUpAction(_: ErrorActionState, formData: FormData) {
+export async function signUpAction(_: AuthActionState, formData: FormData) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
-  const redirectTo = formData.get("redirect_to") as string | undefined;
   const supabase = await createClient();
 
   const { error } = await supabase.auth.signUp({
     email,
     password,
     options: {
-      emailRedirectTo: redirectTo, // No email verification for now
+      emailRedirectTo: "/organizations",
     },
   });
 
   if (error) {
-    return { error: error.message };
+    return { isSuccess: false, error: error.message, email, password };
   }
 
-  revalidatePath("/");
-  redirect("/email-confirmation");
+  return { isSuccess: true, error: null, email, password  }
 }
 
 export async function signOutAction(

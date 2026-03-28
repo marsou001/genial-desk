@@ -65,6 +65,13 @@ export type ErrorActionState = {
   error: string | null;
 };
 
+export type AuthActionState = {
+  error: string | null;
+  email: string;
+  password: string;
+  isSuccess: boolean;
+}
+
 export type RequestPasswordResetActionState = {
   isSuccess: boolean;
   error: string | null;
