@@ -3,15 +3,16 @@ import { toast } from "sonner";
 
 type ActionState = {
   error: string | null;
+  isSuccess: boolean;
   [k: string]: any;
 };
 
-export function useActionToast<T extends ActionState>(
-  action: (_: T, formData: FormData) => T | Promise<T>,
-  initState: T,
+export function useActionWithToast<State extends ActionState>(
+  action: (state: Awaited<State>, formData: FormData) => State | Promise<State>,
+  initState: Awaited<State>,
   successMessage: string,
 ) {
-  const [state, formAction, isPending] = useActionState<T, FormData>(
+  const [state, formAction, isPending] = useActionState<State, FormData>(
     action,
     initState,
   );
@@ -20,10 +21,10 @@ export function useActionToast<T extends ActionState>(
     if (isPending) return;
     if (state.error !== null) {
       toast.error(state.error);
-    } else {
+    } else if (state.isSuccess) {
       toast.success(successMessage);
     }
   }, [isPending, state]);
 
-  return { formAction };
+  return { state, formAction, isPending };
 }

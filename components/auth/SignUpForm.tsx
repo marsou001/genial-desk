@@ -4,21 +4,14 @@ import { useActionState, useEffect } from "react";
 import { toast } from "sonner";
 import { signUpAction } from "@/app/actions/auth";
 import { AuthActionState } from "@/types";
+import { useActionWithToast } from "@/hooks/useActionWithToast";
 
 export default function SignUpForm() {
-  const [state, formAction, isPending] = useActionState<
-    AuthActionState,
-    FormData
-  >(signUpAction, { isSuccess: false, error: null, email: "", password: "" });
-
-  useEffect(() => {
-    if (isPending) return;
-    if (state.error !== null) {
-      toast.error(state.error);
-    } else if (state.isSuccess) {
-      toast.success("Your account has been created. Check your inbox to confirm your email")
-    }
-  }, [isPending, state]);
+  const { state, formAction, isPending } = useActionWithToast<AuthActionState>(
+    signUpAction,
+    { isSuccess: false, error: null, email: "", password: "" },
+    "Your account has been created. Check your inbox to confirm your email",
+  );
 
   return (
     <form action={formAction} className="space-y-4">
