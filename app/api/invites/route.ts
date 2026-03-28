@@ -1,15 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import crypto from "crypto";
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { hashToken } from "@/lib/utils";
 
 export async function PATCH(request: NextRequest) {
   const body = await request.json();
   const inviteToken = body.invite_token;
-  const hashedToken = crypto
-    .createHash("sha256")
-    .update(inviteToken)
-    .digest("hex");
+  const hashedToken = await hashToken(inviteToken);
 
   const now = new Date();
   const acceptedAt = now.toISOString();
