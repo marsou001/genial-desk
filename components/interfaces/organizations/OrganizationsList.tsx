@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { OrganizationView } from "@/types";
 import CreateOrganizationDialog from "./CreateOrganizationDialog";
-import { useIsEmailConfirmed } from "@/context/email-confirmation-context";
 
 export default function OrganizationsList({
   organizations,
@@ -12,7 +11,6 @@ export default function OrganizationsList({
   organizations: OrganizationView[];
 }) {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
-  const isEmailConfirmed = useIsEmailConfirmed();
 
   return (
     <>
@@ -26,7 +24,6 @@ export default function OrganizationsList({
             Create your first organization to start managing customer feedback.
           </p>
           <button
-            disabled={!isEmailConfirmed}
             onClick={() => setShowCreateDialog(true)}
             className="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-zinc-300 text-white font-medium cursor-pointer disabled:cursor-not-allowed rounded-lg transition-colors"
           >
@@ -59,7 +56,6 @@ export default function OrganizationsList({
 
       {organizations.length > 0 && (
         <button
-          disabled={!isEmailConfirmed}
           onClick={() => setShowCreateDialog(true)}
           className="w-full px-6 py-3 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-900 dark:text-zinc-50 font-medium rounded-lg cursor-pointer disabled:cursor-not-allowed transition-colors border border-zinc-300 dark:border-zinc-700"
         >

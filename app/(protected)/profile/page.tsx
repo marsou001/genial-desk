@@ -5,12 +5,10 @@ import EditAvatar from "@/components/interfaces/Profile/EditAvatar";
 import EditNameForm from "@/components/interfaces/Profile/EditNameForm";
 import UserMembershipsList from "@/components/interfaces/Profile/UserMemberships";
 import SignOutButton from "@/components/interfaces/Profile/SignOutButton";
-import EmailConfirmationAlertHeader from "@/components/interfaces/Profile/EmailConfirmationAlertHeader";
 
 async function getProfileAndMemberships() {
   const supabase = await createClient();
   const user = await getUser();
-  const isEmailConfirmed = user.email_confirmed_at !== null;
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -27,7 +25,6 @@ async function getProfileAndMemberships() {
     id: user.id,
     fullName: profile?.full_name ?? null,
     email: profile?.email ?? "",
-    isEmailConfirmed,
     avatarUrl: profile?.avatar_url ?? null,
   };
 
@@ -52,7 +49,6 @@ export default async function ProfilePage() {
         Profile
       </h1>
 
-      {!profile.isEmailConfirmed && <EmailConfirmationAlertHeader />}
       <EditAvatar
         avatarUrl={profile.avatarUrl}
         fullName={profile.fullName}
