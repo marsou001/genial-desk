@@ -79,7 +79,7 @@ export async function requestPasswordResetAction(
 
   const redirectTo =
     process.env.NEXT_PUBLIC_APP_URL !== undefined
-      ? `${process.env.NEXT_PUBLIC_APP_URL}/reset-password`
+      ? `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/confirm`
       : undefined;
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -91,6 +91,62 @@ export async function requestPasswordResetAction(
   }
 
   return { isSuccess: true, error: null, email };
+}
+
+export async function setInvitePasswordAction(
+  _: ResetPasswordActionState,
+  formData: FormData,
+) {
+  const password = formData.get("password") as string;
+  const confirmPassword = formData.get("confirm_password") as string;
+  const inviteToken = (formData.get("invite_token") as string)?.trim();
+
+  if (!password || !confirmPassword) {
+    return {
+      isSuccess: false,
+      error: "Password and confirmation are required.",
+      password,
+      confirmPassword,
+    };
+  }
+
+  if (password !== confirmPassword) {
+    return {
+      isSuccess: false,
+      error: "Passwords do not match.",
+      password,
+      confirmPassword,
+    };
+  }
+
+  if (!inviteToken) {
+    return {
+      isSuccess: false,
+      error:
+        "Missing invitation token. Open the link from your invite email, or request a new invite.",
+      password,
+      confirmPassword,
+    };
+  }
+
+  const supabase = await createClient();
+  const { error: updateError } = await supabase.auth.updateUser({
+    password,
+  });
+
+  if (updateError) {
+    return {
+      isSuccess: false,
+      error: updateError.message,
+      password,
+      confirmPassword,
+    };
+  }
+
+  revalidatePath("/");
+  redirect(
+    `/invite?invite_token=${encodeURIComponent(inviteToken)}`,
+  );
 }
 
 export async function resetPasswordAction(
@@ -108,7 +164,8 @@ export async function resetPasswordAction(
       confirmPassword,
     };
   }
-
+  console.log("password", password)
+  console.log("confirmPassword", confirmPassword)
   if (password !== confirmPassword) {
     return {
       isSuccess: false,

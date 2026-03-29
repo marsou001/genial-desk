@@ -1,11 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
-import { toast } from "sonner";
 import { resetPasswordAction } from "@/app/actions/auth";
 import type { ResetPasswordActionState } from "@/types/action-states";
-import { useSearchParams } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
 import { useActionWithToast } from "@/hooks/useActionWithToast";
 
 export default function ResetPasswordForm() {
@@ -20,27 +16,6 @@ export default function ResetPasswordForm() {
       },
       "Your password has been successfully changed",
     );
-  const params = useSearchParams();
-
-  const supabase = createClient();
-
-  useEffect(() => {
-    const code = params.get("code");
-    if (code === null) {
-      toast.error("No verification code is available");
-      return;
-    }
-
-    async function startAuthSession(code: string) {
-      const { error } = await supabase.auth.exchangeCodeForSession(code);
-
-      if (error) {
-        console.log(error.message);
-      }
-    }
-
-    startAuthSession(code);
-  }, [params]);
 
   return (
     <form action={formAction} className="space-y-4">
