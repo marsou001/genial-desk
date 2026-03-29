@@ -111,11 +111,6 @@ export async function inviteMember(
     return { isSuccess: false, error: "Invalid role", email, role };
   }
 
-  const validRoles = ["owner", "admin", "analyst", "viewer"];
-  if (!validRoles.includes(role)) {
-    return { isSuccess: false, error: "Invalid role", email, role };
-  }
-
   const guard = await authGuard(organizationId, {
     requirePermission: "org:members:invite",
   });
@@ -171,20 +166,13 @@ export async function inviteMember(
 
     const user = await getUser();
     const userId = user.id;
-    const inviteToken = crypto.randomBytes(32).toString("hex");
-    const tokenHash = crypto
-      .createHash("sha256")
-      .update(inviteToken)
-      .digest("hex");
     const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
 
     const { error: inviteError } = await supabase.from("invites").insert({
-      // organizationId,
       organization_id: organizationId,
       email,
       role: roleData.id,
       invited_by: userId,
-      token_hash: tokenHash,
       expires_at: expiresAt,
     });
 
@@ -198,39 +186,10 @@ export async function inviteMember(
       };
     }
 
-    // Get organization's name
-    const { data: organizationData, error: organizationError } = await supabase
-      .from("organizations")
-      .select("name")
-      .eq("id", organizationId)
-      .single();
-
-    if (organizationError) {
-      console.log(organizationError.message);
-      return {
-        isSuccess: false,
-        error: "Failed to fetch organization",
-        email,
-        role,
-      };
-    }
-
-    const { error: sendEmailError } = await sendInviteMemberEmail(
-      email,
-      organizationData.name,
-      role,
-      inviteToken,
-    );
-
-    if (sendEmailError) {
-      console.log("Failed to send invite", sendEmailError.message);
-      return { isSuccess: false, error: "Failed to send invite", email, role };
-    }
-
     return { isSuccess: true, error: null, email, role };
   } catch (error) {
     assertIsError(error);
-    console.error("Error inviting member:", error);
+    console.log("Error inviting member ==>", error.message);
     return { isSuccess: false, error: "Failed to invite member", email, role };
   }
 }
