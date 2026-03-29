@@ -1,22 +1,25 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useEffect } from "react";
 import { toast } from "sonner";
 import { resetPasswordAction } from "@/app/actions/auth";
 import type { ResetPasswordActionState } from "@/types/action-states";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useActionWithToast } from "@/hooks/useActionWithToast";
 
 export default function ResetPasswordForm() {
-  const [state, formAction, isPending] = useActionState<
-    ResetPasswordActionState,
-    FormData
-  >(resetPasswordAction, {
-    isSuccess: false,
-    error: null,
-    password: "",
-    confirmPassword: "",
-  });
+  const { state, formAction, isPending } =
+    useActionWithToast<ResetPasswordActionState>(
+      resetPasswordAction,
+      {
+        isSuccess: false,
+        error: null,
+        password: "",
+        confirmPassword: "",
+      },
+      "Your password has been successfully changed",
+    );
   const params = useSearchParams();
 
   const supabase = createClient();
@@ -38,15 +41,6 @@ export default function ResetPasswordForm() {
 
     startAuthSession(code);
   }, [params]);
-
-  useEffect(() => {
-    if (isPending) return;
-    if (state.error !== null) {
-      toast.error(state.error);
-    } else if (state.isSuccess) {
-      toast.info("Your password has been successfully changed");
-    }
-  }, [isPending, state]);
 
   return (
     <form action={formAction} className="space-y-4">
@@ -96,7 +90,7 @@ export default function ResetPasswordForm() {
       <button
         type="submit"
         disabled={isPending}
-        className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-zinc-400 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
+        className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-zinc-400 cursor-pointer disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
       >
         {isPending ? "Updating password..." : "Update password"}
       </button>
