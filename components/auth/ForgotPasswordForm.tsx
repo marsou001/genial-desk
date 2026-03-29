@@ -1,26 +1,16 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
-import { toast } from "sonner";
 import { requestPasswordResetAction } from "@/app/actions/auth";
 import type { RequestPasswordResetActionState } from "@/types/action-states";
+import { useActionWithToast } from "@/hooks/useActionWithToast";
 
 export default function ForgotPasswordForm() {
-  const [state, formAction, isPending] = useActionState<
-    RequestPasswordResetActionState,
-    FormData
-  >(requestPasswordResetAction, { isSuccess: false, email: "", error: null });
-
-  useEffect(() => {
-    if (isPending) return;
-    if (state.error !== null) {
-      toast.error(state.error);
-    } else if (state.isSuccess) {
-      toast.info(
-        "An email with the password reset link has been sent. Check your inbox!",
-      );
-    }
-  });
+  const { state, formAction, isPending } =
+    useActionWithToast<RequestPasswordResetActionState>(
+      requestPasswordResetAction,
+      { isSuccess: false, email: "", error: null },
+      "An email with the password reset link has been sent. Check your inbox!",
+    );
 
   return (
     <form action={formAction} className="space-y-4">
