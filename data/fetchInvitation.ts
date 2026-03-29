@@ -1,14 +1,11 @@
-import crypto from "crypto";
 import { createClient } from "@/lib/supabase/server";
 import { InviteResult } from "@/types";
+import { hashToken } from "@/lib/utils";
 
 export async function fetchInvitation(
   inviteToken: string,
 ): Promise<InviteResult> {
-  const tokenHash = crypto
-    .createHash("sha256")
-    .update(inviteToken)
-    .digest("hex");
+  const tokenHash = await hashToken(inviteToken);
 
   try {
     const supabase = await createClient();
