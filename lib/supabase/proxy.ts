@@ -46,8 +46,9 @@ export async function updateSession(request: NextRequest) {
     request.nextUrl.pathname.startsWith("/sign-in") ||
     request.nextUrl.pathname.startsWith("/forgot-password") ||
     request.nextUrl.pathname.startsWith("/api/auth/confirm");
+  const isSetPasswordPage = request.nextUrl.pathname.startsWith("/set-password");
 
-  const isProtectedRoute = !isPublicRoute && !isAuthRoute;
+  const isProtectedRoute = !isPublicRoute && !isAuthRoute && !isSetPasswordPage;
 
   if (!user && isProtectedRoute) {
     const fullPath = request.nextUrl.pathname + request.nextUrl.search;
