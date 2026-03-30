@@ -13,7 +13,6 @@ import {
 } from "@/types/action-states";
 import { UserRole } from "@/types";
 import { assertIsError } from "@/types/typeguards";
-import { sendInviteMemberEmail } from "@/lib/emails";
 
 export async function createOrganization(
   _: CreateOrganizationrActionState,
