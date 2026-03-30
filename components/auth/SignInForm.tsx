@@ -4,6 +4,7 @@ import Link from "next/link";
 import { signInAction } from "@/app/actions/auth";
 import { AuthActionState } from "@/types/action-states";
 import { useActionWithToast } from "@/hooks/useActionWithToast";
+import GoogleAuthButton from "./GoogleAuthButton";
 
 export default function SignInForm({ redirectTo }: { redirectTo?: string }) {
   const { state, formAction, isPending } = useActionWithToast<AuthActionState>(
@@ -14,6 +15,19 @@ export default function SignInForm({ redirectTo }: { redirectTo?: string }) {
 
   return (
     <form action={formAction} className="space-y-4">
+      <GoogleAuthButton />
+
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center" aria-hidden="true">
+          <div className="w-full border-t border-zinc-300 dark:border-zinc-700" />
+        </div>
+        <div className="relative flex justify-center text-xs">
+          <span className="bg-white dark:bg-zinc-800 px-2 text-zinc-500 dark:text-zinc-400">
+            or continue with email
+          </span>
+        </div>
+      </div>
+
       {redirectTo !== undefined && (
         <input type="hidden" name="redirect_to" value={redirectTo} />
       )}

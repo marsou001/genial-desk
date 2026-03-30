@@ -1,10 +1,9 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
-import { toast } from "sonner";
 import { signUpAction } from "@/app/actions/auth";
 import { AuthActionState } from "@/types/action-states";
 import { useActionWithToast } from "@/hooks/useActionWithToast";
+import GoogleAuthButton from "./GoogleAuthButton";
 
 export default function SignUpForm() {
   const { state, formAction, isPending } = useActionWithToast<AuthActionState>(
@@ -15,6 +14,19 @@ export default function SignUpForm() {
 
   return (
     <form action={formAction} className="space-y-4">
+      <GoogleAuthButton />
+
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center" aria-hidden="true">
+          <div className="w-full border-t border-zinc-300 dark:border-zinc-700" />
+        </div>
+        <div className="relative flex justify-center text-xs">
+          <span className="bg-white dark:bg-zinc-800 px-2 text-zinc-500 dark:text-zinc-400">
+            or sign up with email
+          </span>
+        </div>
+      </div>
+
       <div>
         <label
           htmlFor="email"
