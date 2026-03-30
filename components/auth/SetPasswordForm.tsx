@@ -119,7 +119,7 @@ export default function SetPasswordForm({
       <button
         type="submit"
         disabled={isPending}
-        className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-zinc-400 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
+        className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-zinc-400 cursor-pointer disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
       >
         {isPending ? "Saving password..." : "Continue"}
       </button>
