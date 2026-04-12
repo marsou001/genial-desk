@@ -58,6 +58,21 @@ export function formatDate(dateString: string) {
   });
 }
 
+export function formatRelativeTime(iso: string): string {
+  const d = new Date(iso);
+  const now = Date.now();
+  const diffMs = Math.max(0, now - d.getTime());
+  const sec = Math.floor(diffMs / 1000);
+  if (sec < 45) return "Just now";
+  const min = Math.floor(sec / 60);
+  if (min < 60) return `${min}m ago`;
+  const h = Math.floor(min / 60);
+  if (h < 24) return `${h}h ago`;
+  const days = Math.floor(h / 24);
+  if (days < 7) return `${days}d ago`;
+  return d.toLocaleDateString();
+}
+
 export function getRoleColor(role: UserRole) {
   switch (role.toLowerCase()) {
     case "owner":

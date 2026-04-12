@@ -16,6 +16,7 @@ export async function fetchInvitation(
         id,
         expires_at,
         accepted_at,
+        status,
         organizations (
           name
         ),
@@ -39,7 +40,11 @@ export async function fetchInvitation(
       return { status: "expired" };
     }
 
-    if (data.accepted_at !== null) {
+    if (data.status === "rejected") {
+      return { status: "rejected" };
+    }
+
+    if (data.status === "accepted" && data.accepted_at !== null) {
       return { status: "accepted" };
     }
 
