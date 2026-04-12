@@ -26,7 +26,11 @@ export async function createOrganization(
   }
 
   if (!name || name.trim().length < 2) {
-    return { isSuccess: false, error: "Organization name must be at least 3 characters", name };
+    return {
+      isSuccess: false,
+      error: "Organization name must be at least 3 characters",
+      name,
+    };
   }
 
   const orgId = crypto.randomUUID();
@@ -58,11 +62,19 @@ export async function updateOrganization(
   });
 
   if (!guard.success) {
-    return { isSuccess: false, error: (await guard.response.json()).error, name };
+    return {
+      isSuccess: false,
+      error: (await guard.response.json()).error,
+      name,
+    };
   }
 
   if (!name || name.length < 3) {
-    return { isSuccess: false, error: "Organization name must be at least 3 characters", name };
+    return {
+      isSuccess: false,
+      error: "Organization name must be at least 3 characters",
+      name,
+    };
   }
 
   try {
@@ -177,9 +189,13 @@ export async function inviteMember(
 
     if (inviteError) {
       console.log(inviteError.message);
+      const errorMessage =
+        inviteError.code === "23505"
+          ? `User with email ${email} has not yet accepted or rejected your invitation`
+          : "Failed to create invite";
       return {
         isSuccess: false,
-        error: "Failed to create invite",
+        error: errorMessage,
         email,
         role,
       };
