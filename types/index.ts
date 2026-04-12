@@ -44,6 +44,7 @@ export type InviteResult =
   | { status: "ok"; invite: InviteView }
   | { status: "not_found" }
   | { status: "expired" }
+  | { status: "rejected" }
   | { status: "accepted" };
 
 export type InviteView = {

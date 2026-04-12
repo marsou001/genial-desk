@@ -5,13 +5,33 @@ import { hashToken } from "@/lib/utils";
 
 export async function PATCH(request: NextRequest) {
   const body = await request.json();
-  const inviteToken = body.invite_token;
+  const { invite_token: inviteToken, should_accept: shouldAccept } = body;
   const hashedToken = await hashToken(inviteToken);
+  const supabase = await createClient();
 
+  if (!shouldAccept) {
+    const { error } = await supabase
+      .from("invites")
+      .update({ status: "rejected" })
+      .eq("token_hash", hashedToken)
+
+    if (error) {
+      console.log("Error rejecting invite", error.message);
+      return NextResponse.json(
+        { error: "Error rejecting invite" },
+        { status: 500 },
+      );
+    } 
+    
+    return NextResponse.json(
+      { message: "Invite rejected" },
+      { status: 200 },
+    );
+  }
+  
   const now = new Date();
   const acceptedAt = now.toISOString();
 
-  const supabase = await createClient();
   const { data, error } = await supabase
     .from("invites")
     .update({ accepted_at: acceptedAt, status: "accepted" })

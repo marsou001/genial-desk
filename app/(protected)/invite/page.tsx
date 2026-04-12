@@ -1,4 +1,4 @@
-import AcceptInviteButton from "@/components/interfaces/Invite/AcceptInviteButton";
+import InviteActions from "@/components/interfaces/Invite/InviteActions";
 import { fetchInvitation } from "@/data/fetchInvitation";
 
 export default async function InvitePage({
@@ -13,6 +13,8 @@ export default async function InvitePage({
     return <div>Invitation not found</div>;
   if (invitationResult.status === "expired")
     return <div>Invitation expired</div>;
+  if (invitationResult.status === "rejected")
+    return <div>Invitation already rejected</div>;
   if (invitationResult.status === "accepted")
     return <div>Invitation already accepted</div>;
 
@@ -54,8 +56,8 @@ export default async function InvitePage({
               </p>
             </div>
 
-            {/* Button */}
-            <AcceptInviteButton inviteToken={invite_token} />
+            {/* Buttons */}
+            <InviteActions inviteToken={invite_token} />
 
             {/* Expiry */}
             <p className="text-xs text-muted-foreground/80 pt-4 border-t border-border/40">
