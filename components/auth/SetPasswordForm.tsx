@@ -30,7 +30,7 @@ export default function SetPasswordForm({
     async function establishSession() {
       const supabase = createClient();
       const { data: _sessionData, error: _sessionError } = await supabase.auth.getSession();
-      const isAlreadyAuthenticated = !_sessionError && !!_sessionData;
+      const isAlreadyAuthenticated = !_sessionError && !!_sessionData.session;
       
       const hash = window.location.hash.slice(1);
       if (isAlreadyAuthenticated || hash.length === 0) {
