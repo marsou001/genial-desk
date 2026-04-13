@@ -1,5 +1,5 @@
 import { EVENT_TYPES } from "./NotificationsBell.constants";
-import { InviteRejectedPayload, MemberAddedPayload, NotificationEventPayload, NotificationEventType, NotificationItemState } from "./NotificationsBell.types";
+import { InviteRejectedPayload, MemberAddedPayload, MemberRemovedPayload, NotificationEventPayload, NotificationEventType, NotificationItemState } from "./NotificationsBell.types";
 
 function isNotificationEventType(v: string): v is NotificationEventType {
   return (EVENT_TYPES as string[]).includes(v);
@@ -49,10 +49,6 @@ export function mapSupabaseNotificationRow(
 
   if (!payload) return null
 
-  const org = firstOrNull(asRecord(ne.organizations));
-  const orgName =
-    org && typeof org.name === "string" ? org.name : null;
-
   const prof = firstOrNull(asRecord(ne.profiles));
   const senderName =
     prof && typeof prof.full_name === "string" ? prof.full_name : null;
@@ -66,7 +62,6 @@ export function mapSupabaseNotificationRow(
     readAt,
     createdAt,
     payload,
-    orgName,
     senderName,
     senderEmail,
   };
@@ -86,18 +81,22 @@ function invitedUserDisplayName(payload: InviteRejectedPayload): string {
   return email.trim();
 }
 
+function removedMemberDisplayName(payload: MemberRemovedPayload): string {
+  const name = payload.removed_member_name;
+  const email = payload.removed_member_email;
+  if (typeof name === "string" && name.trim().length > 0) return name.trim();
+   return email.trim();
+}
+
 export function getNotificationMessage(
   payload: NotificationEventPayload,
-  orgName: string | null,
   targetUserId: string,
 ): string {
-  const org = orgName?.trim() || "the organization";
+  const orgName = payload.organization_name;
 
   switch (payload.type) {
     case "new_invite":
-      return orgName
-        ? `You have an invitation to join ${orgName}`
-        : "You have an invitation";
+      return `You have an invitation to join ${orgName}`;
     case "invite_rejected":
       const who = invitedUserDisplayName(payload);
       return `${who} has rejected your invitation`;
@@ -107,21 +106,22 @@ export function getNotificationMessage(
       const who = newMemberDisplayName(payload);
 
       if (newMemberId && targetUserId === newMemberId) {
-        return `You are now a member of ${org}`;
+        return `You are now a member of ${orgName}`;
       }
       if (invitedById && targetUserId === invitedById) {
         return `${who} has accepted your invitation`;
       }
-      return `${who} is now a member of ${org}`;
+      return `${who} is now a member of ${orgName}`;
     }
     case "invite_rejected":
-      return orgName
-        ? `An invitation was declined for ${orgName}`
-        : "An invitation was declined";
-    // case "member_removed":
-    //   return orgName
-    //     ? `A member was removed from ${orgName}`
-    //     : "A member was removed from an organization";
+      return `An invitation was declined for ${orgName}`;
+    case "member_removed": {
+      const removedMemberId = payload.removed_member_id;
+      const who = removedMemberDisplayName(payload);
+      return targetUserId === removedMemberId
+        ? `You are no longer a member of ${orgName}`
+        : `${who} is no longer a member of ${orgName}`;
+    }
     default:
       return "You have a new notification";
   }

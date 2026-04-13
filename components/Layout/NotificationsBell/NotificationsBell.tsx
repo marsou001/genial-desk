@@ -61,10 +61,7 @@ export default function NotificationsBell({
             if (typeof row.id !== "string") return;
             const item = await refetchOne(row.id);
             if (item) {
-              setItems((prev) => {
-                const rest = prev.filter((p) => p.id !== item.id);
-                return [item, ...rest];
-              });
+              setItems((prev) => [item, ...prev]);
             }
           } else if (payload.eventType === "UPDATE") {
             const row = payload.new as {
@@ -172,7 +169,6 @@ export default function NotificationsBell({
               items.map((item) => {
                 const message = getNotificationMessage(
                   { ...item.payload },
-                  item.orgName,
                   userId,
                 );
                 return (

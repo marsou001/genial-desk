@@ -16,7 +16,6 @@ export const NOTIFICATION_LIST_SELECT = `
   notification_events (
     type,
     payload,
-    organizations ( name ),
     profiles ( full_name, email )
   )
 `;
