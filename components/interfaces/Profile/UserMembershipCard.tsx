@@ -7,8 +7,10 @@ import LoadingSpinner from "@/components/common/LoadingSpinner";
 
 export default function UserMembershipCard({
   membership,
+  removeMembership,
 }: {
   membership: UserMembership;
+  removeMembership: (id: string) => void;
 }) {
   const [isLeaving, setIsLeaving] = useState(false);
 
@@ -38,7 +40,7 @@ export default function UserMembershipCard({
         toast.info(
           membership.organization_name + " has been successfully deleted",
         );
-        setTimeout(() => window.location.reload(), 1000);
+        removeMembership(membership.id);
       }
     } catch {
       toast.error(
@@ -79,7 +81,7 @@ export default function UserMembershipCard({
         toast.info(
           "You're no longer a member of " + membership.organization_name,
         );
-        setTimeout(() => window.location.reload(), 1000);
+        removeMembership(membership.id);
       }
     } catch {
       toast.error("Something went wrong while deleting your membership");

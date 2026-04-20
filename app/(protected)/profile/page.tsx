@@ -55,7 +55,7 @@ export default async function ProfilePage() {
         email={profile.email}
       />
       <EditNameForm profile={profile} />
-      <UserMembershipsList memberships={memberships} />
+      <UserMembershipsList userMemberships={memberships} />
       <SignOutButton />
     </div>
   );
