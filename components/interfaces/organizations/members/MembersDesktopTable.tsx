@@ -1,21 +1,21 @@
+import Image from "next/image";
+import { usePermissions } from "@/context/permissions-context";
 import {
   formatDate,
   getAvatarPlaceholderInitial,
   getRoleColor,
 } from "@/lib/utils";
 import type { OrganizationMember } from "@/types";
-import Image from "next/image";
 import RemoveMember from "./RemoveMember";
-import { getUser, getUserRole } from "@/lib";
-import { canRemoveMembers } from "@/lib/permissions";
 
-export default async function MembersDesktopTable({
+export default function MembersDesktopTable({
   members,
+  removeMember,
 }: {
   members: OrganizationMember[];
+  removeMember: (id: string) => void;
 }) {
-  const user = await getUser();
-  const userMembership = members.find((member) => member.userId === user.id)!;
+  const canRemoveMembers = usePermissions("org:members:remove");
 
   return (
     <div className="hidden md:block bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden">
@@ -38,7 +38,7 @@ export default async function MembersDesktopTable({
               <th className="px-4 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
                 Joined
               </th>
-              {canRemoveMembers(userMembership.role) && (
+              {canRemoveMembers && (
                 <th className="px-4 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider" />
               )}
             </tr>
@@ -87,9 +87,9 @@ export default async function MembersDesktopTable({
                     {formatDate(member.memberSince)}
                   </div>
                 </td>
-                {canRemoveMembers(userMembership.role) && (
+                {canRemoveMembers && (
                   <td className="px-4 py-3 whitespace-nowrap">
-                    <RemoveMember member={member} />
+                    <RemoveMember removeMember={removeMember} member={member} />
                   </td>
                 )}
               </tr>

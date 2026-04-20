@@ -1,17 +1,23 @@
+"use client";
+
+import { useState } from "react";
+import { usePermissions } from "@/context/permissions-context";
 import type { OrganizationMember } from "@/types";
 import InviteUsers from "./InviteUsers";
 import MembersDesktopTable from "./MembersDesktopTable";
 import MembersMobileCards from "./MembersMobileCards";
-import { getUser, getUserRole } from "@/lib";
-import { canInviteMembers } from "@/lib/permissions";
 
-export default async function MembersList({
-  members,
+export default function MembersList({
+  membersList,
 }: {
-  members: OrganizationMember[];
+  membersList: OrganizationMember[];
 }) {
-  const { id } = await getUser();
-  const role = (await getUserRole(id, members[0].organizationId)) ?? "viewer";
+  const [members, setMembers] = useState(membersList);
+  const canInviteMembers = usePermissions("org:members:invite");
+
+  function removeMember(id: string) {
+    setMembers((prev) => prev.filter((m) => m.id !== id));
+  }
 
   return (
     <>
@@ -20,11 +26,11 @@ export default async function MembersList({
           <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
             Members
           </h1>
-          {canInviteMembers(role) && <InviteUsers />}
+          {canInviteMembers && <InviteUsers />}
         </div>
 
-        <MembersDesktopTable members={members} />
-        <MembersMobileCards members={members} />
+        <MembersDesktopTable removeMember={removeMember} members={members} />
+        <MembersMobileCards removeMember={removeMember} members={members} />
       </div>
     </>
   );

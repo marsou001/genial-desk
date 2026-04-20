@@ -9,5 +9,5 @@ export default async function MembersPage({
   const { id: organizationId } = await params;
   const members = await fetchMembers(organizationId);
 
-  return <MembersList members={members} />;
+  return <MembersList membersList={members} />;
 }

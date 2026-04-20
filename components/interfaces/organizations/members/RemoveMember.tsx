@@ -7,12 +7,13 @@ import { toast } from "sonner";
 import { OrganizationMember } from "@/types";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { useUserClient } from "@/hooks/useUserClient";
-import { reload } from "@/lib/utils";
 
 export default function RemoveMember({
   member,
+  removeMember,
 }: {
   member: OrganizationMember;
+  removeMember: (id: string) => void;
 }) {
   const [canRemoveMember, setCanRemoveMember] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -45,7 +46,7 @@ export default function RemoveMember({
         toast.error(errorBody.error);
       } else {
         toast.info("Membership successfully removed");
-        reload();
+        removeMember(member.id);
       }
     } catch {
       toast.error("Failed to invite member");

@@ -1,21 +1,21 @@
+import Image from "next/image";
+import { usePermissions } from "@/context/permissions-context";
+import type { OrganizationMember } from "@/types";
 import {
   formatDate,
   getAvatarPlaceholderInitial,
   getRoleColor,
 } from "@/lib/utils";
-import type { OrganizationMember } from "@/types";
-import Image from "next/image";
 import RemoveMember from "./RemoveMember";
-import { canRemoveMembers } from "@/lib/permissions";
-import { getUser } from "@/lib";
 
-export default async function MembersMobileCards({
+export default function MembersMobileCards({
   members,
+  removeMember,
 }: {
   members: OrganizationMember[];
+  removeMember: (id: string) => void;
 }) {
-  const user = await getUser();
-  const userMembership = members.find((member) => member.userId === user.id)!;
+  const canRemoveMembers = usePermissions("org:members:remove")
 
   return (
     <div className="md:hidden space-y-3 p-4">
@@ -38,9 +38,9 @@ export default async function MembersMobileCards({
               {getAvatarPlaceholderInitial(member)}
             </div>
           )}
-          {canRemoveMembers(userMembership.role) && (
+          {canRemoveMembers && (
             <div className="absolute top-2 right-2">
-              <RemoveMember member={member} />
+              <RemoveMember removeMember={removeMember} member={member} />
             </div>
           )}
           <div className="min-w-0 flex-1">
