@@ -5,6 +5,7 @@ export const EVENT_TYPES: NotificationEventType[] = [
   "invite_rejected",
   "member_added",
   "member_removed",
+  "organization_deleted",
 ];
 
 export const NOTIFICATION_LIST_SELECT = `
@@ -15,7 +16,6 @@ export const NOTIFICATION_LIST_SELECT = `
   created_at,
   notification_events (
     type,
-    payload,
-    profiles ( full_name, email )
+    payload
   )
 `;

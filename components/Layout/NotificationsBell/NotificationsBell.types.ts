@@ -2,7 +2,8 @@ export type NotificationEventType =
   | "new_invite"
   | "invite_rejected"
   | "member_added"
-  | "member_removed";
+  | "member_removed"
+  | "organization_deleted";
 
 export type NewInvitePayload = {
   type: "new_invite";
@@ -16,7 +17,7 @@ export type InviteRejectedPayload = {
   invited_user_name: string | null;
   invited_user_email: string;
   organization_name: string;
-}
+};
 
 export type MemberAddedPayload = {
   type: "member_added";
@@ -35,7 +36,17 @@ export type MemberRemovedPayload = {
   organization_name: string;
 };
 
-export type NotificationEventPayload = NewInvitePayload | InviteRejectedPayload | MemberAddedPayload | MemberRemovedPayload;
+export type OrganizationDeletedPayload = {
+  type: "organization_deleted";
+  organization_name: string;
+};
+
+export type NotificationEventPayload =
+  | NewInvitePayload
+  | InviteRejectedPayload
+  | MemberAddedPayload
+  | MemberRemovedPayload
+  | OrganizationDeletedPayload;
 
 /** Flat shape for UI + Realtime merge */
 export type NotificationItemState = {
@@ -45,6 +56,4 @@ export type NotificationItemState = {
   readAt: string | null;
   createdAt: string;
   payload: NotificationEventPayload;
-  senderName: string | null;
-  senderEmail: string | null;
 };

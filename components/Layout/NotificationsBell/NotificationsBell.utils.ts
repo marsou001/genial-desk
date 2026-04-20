@@ -49,12 +49,6 @@ export function mapSupabaseNotificationRow(
 
   if (!payload) return null
 
-  const prof = firstOrNull(asRecord(ne.profiles));
-  const senderName =
-    prof && typeof prof.full_name === "string" ? prof.full_name : null;
-  const senderEmail =
-    prof && typeof prof.email === "string" ? prof.email : null;
-
   return {
     id,
     event,
@@ -62,8 +56,6 @@ export function mapSupabaseNotificationRow(
     readAt,
     createdAt,
     payload,
-    senderName,
-    senderEmail,
   };
 }
 
@@ -122,6 +114,8 @@ export function getNotificationMessage(
         ? `You are no longer a member of ${orgName}`
         : `${who} is no longer a member of ${orgName}`;
     }
+    case "organization_deleted":
+      return `${orgName} does not exist anymore`;
     default:
       return "You have a new notification";
   }
