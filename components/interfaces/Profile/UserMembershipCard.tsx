@@ -36,7 +36,7 @@ export default function UserMembershipCard({
         return toast.error(errorMessage.error);
       } else {
         toast.info(
-          membership.organization_name + " has beed successfully deleted",
+          membership.organization_name + " has been successfully deleted",
         );
         setTimeout(() => window.location.reload(), 1000);
       }
