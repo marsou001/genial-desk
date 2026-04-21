@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { respondToInvite } from "@/lib/api/invites";
 
 export default function InviteActions({
   inviteToken,
@@ -16,36 +17,28 @@ export default function InviteActions({
   const isAccepting = isResponding && action === "accept";
   const isRejecting = isResponding && action === "reject";
 
-  async function respondToInvite(shouldAccept: boolean) {
+  async function handleRespondToInvite(shouldAccept: boolean) {
     setIsResponding(true);
     setAction(shouldAccept ? "accept" : "reject");
 
-    const response = await fetch(`/api/invites`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        should_accept: shouldAccept,
-        invite_token: inviteToken,
-      }),
-    });
-
-    const responseObject = await response.json();
-    if (!response.ok) {
-      toast.error(responseObject.error);
-    } else {
-      const redirect = shouldAccept ? `/organizations/${responseObject.organizationId}/dashboard` : "/organizations"
+    try {
+      const response = await respondToInvite(inviteToken, shouldAccept);
+      const redirect = shouldAccept
+        ? `/organizations/${response.organizationId}/dashboard`
+        : "/organizations";
       router.push(redirect);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to respond to invite");
+    } finally {
+      setIsResponding(false);
+      setAction(null);
     }
-    setIsResponding(false);
-    setAction(null);
   }
 
   return (
     <div className="flex max-md:flex-col gap-6 pt-6">
       <button
-        onClick={() => respondToInvite(false)}
+        onClick={() => handleRespondToInvite(false)}
         disabled={isResponding}
         className="
           w-full h-12
@@ -70,7 +63,7 @@ export default function InviteActions({
       </button>
 
       <button
-        onClick={() => respondToInvite(true)}
+        onClick={() => handleRespondToInvite(true)}
         disabled={isResponding}
         className="
           w-full h-12

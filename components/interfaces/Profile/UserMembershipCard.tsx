@@ -4,6 +4,8 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { UserMembership } from "@/types";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
+import { deleteOrganization as apiDeleteOrganization } from "@/lib/api/organizations";
+import { leaveOrganization } from "@/lib/api/memberships";
 
 export default function UserMembershipCard({
   membership,
@@ -26,33 +28,22 @@ export default function UserMembershipCard({
     setIsLeaving(true);
 
     try {
-      const response = await fetch(
-        "/api/organizations/" + membership.organization_id,
-        {
-          method: "DELETE",
-        },
-      );
-
-      if (!response.ok) {
-        const errorMessage = await response.json();
-        return toast.error(errorMessage.error);
-      } else {
-        toast.info(
-          membership.organization_name + " has been successfully deleted",
-        );
-        removeMembership(membership.id);
-      }
-    } catch {
+      await apiDeleteOrganization(membership.organization_id);
+      toast.info(membership.organization_name + " has been successfully deleted");
+      removeMembership(membership.id);
+    } catch (error) {
       toast.error(
-        "Something went wrong while deleting organization " +
-          membership.organization_name,
+        error instanceof Error
+          ? error.message
+          : "Something went wrong while deleting organization " +
+            membership.organization_name,
       );
     } finally {
       setIsLeaving(false);
     }
   }
 
-  async function leaveOrganization() {
+  async function handleLeaveOrganization() {
     if (isOwner) {
       toast.error("Can't do that!");
       return;
@@ -67,24 +58,15 @@ export default function UserMembershipCard({
     setIsLeaving(true);
 
     try {
-      const response = await fetch("/api/memberships/" + membership.id, {
-        method: "DELETE",
-        headers: {
-          "x-membership-role": membership.role,
-        },
-      });
-
-      if (!response.ok) {
-        const errorMessage = await response.json();
-        toast.error(errorMessage.error);
-      } else {
-        toast.info(
-          "You're no longer a member of " + membership.organization_name,
-        );
-        removeMembership(membership.id);
-      }
-    } catch {
-      toast.error("Something went wrong while deleting your membership");
+      await leaveOrganization(membership.id, membership.role);
+      toast.info("You're no longer a member of " + membership.organization_name);
+      removeMembership(membership.id);
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong while deleting your membership",
+      );
     } finally {
       setIsLeaving(false);
     }
@@ -112,7 +94,7 @@ export default function UserMembershipCard({
         ) : (
           <button
             disabled={isLeaving}
-            onClick={leaveOrganization}
+            onClick={handleLeaveOrganization}
             className="inline-flex items-center justify-center rounded-md border border-red-200 dark:border-red-800 px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 cursor-pointer hover:bg-red-50 dark:hover:bg-red-950/40 disabled:text-zinc-400 disabled:hover:bg-transparent disabled:border-zinc-400 disabled:cursor-not-allowed transition-colors"
           >
             {isLeaving ? <LoadingSpinner /> : "Leave organization"}

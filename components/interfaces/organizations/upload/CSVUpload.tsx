@@ -2,6 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { useState } from "react";
+import { uploadCSV } from "@/lib/api/organizations";
 
 interface UploadResult {
   success: boolean;
@@ -33,35 +34,19 @@ export default function CSVUpload() {
     setResult(null);
 
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("source", source);
-
-      const response = await fetch(
-        `/api/organizations/${organizationId}/upload`,
-        {
-          method: "POST",
-          body: formData,
-        },
+      const data = await uploadCSV(
+        String(organizationId),
+        file,
+        source,
       );
-
-      if (!response.ok) {
-        const errorMessage = await response.json();
-        // TODO: toast
-        setResult({
-          success: false,
-          processed: 0,
-          errors: [errorMessage.error],
-        });
-      } else {
-        const data = await response.json();
-        setResult(data);
-      }
-    } catch {
+      setResult(data);
+    } catch (error) {
       setResult({
         success: false,
         processed: 0,
-        errors: ["Upload failed"],
+        errors: [
+          error instanceof Error ? error.message : "Upload failed",
+        ],
       });
     } finally {
       setUploading(false);

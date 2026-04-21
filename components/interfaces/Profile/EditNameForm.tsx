@@ -4,6 +4,7 @@ import { useState, SubmitEvent, ChangeEvent } from "react";
 import { toast } from "sonner";
 import { ProfileData } from "@/types";
 import { useIsDirty } from "@/hooks/useIsDirty";
+import { updateProfile } from "@/lib/api/profiles";
 
 export default function EditNameForm({ profile }: { profile: ProfileData }) {
   const [fullName, setFullName] = useState(profile.fullName ?? "");
@@ -44,22 +45,15 @@ export default function EditNameForm({ profile }: { profile: ProfileData }) {
     setIsEditing(true);
 
     try {
-      const response = await fetch("/api/profiles/" + profile.id, {
-        method: "PATCH",
-        body: JSON.stringify({ full_name: fullName }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (!response.ok) {
-        const errorMessage = await response.json();
-        toast.error(errorMessage.error);
-      } else {
-        setInitialValue(fullName);
-        toast.success("Name updated successfully");
-      }
-    } catch {
-      toast.error("Something went wrong while editing your name");
+      await updateProfile(profile.id, fullName);
+      setInitialValue(fullName);
+      toast.success("Name updated successfully");
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong while editing your name",
+      );
     } finally {
       setIsEditing(false);
     }

@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 import { Insights as InsightsData } from "@/types";
+import { getInsights } from "@/lib/api/organizations-insights";
 
 export default function Insights({
   insightsData,
@@ -15,19 +17,15 @@ export default function Insights({
 
   async function fetchInsights() {
     setLoading(true);
-    const response = await fetch(
-      `/api/organizations/${organizationId}/insights/weekly?days=7`,
-    );
-    if (!response.ok) {
-      const errorMessage = await response.json();
-      // TODO: toast
-      console.log(errorMessage.error);
+    try {
+      const data = await getInsights(String(organizationId), 7);
+      setInsights(data);
+      toast.success("Insights refreshed");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to fetch insights");
+    } finally {
       setLoading(false);
-      return;
     }
-    const data = await response.json();
-    setInsights(data);
-    setLoading(false);
   }
 
   if (loading) return <div className="text-center">Loading...</div>;

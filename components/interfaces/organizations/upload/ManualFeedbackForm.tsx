@@ -2,6 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { useState } from "react";
+import { createFeedback } from "@/lib/api/organizations";
 
 interface ManualFeedbackResult {
   success: boolean;
@@ -24,23 +25,13 @@ export default function ManualFeedbackForm() {
     setResult(null);
 
     try {
-      const response = await fetch(
-        `/api/organizations/${organizationId}/feedback`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            text: feedback.trim(),
-            source: source.trim() || "Manual Entry",
-          }),
-        },
+      const data = await createFeedback(
+        String(organizationId),
+        feedback.trim(),
+        source.trim() || "Manual Entry",
       );
 
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
+      if (!data.success) {
         setResult({
           success: false,
           error: data.error || "Failed to submit feedback",

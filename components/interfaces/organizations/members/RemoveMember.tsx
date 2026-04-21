@@ -7,10 +7,11 @@ import { toast } from "sonner";
 import { OrganizationMember } from "@/types";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { useUserClient } from "@/hooks/useUserClient";
+import { removeMember as apiRemoveMember } from "@/lib/api/organizations";
 
 export default function RemoveMember({
   member,
-  removeMember,
+  removeMember: removeMemberFn,
 }: {
   member: OrganizationMember;
   removeMember: (id: string) => void;
@@ -30,26 +31,13 @@ export default function RemoveMember({
     setIsDeleting(true);
 
     try {
-      const response = await fetch(
-        `/api/organizations/${organizationId}/members`,
-        {
-          method: "DELETE",
-          body: JSON.stringify({ id: member.id }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        },
+      await apiRemoveMember(String(organizationId), member.id);
+      toast.info("Membership successfully removed");
+      removeMemberFn(member.id);
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Failed to invite member",
       );
-
-      if (!response.ok) {
-        const errorBody = await response.json();
-        toast.error(errorBody.error);
-      } else {
-        toast.info("Membership successfully removed");
-        removeMember(member.id);
-      }
-    } catch {
-      toast.error("Failed to invite member");
     } finally {
       setIsDeleting(false);
     }
