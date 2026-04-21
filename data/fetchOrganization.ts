@@ -2,12 +2,12 @@ import { createClient } from "@/lib/supabase/server";
 
 export async function fetchOrganization(
   organizationId: string,
-): Promise<{ id: number; name: string } | null> {
+): Promise<{ name: string }> {
   try {
     const supabase = await createClient();
     const { data, error } = await supabase
       .from("organizations")
-      .select("id, name")
+      .select("name")
       .eq("id", organizationId)
       .single();
 
@@ -15,7 +15,7 @@ export async function fetchOrganization(
       throw new Error(error.message);
     }
 
-    return data as { id: number; name: string };
+    return data as { name: string };
   } catch (error) {
     console.log("Error fetching organization with id", error);
     throw new Error("Error fetching organization with id");
