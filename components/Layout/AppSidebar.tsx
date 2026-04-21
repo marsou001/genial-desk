@@ -44,7 +44,7 @@ export default function AppSidebar() {
 
   return (
     <aside
-      className={`bg-white dark:bg-zinc-800 border-r border-zinc-200 dark:border-zinc-700 transition-all duration-200 flex-shrink-0 ${
+      className={`bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-700 transition-all duration-200 flex-shrink-0 ${
         isCollapsed ? "w-16" : "w-64"
       }`}
     >
@@ -57,7 +57,7 @@ export default function AppSidebar() {
           )}
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-1.5 rounded hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors"
+            className="p-1.5 rounded hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
             aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             <svg
