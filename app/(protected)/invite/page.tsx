@@ -1,4 +1,8 @@
 import InviteActions from "@/components/interfaces/Invite/InviteActions";
+import InviteNotFound from "@/components/interfaces/Invite/InviteNotFound";
+import InviteExpired from "@/components/interfaces/Invite/InviteExpired";
+import InviteRejected from "@/components/interfaces/Invite/InviteRejected";
+import InviteAccepted from "@/components/interfaces/Invite/InviteAccepted";
 import { fetchInvitation } from "@/data/fetchInvitation";
 
 export default async function InvitePage({
@@ -9,14 +13,10 @@ export default async function InvitePage({
   const { invite_token } = await searchParams;
   const invitationResult = await fetchInvitation(invite_token);
 
-  if (invitationResult.status === "not_found")
-    return <div>Invitation not found</div>;
-  if (invitationResult.status === "expired")
-    return <div>Invitation expired</div>;
-  if (invitationResult.status === "rejected")
-    return <div>Invitation already rejected</div>;
-  if (invitationResult.status === "accepted")
-    return <div>Invitation already accepted</div>;
+  if (invitationResult.status === "not_found") return <InviteNotFound />;
+  if (invitationResult.status === "expired") return <InviteExpired />;
+  if (invitationResult.status === "rejected") return <InviteRejected />;
+  if (invitationResult.status === "accepted") return <InviteAccepted />;
 
   const invite = invitationResult.invite;
   const expiresAt = new Date(invite.expiresAt).toISOString();
