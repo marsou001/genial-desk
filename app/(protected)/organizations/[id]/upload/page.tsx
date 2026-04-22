@@ -2,7 +2,7 @@ import UploadTabs from "@/components/interfaces/organizations/upload/UploadTabs"
 
 export default function UploadPage() {
   return (
-    <section className="w-full max-w-3xl mx-auto px-4 py-8">
+    <section className="w-full max-w-3xl mx-auto py-8">
       <div className="mb-6 space-y-2">
         <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
           Bring customer feedback into GenialDesk

@@ -22,7 +22,7 @@ export default function MembersList({
   return (
     <>
       <div className="space-y-4">
-        <div className="flex items-center justify-between p-4">
+        <div className="flex items-center justify-between pb-4 sm:pb-8">
           <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
             Members
           </h1>

@@ -45,7 +45,7 @@ export default function AppSidebar() {
   return (
     <aside
       className={`bg-white dark:bg-zinc-900 fixed left-0 z-10 border-r border-zinc-200 dark:border-zinc-700 transition-all duration-200 flex-shrink-0 ${
-        isCollapsed ? "w-16" : "w-64"
+        isCollapsed ? "w-12 sm:w-16" : "w-64"
       }`}
     >
       <div className="h-screen flex flex-col">
@@ -57,7 +57,7 @@ export default function AppSidebar() {
           )}
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-1.5 rounded hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
+            className="py-1.5 rounded hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
             aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             <svg
@@ -84,7 +84,7 @@ export default function AppSidebar() {
             </svg>
           </button>
         </div>
-        <nav className="flex-1 p-2">
+        <nav className="flex-1 max-sm:px-0 p-2">
           <ul className="space-y-1">
             {sidebarLinks.map((link) => {
               const isActive =

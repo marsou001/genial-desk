@@ -18,7 +18,7 @@ export default function MembersMobileCards({
   const canRemoveMembers = usePermissions("org:members:remove")
 
   return (
-    <div className="md:hidden space-y-3 p-4">
+    <div className="md:hidden space-y-3">
       {members.map((member) => (
         <div
           key={member.id}
