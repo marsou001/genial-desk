@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { useState, useEffect } from "react";
 import { useParams, usePathname } from "next/navigation";
-import { useState } from "react";
 
 export default function AppSidebar() {
   const { id: organizationId } = useParams();
   const pathname = usePathname();
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
   const sidebarLinks = [
     {
@@ -41,6 +41,10 @@ export default function AppSidebar() {
       icon: "⚙️",
     },
   ];
+
+  useEffect(() => {
+    setIsCollapsed(window.innerWidth < 640);
+  }, []);
 
   return (
     <aside
