@@ -1,6 +1,18 @@
+import { redirect } from "next/navigation";
 import UploadTabs from "@/components/interfaces/organizations/upload/UploadTabs";
+import { getUser, getUserRole } from "@/lib";
 
-export default function UploadPage() {
+export default async function UploadPage({
+  params,
+}: { params: Promise<{ id: string }> }) {
+  const { id: organizationId } = await params;
+  const user = await getUser();
+  const role = await getUserRole(user.id, organizationId);
+
+  if (role === null || role === "viewer") {
+    redirect(`/organizations/${organizationId}/dashboard`);
+  }
+
   return (
     <section className="w-full max-w-3xl mx-auto py-8">
       <div className="mb-6 space-y-2">

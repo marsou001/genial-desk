@@ -1,24 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams, usePathname } from "next/navigation";
+import { usePermissions } from "@/context/permissions-context";
 
 export default function AppSidebar() {
   const { id: organizationId } = useParams();
   const pathname = usePathname();
-  const [isCollapsed, setIsCollapsed] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(window.innerWidth < 640);
+  const canUploadFeedback = usePermissions("data:create");
 
   const sidebarLinks = [
     {
       href: `/organizations/${organizationId}/dashboard`,
       label: "Dashboard",
       icon: "🏠",
-    },
-    {
-      href: `/organizations/${organizationId}/upload`,
-      label: "Upload",
-      icon: "⬆️",
     },
     {
       href: `/organizations/${organizationId}/feedback-list`,
@@ -42,9 +39,11 @@ export default function AppSidebar() {
     },
   ];
 
-  useEffect(() => {
-    setIsCollapsed(window.innerWidth < 640);
-  }, []);
+  if (canUploadFeedback) sidebarLinks.splice(2, 0, {
+    href: `/organizations/${organizationId}/upload`,
+    label: "Upload",
+    icon: "⬆️",
+  });
 
   return (
     <aside

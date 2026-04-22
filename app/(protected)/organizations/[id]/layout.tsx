@@ -26,15 +26,15 @@ export default async function OrganizationLayout({
   }
 
   const role = (await getUserRole(user.id, organizationId)) ?? "viewer";
-
+  console.log("role", role)
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900 flex relative">
-      <AppSidebar />
-      <div className="flex-1 flex flex-col pt-4 pr-4 pl-16 sm:pt-8 sm:pr-8 sm:pl-24">
-        <PermissionsProvider value={{ role }}>
+      <PermissionsProvider value={{ role }}>
+        <AppSidebar />
+        <div className="flex-1 flex flex-col pt-4 pr-4 pl-16 sm:pt-8 sm:pr-8 sm:pl-24">
           <main className="flex-1">{children}</main>
-        </PermissionsProvider>
-      </div>
+        </div>
+      </PermissionsProvider>
     </div>
   );
 }
