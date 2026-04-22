@@ -9,7 +9,7 @@ import PermissionGate from "@/components/common/PermissionGate";
 import { deleteOrganization } from "@/lib/api/organizations";
 
 interface OrganizationSettingsProps {
-  organization: { id: number; name: string };
+  organization: { id: string; name: string };
 }
 
 export default function OrganizationSettings({
@@ -41,7 +41,7 @@ export default function OrganizationSettings({
     setIsDeleting(true);
 
     try {
-      await deleteOrganization(String(organization.id));
+      await deleteOrganization(organization.id);
       toast.info(organization.name + " has been successfully deleted");
       reload();
     } catch (error) {

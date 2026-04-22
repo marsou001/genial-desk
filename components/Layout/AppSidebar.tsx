@@ -44,11 +44,11 @@ export default function AppSidebar() {
 
   return (
     <aside
-      className={`bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-700 transition-all duration-200 flex-shrink-0 ${
+      className={`bg-white dark:bg-zinc-900 fixed left-0 z-10 border-r border-zinc-200 dark:border-zinc-700 transition-all duration-200 flex-shrink-0 ${
         isCollapsed ? "w-16" : "w-64"
       }`}
     >
-      <div className="h-screen sticky top-0 flex flex-col">
+      <div className="h-screen flex flex-col">
         <div className="p-4 border-b border-zinc-200 dark:border-zinc-700 flex items-center justify-between">
           {!isCollapsed && (
             <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase">

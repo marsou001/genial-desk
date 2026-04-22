@@ -28,9 +28,9 @@ export default async function OrganizationLayout({
   const role = (await getUserRole(user.id, organizationId)) ?? "viewer";
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900 flex">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900 flex relative">
       <AppSidebar />
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col pt-8 pr-8 pl-24">
         <PermissionsProvider value={{ role }}>
           <main className="flex-1">{children}</main>
         </PermissionsProvider>

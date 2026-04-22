@@ -20,12 +20,12 @@ export default async function OrganizationSettingsPage({
   }
 
   return (
-    <div className="p-8">
+    <div>
       <div className="max-w-2xl">
         <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50 mb-6">
           Organization Settings
         </h1>
-        <OrganizationSettings organization={organization} />
+        <OrganizationSettings organization={{ id: organizationId, name: organization.name}} />
       </div>
     </div>
   );
