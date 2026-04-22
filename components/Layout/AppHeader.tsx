@@ -12,6 +12,8 @@ export default async function AppHeader() {
     fetchNotifications(),
   ]);
 
+  console.log("notifications", notifications)
+
   return (
     <header className="sticky top-0 z-20 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
       <div className="h-16 flex items-center justify-between px-6">

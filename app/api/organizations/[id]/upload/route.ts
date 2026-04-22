@@ -92,33 +92,28 @@ export async function POST(
         // }
 
         // Insert into database (scoped to organization)
-        const { data, error } = await supabase
-          .from("feedbacks")
-          .insert({
-            text: feedbackText,
-            source: source as string,
-            topic: analysis.topic,
-            sentiment: analysis.sentiment,
-            summary: analysis.summary,
-            keywords: analysis.keywords,
-            organization_id: id,
-          })
-          .select()
-          .single();
-
-        if (error) {
-          errors.push(`Row ${i + 2}: ${error.message}`);
-        } else {
-          feedbacks.push(data);
-        }
-
-        // Small delay to avoid rate limiting
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        feedbacks.push({
+          text: feedbackText,
+          source: source as string,
+          topic: analysis.topic,
+          sentiment: analysis.sentiment,
+          summary: analysis.summary,
+          keywords: analysis.keywords,
+          organization_id: id,
+        });
       } catch (error) {
         errors.push(
           `Row ${i + 2}: ${error instanceof Error ? error.message : "Unknown error"}`,
         );
       }
+    }
+
+    const { error } = await supabase
+      .from("feedbacks")
+      .insert(feedbacks);
+
+    if (error) {
+      throw new Error(error.message);
     }
 
     return NextResponse.json({

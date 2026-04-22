@@ -3,9 +3,10 @@ import { NotificationEventType } from "./NotificationsBell.types";
 export const EVENT_TYPES: NotificationEventType[] = [
   "new_invite",
   "invite_rejected",
-  "member_added",
+  "invite_accepted",
   "member_removed",
   "organization_deleted",
+  "feedback_uploaded",
 ];
 
 export const NOTIFICATION_LIST_SELECT = `

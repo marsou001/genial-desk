@@ -1,5 +1,5 @@
 import { EVENT_TYPES } from "./NotificationsBell.constants";
-import { InviteRejectedPayload, MemberAddedPayload, MemberRemovedPayload, NotificationEventPayload, NotificationEventType, NotificationItemState } from "./NotificationsBell.types";
+import { InviteRejectedPayload, InviteAcceptedPayload, MemberRemovedPayload, NotificationEventPayload, NotificationEventType, NotificationItemState, FeedbackUploadedPayload } from "./NotificationsBell.types";
 
 function isNotificationEventType(v: string): v is NotificationEventType {
   return (EVENT_TYPES as string[]).includes(v);
@@ -59,7 +59,7 @@ export function mapSupabaseNotificationRow(
   };
 }
 
-function newMemberDisplayName(payload: MemberAddedPayload): string {
+function newMemberDisplayName(payload: InviteAcceptedPayload): string {
   const name = payload.new_member_name;
   const email = payload.new_member_email;
   if (typeof name === "string" && name.trim().length > 0) return name.trim();
@@ -80,6 +80,13 @@ function removedMemberDisplayName(payload: MemberRemovedPayload): string {
    return email.trim();
 }
 
+function feedbackUploaderDisplayName(payload: FeedbackUploadedPayload): string {
+  const name = payload.uploader_name;
+  const email = payload.uploader_email;
+  if (typeof name === "string" && name.trim().length > 0) return name.trim();
+   return email.trim();
+}
+
 export function getNotificationMessage(
   payload: NotificationEventPayload,
   targetUserId: string,
@@ -92,7 +99,7 @@ export function getNotificationMessage(
     case "invite_rejected":
       const who = invitedUserDisplayName(payload);
       return `${who} has rejected your invitation`;
-    case "member_added": {
+    case "invite_accepted": {
       const newMemberId = payload.new_member_id as string | undefined;
       const invitedById = payload.invited_by_id as string | undefined;
       const who = newMemberDisplayName(payload);
@@ -116,6 +123,10 @@ export function getNotificationMessage(
     }
     case "organization_deleted":
       return `${orgName} does not exist anymore`;
+    case "feedback_uploaded": {
+      const who = feedbackUploaderDisplayName(payload);
+      return `${who} has uploaded new feedback for ${orgName}`;
+    }
     default:
       return "You have a new notification";
   }

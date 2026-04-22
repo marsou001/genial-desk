@@ -2,6 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 import { uploadCSV } from "@/lib/api/organizations";
 
 interface UploadResult {
@@ -40,14 +41,8 @@ export default function CSVUpload() {
         source,
       );
       setResult(data);
-    } catch (error) {
-      setResult({
-        success: false,
-        processed: 0,
-        errors: [
-          error instanceof Error ? error.message : "Upload failed",
-        ],
-      });
+    } catch {
+      toast.error("Failed to process file");
     } finally {
       setUploading(false);
     }
@@ -109,7 +104,7 @@ export default function CSVUpload() {
         type="submit"
         form="csv-file-upload"
         disabled={!file || uploading}
-        className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-zinc-400 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
+        className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 cursor-pointer disabled:bg-zinc-400 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
       >
         {uploading ? "Processing..." : "Upload & Analyze"}
       </button>
