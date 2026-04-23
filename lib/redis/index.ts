@@ -38,3 +38,12 @@ export async function setCache(key: string, value: unknown, ttlSeconds?: number)
     console.error("To Redis cache: failed to set for key", key, error);
   }
 }
+
+export async function invalidateCache(key: string) {
+  try {
+    await redis.del(key);
+  } catch (error) {
+    console.error("Failed to invalidate cache for key", key, error);
+  }
+}
+

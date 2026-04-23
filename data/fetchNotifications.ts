@@ -1,4 +1,4 @@
-import { getCache } from "@/lib/redis";
+import { getCache, setCache } from "@/lib/redis";
 import { REDIS_KEYS } from "@/lib/redis/keys";
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib";
@@ -15,7 +15,8 @@ type NotificationsResult = {
 export async function fetchNotifications(
   limit = 50,
 ): Promise<NotificationsResult> {
-  const cachedValue = await getCache<NotificationsResult>(REDIS_KEYS.notifications());
+  const cacheKey = REDIS_KEYS.notifications();
+  const cachedValue = await getCache<NotificationsResult>(cacheKey);
   if (cachedValue !== null) return cachedValue;
 
   const supabase = await createClient();
@@ -40,6 +41,8 @@ export async function fetchNotifications(
     .filter((x): x is NotificationItemState => x !== null);
 
   const unreadCount = items.filter((n) => !n.isRead).length;
+  const notificationsResult = { items, unreadCount, userId: user.id };
 
-  return { items, unreadCount, userId: user.id };
+  await setCache(cacheKey, notificationsResult);
+  return notificationsResult;
 }

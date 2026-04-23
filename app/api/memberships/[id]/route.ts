@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
+import { invalidateCache } from "@/lib/redis";
+import { REDIS_KEYS } from "@/lib/redis/keys";
+import { revalidatePath } from "next/cache";
 
 export async function DELETE(
   _: NextRequest,
@@ -19,10 +22,12 @@ export async function DELETE(
   }
 
   const supabase = await createClient();
-  const { error } = await supabase
+  const { error, data } = await supabase
     .from("organization_members")
     .delete()
-    .eq("id", id);
+    .eq("id", id)
+    .select()
+    .single()
 
   if (error) {
     console.log("Failed to remove member", error.message);
@@ -32,5 +37,7 @@ export async function DELETE(
     );
   }
 
+  await invalidateCache(REDIS_KEYS.members(data.organization_id));
+  revalidatePath(`/profile`);
   return NextResponse.json({ message: "Done" }, { status: 200 });
 }

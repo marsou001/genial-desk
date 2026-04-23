@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { authGuard } from "@/lib/auth-guard";
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib";
+import { invalidateCache } from "@/lib/redis";
+import { REDIS_KEYS } from "@/lib/redis/keys";
+import { revalidatePath } from "next/cache";
 
 /**
  * GET /api/organizations/[id]/members
@@ -125,5 +128,8 @@ export async function DELETE(
     );
   }
 
+  await invalidateCache(REDIS_KEYS.members(organizationId));
+  revalidatePath(`/organizations/${organizationId}/members`);
+  
   return NextResponse.json({ message: "Done" }, { status: 200 });
 }

@@ -1,4 +1,4 @@
-import { getCache } from "@/lib/redis";
+import { getCache, setCache } from "@/lib/redis";
 import { REDIS_KEYS } from "@/lib/redis/keys";
 import { createClient } from "@/lib/supabase/server";
 import { Feedback } from "@/types/database";
@@ -9,8 +9,8 @@ export async function fetchFeedbacks(
   if (!organizationId) {
     return [];
   }
-  
-  const cachedValue = await getCache<Feedback[]>(REDIS_KEYS.feedbacks(organizationId));
+  const cacheKey = REDIS_KEYS.feedbacks(organizationId);
+  const cachedValue = await getCache<Feedback[]>(cacheKey);
   if (cachedValue !== null) return cachedValue;
 
   try {
@@ -25,6 +25,7 @@ export async function fetchFeedbacks(
       throw new Error(error.message);
     }
 
+    await setCache(cacheKey, data);
     return data || [];
   } catch (error) {
     console.log("Failed to fetch feedbacks: ", error);

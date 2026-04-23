@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { hashToken } from "@/lib/utils";
+import { invalidateCache } from "@/lib/redis";
+import { REDIS_KEYS } from "@/lib/redis/keys";
 
 export async function PATCH(request: NextRequest) {
   const body = await request.json();
@@ -47,6 +49,7 @@ export async function PATCH(request: NextRequest) {
     );
   }
 
+  await invalidateCache(REDIS_KEYS.members(data.organization_id));
   revalidatePath("/organizations");
   return NextResponse.json(
     { organizationId: data.organization_id },

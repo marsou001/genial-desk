@@ -13,6 +13,8 @@ import {
 } from "@/types/action-states";
 import { UserRole } from "@/types";
 import { assertIsError } from "@/types/typeguards";
+import { invalidateCache, setCache } from "@/lib/redis";
+import { REDIS_KEYS } from "@/lib/redis/keys";
 
 export async function createOrganization(
   _: CreateOrganizationrActionState,
@@ -46,6 +48,7 @@ export async function createOrganization(
     return { isSuccess: false, error: "Error creating organization", name };
   }
 
+  invalidateCache(REDIS_KEYS.organizations());
   revalidatePath("/organizations");
   redirect(`/organizations/${orgId}/dashboard`);
 }
@@ -88,6 +91,11 @@ export async function updateOrganization(
       return { isSuccess: false, error: error.message, name };
     }
 
+    await Promise.all([
+      invalidateCache(REDIS_KEYS.organization(organizationId)),
+      invalidateCache(REDIS_KEYS.organizations()),
+    ])
+    
     revalidatePath(`/organizations/${organizationId}/settings`);
     revalidatePath(`/organizations`);
     return { isSuccess: true, error: null, name };

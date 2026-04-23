@@ -1,4 +1,4 @@
-import { getCache } from "@/lib/redis";
+import { getCache, setCache } from "@/lib/redis";
 import { REDIS_KEYS } from "@/lib/redis/keys";
 import { createClient } from "@/lib/supabase/server";
 import { OrganizationMember } from "@/types";
@@ -6,7 +6,8 @@ import { OrganizationMember } from "@/types";
 export async function fetchMembers(
   organizationId: string,
 ): Promise<OrganizationMember[]> {
-  const cachedValue = await getCache<OrganizationMember[]>(REDIS_KEYS.members(organizationId));
+  const cacheKey = REDIS_KEYS.members(organizationId);
+  const cachedValue = await getCache<OrganizationMember[]>(cacheKey);
   if (cachedValue !== null) return cachedValue;
 
   const supabase = await createClient();
@@ -30,6 +31,7 @@ export async function fetchMembers(
       memberSince: m.created_at,
     }));
 
+    await setCache(cacheKey, members);
     return members;
   } catch (error) {
     console.error("Failed to fetch organizations:", error);

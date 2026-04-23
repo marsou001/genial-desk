@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { authGuard } from "@/lib/auth-guard";
 import { createClient } from "@/lib/supabase/server";
 import { hasPermission } from "@/lib/permissions";
+import { invalidateCache } from "@/lib/redis";
+import { REDIS_KEYS } from "@/lib/redis/keys";
+import { revalidatePath } from "next/cache";
 
 /**
  * GET /api/organizations/[id]
@@ -150,5 +153,13 @@ export async function DELETE(
       { status: 500 },
     );
   }
+
+  await Promise.all([
+    invalidateCache(REDIS_KEYS.feedbacks(id)),
+    invalidateCache(REDIS_KEYS.members(id)),
+    invalidateCache(REDIS_KEYS.organization(id)),
+    invalidateCache(REDIS_KEYS.organizations()),
+  ]);
+  revalidatePath("/organizations");
   return NextResponse.json({ success: true }, { status: 200 });
 }

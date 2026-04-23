@@ -3,6 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import { analyzeFeedback } from "@/lib/openai";
 import { authGuard } from "@/lib/auth-guard";
 import Papa from "papaparse";
+import { invalidateCache } from "@/lib/redis";
+import { REDIS_KEYS } from "@/lib/redis/keys";
 
 export async function POST(
   request: NextRequest,
@@ -116,6 +118,7 @@ export async function POST(
       throw new Error(error.message);
     }
 
+    await invalidateCache(REDIS_KEYS.feedbacks(id));
     return NextResponse.json({
       success: true,
       processed: feedbacks.length,
