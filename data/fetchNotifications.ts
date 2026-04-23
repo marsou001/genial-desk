@@ -43,6 +43,6 @@ export async function fetchNotifications(
   const unreadCount = items.filter((n) => !n.isRead).length;
   const notificationsResult = { items, unreadCount, userId: id };
 
-  await setCache(cacheKey, notificationsResult);
+  await setCache(cacheKey, notificationsResult, 30);
   return notificationsResult;
 }

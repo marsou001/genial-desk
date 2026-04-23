@@ -8,7 +8,7 @@ import { usePermissions } from "@/context/permissions-context";
 export default function AppSidebar() {
   const { id: organizationId } = useParams();
   const pathname = usePathname();
-  const [isCollapsed, setIsCollapsed] = useState(window.innerWidth < 640);
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const canUploadFeedback = usePermissions("data:create");
 
   const sidebarLinks = [

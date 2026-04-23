@@ -85,7 +85,6 @@ export async function DELETE(
   const { id } = await request.json();
 
   const supabase = await createClient();
-
   const { data: membership, error: membershipError } = await supabase
     .from("organization_members")
     .select("role:roles (name), user_id")
@@ -114,7 +113,7 @@ export async function DELETE(
       { status: 400 },
     );
   }
-
+  
   const { error } = await supabase
     .from("organization_members")
     .delete()

@@ -10,8 +10,6 @@ import { useIsClickedOutside } from "@/hooks/useIsClickedOutside";
 import { NOTIFICATION_LIST_SELECT } from "./NotificationsBell.constants";
 import type { NotificationItemState } from "./NotificationsBell.types";
 import { mapSupabaseNotificationRow, getNotificationMessage } from "./NotificationsBell.utils";
-import { invalidateCache } from "@/lib/redis";
-import { REDIS_KEYS } from "@/lib/redis/keys";
 
 export default function NotificationsBell({
   userId,
@@ -47,67 +45,60 @@ export default function NotificationsBell({
   );
 
   useEffect(() => {
-    async function subscribeToNotifications() {
-      const channel = supabase
-        .channel(`notifications:user:${userId}`)
-        .on(
-          "postgres_changes",
-          {
-            event: "*",
-            schema: "public",
-            table: "notifications",
-            filter: `target_user_id=eq.${userId}`,
-          },
-          async (payload) => {
-            if (payload.eventType === "INSERT") {
-              const row = payload.new as { id?: string };
-              if (typeof row.id !== "string") return;
-              const item = await refetchOne(row.id);
-              if (item) {
-                setItems((prev) => [item, ...prev]);
-                await invalidateCache(REDIS_KEYS.notifications(userId));
-              }
-            } else if (payload.eventType === "UPDATE") {
-              const row = payload.new as {
-                id?: string;
-                is_read?: boolean;
-                read_at?: string | null;
-              };
-              if (typeof row.id !== "string") return;
-              setItems((prev) =>
-                prev.map((n) =>
-                  n.id === row.id
-                    ? {
-                        ...n,
-                        isRead: Boolean(row.is_read),
-                        readAt:
-                          row.read_at === null
-                            ? null
-                            : typeof row.read_at === "string"
-                              ? row.read_at
-                              : n.readAt,
-                      }
-                    : n,
-                ),
-              );
-              await invalidateCache(REDIS_KEYS.notifications(userId));
-            } else if (payload.eventType === "DELETE") {
-              const row = payload.old as { id?: string };
-              if (typeof row.id === "string") {
-                setItems((prev) => prev.filter((n) => n.id !== row.id));
-                await invalidateCache(REDIS_KEYS.notifications(userId));
-              }
+    const channel = supabase
+      .channel(`notifications:user:${userId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "notifications",
+          filter: `target_user_id=eq.${userId}`,
+        },
+        async (payload) => {
+          if (payload.eventType === "INSERT") {
+            const row = payload.new as { id?: string };
+            if (typeof row.id !== "string") return;
+            const item = await refetchOne(row.id);
+            if (item) {
+              setItems((prev) => [item, ...prev]);
             }
-          },
-        )
-        .subscribe();
-  
-      return () => {
-        void supabase.removeChannel(channel);
-      };
-    }
+          } else if (payload.eventType === "UPDATE") {
+            const row = payload.new as {
+              id?: string;
+              is_read?: boolean;
+              read_at?: string | null;
+            };
+            if (typeof row.id !== "string") return;
+            setItems((prev) =>
+              prev.map((n) =>
+                n.id === row.id
+                  ? {
+                      ...n,
+                      isRead: Boolean(row.is_read),
+                      readAt:
+                        row.read_at === null
+                          ? null
+                          : typeof row.read_at === "string"
+                            ? row.read_at
+                            : n.readAt,
+                    }
+                  : n,
+              ),
+            );
+          } else if (payload.eventType === "DELETE") {
+            const row = payload.old as { id?: string };
+            if (typeof row.id === "string") {
+              setItems((prev) => prev.filter((n) => n.id !== row.id));
+            }
+          }
+        },
+      )
+      .subscribe();
 
-    subscribeToNotifications();
+    return () => {
+      void supabase.removeChannel(channel);
+    };
   }, [supabase, userId, refetchOne]);
 
   async function handleItemActivate(item: NotificationItemState) {
