@@ -4,7 +4,7 @@ export async function leaveOrganization(
   membershipId: string,
   role: string,
 ): Promise<void> {
-  await del(`/api/memberships/${membershipId}`, {}, {
+  await del(`memberships/${membershipId}`, {}, {
     "x-membership-role": role,
   });
 }

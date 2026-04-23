@@ -6,6 +6,6 @@ export async function getInsights(
   days: number = 7,
 ): Promise<Insights> {
   return get<Insights>(
-    `/api/organizations/${organizationId}/insights/weekly?days=${days}`,
+    `organizations/${organizationId}/insights/weekly?days=${days}`,
   );
 }

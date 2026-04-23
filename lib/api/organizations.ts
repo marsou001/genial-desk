@@ -17,7 +17,7 @@ export interface InviteResponse {
 }
 
 export async function deleteOrganization(organizationId: string): Promise<void> {
-  await del(`/api/organizations/${organizationId}`);
+  await del(`/organizations/${organizationId}`);
 }
 
 export async function createFeedback(
@@ -25,7 +25,7 @@ export async function createFeedback(
   text: string,
   source: string,
 ): Promise<FeedbackResponse> {
-  return post(`/api/organizations/${organizationId}/feedback`, {
+  return post(`/organizations/${organizationId}/feedback`, {
     text,
     source,
   });
@@ -40,7 +40,7 @@ export async function uploadCSV(
   formData.append("file", file);
   formData.append("source", source);
   return postFormData<UploadResponse>(
-    `/api/organizations/${organizationId}/upload`,
+    `/organizations/${organizationId}/upload`,
     formData,
   );
 }
@@ -49,14 +49,14 @@ export async function removeMember(
   organizationId: string,
   memberId: string,
 ): Promise<void> {
-  await del(`/api/organizations/${organizationId}/members`, { id: memberId });
+  await del(`/organizations/${organizationId}/members`, { id: memberId });
 }
 
 export async function respondToInvite(
   inviteToken: string,
   shouldAccept: boolean,
 ): Promise<InviteResponse> {
-  return patch(`/api/invites`, {
+  return patch(`invites`, {
     should_accept: shouldAccept,
     invite_token: inviteToken,
   });
