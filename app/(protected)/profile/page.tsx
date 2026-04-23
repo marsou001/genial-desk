@@ -1,47 +1,17 @@
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib";
-import { UserMembership, ProfileData, UserRole } from "@/types";
 import EditAvatar from "@/components/interfaces/Profile/EditAvatar";
 import EditNameForm from "@/components/interfaces/Profile/EditNameForm";
 import UserMembershipsList from "@/components/interfaces/Profile/UserMemberships";
 import SignOutButton from "@/components/interfaces/Profile/SignOutButton";
-
-async function getProfileAndMemberships() {
-  const supabase = await createClient();
-  const user = await getUser();
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("full_name, email, avatar_url")
-    .eq("id", user.id)
-    .single();
-
-  const { data: memberships } = await supabase
-    .from("organization_members")
-    .select("id, organization_id, role (name), organizations (name)")
-    .eq("user_id", user.id);
-
-  const profileData: ProfileData = {
-    id: user.id,
-    fullName: profile?.full_name ?? null,
-    email: profile?.email ?? "",
-    avatarUrl: profile?.avatar_url ?? null,
-  };
-
-  const mappedMemberships: UserMembership[] = (memberships || []).map(
-    (m: any) => ({
-      id: m.id,
-      organization_id: m.organization_id,
-      role: m.role.name as UserRole,
-      organization_name: m.organizations.name,
-    }),
-  );
-
-  return { profile: profileData, memberships: mappedMemberships };
-}
+import { fetchProfile } from "@/data/fetchProfile";
+import { fetchMemberships } from "@/data/fetchMemberships";
 
 export default async function ProfilePage() {
-  const { profile, memberships } = await getProfileAndMemberships();
+  const [profile, memberships] = await Promise.all([
+    fetchProfile(),
+    fetchMemberships(),
+  ]);
 
   return (
     <div className="space-y-8">

@@ -1,4 +1,7 @@
 export const REDIS_KEYS = {
+  profile(userId: string) {
+    return `${userId}:profile`
+  },
   notifications(userId: string) {
     return `${userId}:notifications`
   },

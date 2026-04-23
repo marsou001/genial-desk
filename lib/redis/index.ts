@@ -26,7 +26,7 @@ export async function setCache(key: string, value: unknown, ttlSeconds?: number)
   if (!isSerializable(value)) {
     return console.error("Non-serializable value provided for key", key, value);
   }
-  console.log("ttlSeconds", ttlSeconds)
+
   try {
     if (ttlSeconds === undefined) {
       await redis.set(key, JSON.stringify(value));
