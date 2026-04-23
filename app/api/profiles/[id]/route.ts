@@ -1,5 +1,6 @@
+import { invalidateCache } from "@/lib/redis";
+import { REDIS_KEYS } from "@/lib/redis/keys";
 import { createClient } from "@/lib/supabase/server";
-import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(
@@ -36,7 +37,7 @@ export async function PATCH(
     );
   }
 
-  revalidatePath("/profile/" + id);
+  await invalidateCache(REDIS_KEYS.profile(id));
   return NextResponse.json(
     { message: "Name updated successfully" },
     { status: 200 },

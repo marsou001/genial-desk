@@ -1,10 +1,11 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib";
 import { EditAvatarActionState } from "@/types/action-states";
 import { getRandomPrefix, prepareFileName } from "@/lib/utils";
+import { invalidateCache } from "@/lib/redis";
+import { REDIS_KEYS } from "@/lib/redis/keys";
 
 export async function updateAvatarAction(
   _: EditAvatarActionState,
@@ -31,5 +32,6 @@ export async function updateAvatarAction(
     data: { publicUrl },
   } = supabase.storage.from("avatars").getPublicUrl(path);
 
+  await invalidateCache(REDIS_KEYS.profile(id));
   return { isSuccess: true, error: null, avatarUrl: publicUrl };
 }
