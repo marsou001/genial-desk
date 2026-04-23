@@ -93,3 +93,29 @@ export function getAvatarPlaceholderInitial(member: OrganizationMember) {
 export function reload(ms = 1000) {
   setTimeout(() => window.location.reload(), ms);
 }
+
+export function isSerializable(value: unknown): boolean {
+  if (value === null) return true;
+
+  const type = typeof value;
+
+  if (
+    type === "string" ||
+    type === "number" ||
+    type === "boolean"
+  ) {
+    return true;
+  }
+
+  if (Array.isArray(value)) {
+    return value.every(isSerializable);
+  }
+
+  if (type === "object") {
+    return Object.values(value as Record<string, unknown>)
+      .every(isSerializable);
+  }
+
+  return false; // undefined, function, symbol, bigint
+}
+

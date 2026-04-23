@@ -1,14 +1,19 @@
+import { getCache } from "@/lib/redis";
+import { REDIS_KEYS } from "@/lib/redis/keys";
 import { createClient } from "@/lib/supabase/server";
 import { Feedback } from "@/types/database";
 
 export async function fetchFeedbacks(
   organizationId: string | null,
 ): Promise<Feedback[]> {
-  try {
-    if (!organizationId) {
-      return [];
-    }
+  if (!organizationId) {
+    return [];
+  }
+  
+  const cachedValue = await getCache<Feedback[]>(REDIS_KEYS.feedbacks(organizationId));
+  if (cachedValue !== null) return cachedValue;
 
+  try {
     const supabase = await createClient();
     const { error, data } = await supabase
       .from("feedbacks")

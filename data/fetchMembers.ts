@@ -1,9 +1,14 @@
+import { getCache } from "@/lib/redis";
+import { REDIS_KEYS } from "@/lib/redis/keys";
 import { createClient } from "@/lib/supabase/server";
 import { OrganizationMember } from "@/types";
 
 export async function fetchMembers(
   organizationId: string,
 ): Promise<OrganizationMember[]> {
+  const cachedValue = await getCache<OrganizationMember[]>(REDIS_KEYS.members(organizationId));
+  if (cachedValue !== null) return cachedValue;
+
   const supabase = await createClient();
 
   try {

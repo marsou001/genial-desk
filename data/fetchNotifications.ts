@@ -1,16 +1,23 @@
+import { getCache } from "@/lib/redis";
+import { REDIS_KEYS } from "@/lib/redis/keys";
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib";
 import { NOTIFICATION_LIST_SELECT } from "@/components/Layout/NotificationsBell/NotificationsBell.constants";
 import { NotificationItemState } from "@/components/Layout/NotificationsBell/NotificationsBell.types";
 import { mapSupabaseNotificationRow } from "@/components/Layout/NotificationsBell/NotificationsBell.utils";
 
-export async function fetchNotifications(
-  limit = 50,
-): Promise<{
+type NotificationsResult = {
   items: NotificationItemState[];
   unreadCount: number;
   userId: string | null;
-}> {
+}
+
+export async function fetchNotifications(
+  limit = 50,
+): Promise<NotificationsResult> {
+  const cachedValue = await getCache<NotificationsResult>(REDIS_KEYS.notifications());
+  if (cachedValue !== null) return cachedValue;
+
   const supabase = await createClient();
   const user = await getUser();
 

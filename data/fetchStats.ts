@@ -1,3 +1,5 @@
+import { getCache } from "@/lib/redis";
+import { REDIS_KEYS } from "@/lib/redis/keys";
 import { createClient } from "@/lib/supabase/server";
 import { Stats } from "@/types";
 
@@ -8,6 +10,9 @@ export async function fetchStats(
     if (!organizationId) {
       throw new Error("No organization Id was found");
     }
+
+    // const cachedValue = await getCache<Stats>(REDIS_KEYS.notifications());
+    // if (cachedValue !== null) return cachedValue;
 
     const supabase = await createClient();
 

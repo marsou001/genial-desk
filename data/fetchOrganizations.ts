@@ -1,8 +1,13 @@
 import { createClient } from "@/lib/supabase/server";
+import { getCache } from "@/lib/redis";
+import { REDIS_KEYS } from "@/lib/redis/keys";
 import { getUser } from "@/lib";
 import { OrganizationView } from "@/types";
 
 export async function fetchOrganizations(): Promise<OrganizationView[]> {
+  const cachedValue = await getCache<OrganizationView[]>(REDIS_KEYS.organizations());
+  if (cachedValue !== null) return cachedValue;
+
   const supabase = await createClient();
   const user = await getUser();
 

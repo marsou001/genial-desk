@@ -1,9 +1,10 @@
 import { redirect } from "next/navigation";
+import { cache } from "react";
 import { createClient } from "./supabase/server";
 import { NextRequest } from "next/server";
 import { UserRole } from "@/types";
 
-export async function getUser() {
+export const getUser = cache(async () => {
   const supabase = await createClient();
   const { data: userData, error: userError } = await supabase.auth.getUser();
   if (userError) {
@@ -13,7 +14,7 @@ export async function getUser() {
 
   const { user } = userData;
   return user;
-}
+})
 
 // export async function getUserMemberships() {
 //   const supabase = await createClient()
