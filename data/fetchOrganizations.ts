@@ -5,12 +5,12 @@ import { getUser } from "@/lib";
 import { OrganizationView } from "@/types";
 
 export async function fetchOrganizations(): Promise<OrganizationView[]> {
-  const cacheKey = REDIS_KEYS.organizations();
+  const { id } = await getUser();
+  const cacheKey = REDIS_KEYS.organizations(id);
   const cachedValue = await getCache<OrganizationView[]>(cacheKey);
   if (cachedValue !== null) return cachedValue;
 
   const supabase = await createClient();
-  const user = await getUser();
 
   try {
     const { data: memberships, error } = await supabase
@@ -28,7 +28,7 @@ export async function fetchOrganizations(): Promise<OrganizationView[]> {
         )
       `,
       )
-      .eq("user_id", user.id);
+      .eq("user_id", id);
 
     if (error) {
       throw new Error(error.message);

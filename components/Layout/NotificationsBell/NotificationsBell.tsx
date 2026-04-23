@@ -65,7 +65,7 @@ export default function NotificationsBell({
               const item = await refetchOne(row.id);
               if (item) {
                 setItems((prev) => [item, ...prev]);
-                await invalidateCache(REDIS_KEYS.notifications());
+                await invalidateCache(REDIS_KEYS.notifications(userId));
               }
             } else if (payload.eventType === "UPDATE") {
               const row = payload.new as {
@@ -90,12 +90,12 @@ export default function NotificationsBell({
                     : n,
                 ),
               );
-              await invalidateCache(REDIS_KEYS.notifications());
+              await invalidateCache(REDIS_KEYS.notifications(userId));
             } else if (payload.eventType === "DELETE") {
               const row = payload.old as { id?: string };
               if (typeof row.id === "string") {
                 setItems((prev) => prev.filter((n) => n.id !== row.id));
-                await invalidateCache(REDIS_KEYS.notifications());
+                await invalidateCache(REDIS_KEYS.notifications(userId));
               }
             }
           },

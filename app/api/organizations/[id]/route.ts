@@ -5,6 +5,7 @@ import { hasPermission } from "@/lib/permissions";
 import { invalidateCache } from "@/lib/redis";
 import { REDIS_KEYS } from "@/lib/redis/keys";
 import { revalidatePath } from "next/cache";
+import { getUser } from "@/lib";
 
 /**
  * GET /api/organizations/[id]
@@ -134,8 +135,8 @@ export async function DELETE(
   _: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const { id } = await params;
-  const guard = await authGuard(id, {
+  const { id: organizationId } = await params;
+  const guard = await authGuard(organizationId, {
     requirePermission: "org:delete",
   });
 
@@ -144,7 +145,7 @@ export async function DELETE(
   }
 
   const supabase = await createClient();
-  const { error } = await supabase.from("organizations").delete().eq("id", id);
+  const { error } = await supabase.from("organizations").delete().eq("id", organizationId);
 
   if (error) {
     console.log("Error deleting organization ==> ", error.message);
@@ -154,11 +155,13 @@ export async function DELETE(
     );
   }
 
+  const { id: userId } = await getUser();
+
   await Promise.all([
-    invalidateCache(REDIS_KEYS.feedbacks(id)),
-    invalidateCache(REDIS_KEYS.members(id)),
-    invalidateCache(REDIS_KEYS.organization(id)),
-    invalidateCache(REDIS_KEYS.organizations()),
+    invalidateCache(REDIS_KEYS.feedbacks(organizationId)),
+    invalidateCache(REDIS_KEYS.members(organizationId)),
+    invalidateCache(REDIS_KEYS.organization(organizationId)),
+    invalidateCache(REDIS_KEYS.organizations(userId)),
   ]);
   revalidatePath("/organizations");
   return NextResponse.json({ success: true }, { status: 200 });

@@ -1,12 +1,8 @@
-import { getUser } from "..";
-
-const { id: userId } = await getUser();
-
 export const REDIS_KEYS = {
-  notifications() {
+  notifications(userId: string) {
     return `${userId}:notifications`
   },
-  organizations() {
+  organizations(userId: string) {
     return `${userId}:organizations`
   },
   organization(orgId: string) {
