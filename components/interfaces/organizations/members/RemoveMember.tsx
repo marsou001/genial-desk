@@ -36,7 +36,7 @@ export default function RemoveMember({
       removeMemberFn(member.id);
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Failed to invite member",
+        error instanceof Error ? error.message : "Failed to remove member",
       );
     } finally {
       setIsDeleting(false);
