@@ -6,15 +6,15 @@ export const REDIS_KEYS = {
     return `${userId}:organizations`
   },
   organization(orgId: string) {
-    return `organization-${orgId}`
+    return `organization_${orgId}`
   },
   members(orgId: string) {
-    return `organization-${orgId}-members`
+    return `organization_${orgId}_members`
   },
   stats(orgId: string) {
-    return `organization-${orgId}-stats`
+    return `organization_${orgId}_stats`
   },
   feedbacks(orgId: string) {
-    return `organization-${orgId}-feedbacks`
+    return `organization_${orgId}_feedbacks`
   },
 }
