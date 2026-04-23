@@ -3,10 +3,11 @@
 import { useActionState, useState, useRef } from "react";
 import { toast } from "sonner";
 import { updateOrganization } from "@/app/actions/organizations";
-import { CreateOrganizationrActionState } from "@/types/action-states";
+import { CreateOrganizationrActionState, UpdateOrganizationActionState } from "@/types/action-states";
 import { reload } from "@/lib/utils";
 import PermissionGate from "@/components/common/PermissionGate";
 import { deleteOrganization } from "@/lib/api/organizations";
+import { useActionWithToast } from "@/hooks/useActionWithToast";
 
 interface OrganizationSettingsProps {
   organization: { id: string; name: string };
@@ -15,10 +16,13 @@ interface OrganizationSettingsProps {
 export default function OrganizationSettings({
   organization,
 }: OrganizationSettingsProps) {
-  const [state, formAction, isPending] = useActionState<
-    CreateOrganizationrActionState,
-    FormData
-  >(updateOrganization, { isSuccess: false, error: null, name: "" });
+  const { state, formAction, isPending } = 
+    useActionWithToast<UpdateOrganizationActionState>(
+      updateOrganization,
+      { isSuccess: false, error: null, name: "" },
+      "Organization info has been successfully updated"
+    );
+
   const [isOrganizationNameValid, setIsOrganizationNameValid] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const nameInputRef = useRef<HTMLInputElement>(null);
@@ -84,19 +88,11 @@ export default function OrganizationSettings({
             />
           </div>
 
-          {state.error !== null && (
-            <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-              <p className="text-sm text-red-800 dark:text-red-200">
-                {state.error}
-              </p>
-            </div>
-          )}
-
           <div className="flex gap-3">
             <button
               type="submit"
               disabled={isPending || !isOrganizationNameValid}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-zinc-400 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 cursor-pointer disabled:bg-zinc-400 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
             >
               {isPending ? "Saving..." : "Save Changes"}
             </button>

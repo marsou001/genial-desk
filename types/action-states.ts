@@ -27,6 +27,10 @@ export type EditAvatarActionState = ActionStateBase & {
   avatarUrl: string | null;
 };
 
+export type UpdateOrganizationActionState = ActionStateBase & {
+  name: string;
+}
+
 export type ActionStateBase = {
   isSuccess: boolean;
   error: string | null;
