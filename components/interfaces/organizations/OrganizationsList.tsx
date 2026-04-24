@@ -1,9 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { OrganizationView } from "@/types";
 import CreateOrganizationDialog from "./CreateOrganizationDialog";
+import { TOAST_FLASH_MESSAGES } from "@/lib/toast-flash-keys";
 
 export default function OrganizationsList({
   organizations,
@@ -11,6 +14,27 @@ export default function OrganizationsList({
   organizations: OrganizationView[];
 }) {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    const toastKey = searchParams.get("toast");
+    if (!toastKey) return;
+
+    const toastMessage = TOAST_FLASH_MESSAGES[toastKey];
+    if (!toastMessage) return;
+
+    toast.error(toastMessage);
+
+    // Remove only the "toast" param
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("toast");
+
+    const newUrl =
+      window.location.pathname +
+      (params.toString() ? `?${params.toString()}` : "");
+
+    window.history.replaceState({}, "", newUrl);
+  }, [searchParams]);
 
   return (
     <>

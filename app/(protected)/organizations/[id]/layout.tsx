@@ -3,6 +3,7 @@ import { getUser, getUserRole, verifyOrganizationAccess } from "@/lib";
 import { fetchOrganization } from "@/data/fetchOrganization";
 import AppSidebar from "@/components/Layout/AppSidebar";
 import { PermissionsProvider } from "@/context/permissions-context";
+import { TOAST_FLASH_KEYS } from "@/lib/toast-flash-keys";
 
 export default async function OrganizationLayout({
   children,
@@ -13,20 +14,19 @@ export default async function OrganizationLayout({
 }) {
   const { id: organizationId } = await params;
   const user = await getUser();
+
   const hasAccess = await verifyOrganizationAccess(user.id, organizationId);
   if (!hasAccess) {
-    // TODO: toast error
-    redirect("/organizations");
+    redirect("/organizations?toast=" + TOAST_FLASH_KEYS.ORG_NO_ACCESS);
   }
-
+  
   const organization = await fetchOrganization(organizationId);
-  if (!organization) {
-    // TODO: toast error
-    redirect("/organizations");
+  if (organization === null) {
+    redirect("/organizations?toast=" + TOAST_FLASH_KEYS.ORG_NOT_FOUND);
   }
 
   const role = (await getUserRole(user.id, organizationId)) ?? "viewer";
-  console.log("role", role)
+
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900 flex relative">
       <PermissionsProvider value={{ role }}>
