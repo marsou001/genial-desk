@@ -164,8 +164,7 @@ export async function resetPasswordAction(
       confirmPassword,
     };
   }
-  console.log("password", password)
-  console.log("confirmPassword", confirmPassword)
+
   if (password !== confirmPassword) {
     return {
       isSuccess: false,

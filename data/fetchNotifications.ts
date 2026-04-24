@@ -34,8 +34,6 @@ export async function fetchNotifications(
     return { items: [], unreadCount: 0, userId: id };
   }
 
-  console.log("data", data)
-
   const items = (data ?? [])
     .map((row) => mapSupabaseNotificationRow(row))
     .filter((x): x is NotificationItemState => x !== null);
