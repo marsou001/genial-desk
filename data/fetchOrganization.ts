@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 
 export async function fetchOrganization(
   organizationId: string,
-): Promise<{ name: string } | null> {
+): Promise<{ name: string }> {
   const cacheKey = REDIS_KEYS.organization(organizationId);
   const cachedValue = await getCache<{ name: string }>(cacheKey);
   if (cachedValue !== null) return cachedValue;
@@ -15,13 +15,11 @@ export async function fetchOrganization(
       .from("organizations")
       .select("name")
       .eq("id", organizationId)
-      .maybeSingle();
+      .single();
 
     if (error) {
       throw new Error(error.message);
     }
-
-    if (data === null) return null;
 
     await setCache(cacheKey, data);
     return data as { name: string };
