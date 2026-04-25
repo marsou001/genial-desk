@@ -4,13 +4,15 @@ import { toast } from "sonner";
 import { TOAST_FLASH_MESSAGES } from "@/lib/toast-flash-keys";
 
 export function useToastFlash() {
-  const searchParams = useSearchParams()
-  
+  const searchParams = useSearchParams();
+
   useEffect(() => {
     const toastKey = searchParams.get("toast");
+    console.log("toastKey", toastKey);
     if (!toastKey) return;
 
     const toastMessage = TOAST_FLASH_MESSAGES[toastKey];
+    console.log("toastMessage", toastMessage);
     if (!toastMessage) return;
 
     toast.error(toastMessage);

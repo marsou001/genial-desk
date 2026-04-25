@@ -22,7 +22,7 @@ export default async function OrganizationLayout({
   }
 
   const orgExists = await checkOrganizationExists(organizationId);
-  if (orgExists) {
+  if (!orgExists) {
     redirect("/organizations?toast=" + TOAST_FLASH_KEYS.ORG_NOT_FOUND);
   }
 
