@@ -48,11 +48,15 @@ export default function ManualFeedbackForm() {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid gap-4">
         <div>
-          <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+          <label
+            id="source"
+            className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
+          >
             Source Name
           </label>
           <input
             type="text"
+            name="source"
             value={source}
             onChange={(e) => setSource(e.target.value)}
             className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -61,10 +65,14 @@ export default function ManualFeedbackForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+          <label
+            id="feedback"
+            className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
+          >
             Customer Feedback
           </label>
           <textarea
+            name="feedback"
             value={feedback}
             onChange={(e) => setFeedback(e.target.value)}
             rows={5}
