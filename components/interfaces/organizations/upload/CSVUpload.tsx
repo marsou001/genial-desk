@@ -98,6 +98,13 @@ export default function CSVUpload() {
         </div>
       </form>
 
+      <div>
+        <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+          * Please ensure feedback is in a column named "feedback", "comment",
+          "text", or "message".
+        </p>
+      </div>
+
       <button
         type="submit"
         form="csv-file-upload"
