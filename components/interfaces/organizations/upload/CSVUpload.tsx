@@ -35,14 +35,12 @@ export default function CSVUpload() {
     setResult(null);
 
     try {
-      const data = await uploadCSV(
-        String(organizationId),
-        file,
-        source,
-      );
+      const data = await uploadCSV(String(organizationId), file, source);
       setResult(data);
-    } catch {
-      toast.error("Failed to process file");
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Failed to process file",
+      );
     } finally {
       setUploading(false);
     }
