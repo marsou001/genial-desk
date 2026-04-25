@@ -41,7 +41,7 @@ export async function POST(
     const analysis = await analyzeFeedback(text);
 
     // Insert into database (scoped to organization)
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("feedbacks")
       .insert({
         text,
@@ -51,19 +51,14 @@ export async function POST(
         summary: analysis.summary,
         keywords: analysis.keywords,
         organization_id: id,
-      })
-      .select()
-      .single();
+      });
 
     if (error) {
       throw new Error(error.message);
     }
 
     await invalidateCache(REDIS_KEYS.feedbacks(id));
-    return NextResponse.json({
-      success: true,
-      feedback: data,
-    });
+    return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Manual feedback error:", error);
     return NextResponse.json(

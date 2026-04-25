@@ -25,19 +25,11 @@ export default function ManualFeedbackForm() {
     setResult(null);
 
     try {
-      const data = await createFeedback(
+      await createFeedback(
         String(organizationId),
         feedback.trim(),
         source.trim() || "Manual Entry",
       );
-
-      if (!data.success) {
-        setResult({
-          success: false,
-          error: data.error || "Failed to submit feedback",
-        });
-        return;
-      }
 
       setResult({ success: true });
       setFeedback("");
