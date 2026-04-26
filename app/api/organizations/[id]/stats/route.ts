@@ -1,36 +1,39 @@
+import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { Stats } from "@/types";
 
-export async function fetchStats(
-  organizationId: string | null,
-  period: number = 30,
-): Promise<Stats> {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { id } = await params;
+
   try {
-    if (!organizationId) {
-      throw new Error("No organization Id was found");
-    }
+    const { searchParams } = new URL(request.url);
+    const days = parseInt(searchParams.get("days") || "30");
 
     const supabase = await createClient();
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
 
     const { data: feedbacks, error } = await supabase
       .from("feedbacks")
       .select("topic, sentiment, created_at")
-      .eq("organization_id", organizationId);
+      .eq("organization_id", id)
+      .gte("created_at", startDate.toISOString());
 
     if (error) {
       throw new Error(error.message);
     }
 
     if (!feedbacks || feedbacks.length === 0) {
-      return {
+      return NextResponse.json({
         total: 0,
         bySentiment: { positive: 0, neutral: 0, negative: 0 },
         byTopic: {},
         volumeOverTime: [],
-      };
+      });
     }
 
-    // Calculate sentiment distribution
     const bySentiment = {
       positive: 0,
       neutral: 0,
@@ -47,16 +50,14 @@ export async function fetchStats(
       }
     });
 
-    // Calculate topic distribution
     const topicCounts: Record<string, number> = {};
     feedbacks.forEach((f) => {
       topicCounts[f.topic] = (topicCounts[f.topic] || 0) + 1;
     });
 
-    // Calculate volume over selected period
     const volumeOverTime: Array<{ date: string; count: number }> = [];
     const now = new Date();
-    for (let i = period - 1; i >= 0; i--) {
+    for (let i = days - 1; i >= 0; i--) {
       const date = new Date(now);
       date.setDate(date.getDate() - i);
       const dateStr = date.toISOString().split("T")[0];
@@ -67,14 +68,17 @@ export async function fetchStats(
       volumeOverTime.push({ date: dateStr, count });
     }
 
-    return {
+    return NextResponse.json({
       total: feedbacks.length,
       bySentiment,
       byTopic: topicCounts,
       volumeOverTime,
-    };
+    });
   } catch (error) {
-    console.log("Failed to fetch stats: ", error);
-    throw new Error("Failed to fetch stats");
+    console.error("Stats error:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch stats" },
+      { status: 500 },
+    );
   }
 }
