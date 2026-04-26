@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { OrganizationView as Organization } from "@/types";
-import { useParams, usePathname } from "next/navigation";
+import { useParams, usePathname, useSearchParams } from "next/navigation";
 
 export default function OrganizationSwitcher({
   organizations,
@@ -12,7 +12,11 @@ export default function OrganizationSwitcher({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
-  const page = pathname.split("/")[3] ?? "dashboard";
+  const searchParams = useSearchParams();
+
+  const queryParams =
+    searchParams.size > 0 ? "?" + searchParams.toString() : "";
+  const page = (pathname + queryParams).split("/")[3] ?? "dashboard";
 
   const containerRef = useRef<HTMLDivElement>(null);
 
