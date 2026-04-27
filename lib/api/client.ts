@@ -16,14 +16,14 @@ async function clientFetch(
     // If the server returns a 5xx error, throw to trigger the catch block
     if (response.status >= 500 && retries > 0) {
       console.warn(`Server error ${response.status}. Retrying...`);
-      return clientFetch(url, options, retries - 1);
+      return clientFetch(endpoint, options, retries - 1);
     }
 
     return response;
   } catch (error) {
     // Retry on network errors (like DNS or connection loss) if attempts remain
     if (retries > 0) {
-      return clientFetch(url, options, retries - 1);
+      return clientFetch(endpoint, options, retries - 1);
     }
     throw error;
   }
