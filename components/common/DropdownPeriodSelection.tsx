@@ -35,7 +35,7 @@ export default function DropdownPeriodSelection({
       value={period}
       onChange={(e) => handlePeriodChange(Number(e.target.value))}
       disabled={disabled}
-      className="px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+      className="px-3 py-1.5 text-sm border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white disabled:bg-gray-200 dark:bg-zinc-800 dark:disabled:bg-zinc-600 text-zinc-900 dark:text-zinc-50 cursor-pointer disabled:cursor-not-allowed"
     >
       {PERIOD_OPTIONS.map((p) => (
         <option key={p.value} value={p.value}>
