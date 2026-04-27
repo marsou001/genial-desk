@@ -4,7 +4,7 @@ import { analyzeFeedback } from "@/lib/openai";
 import { authGuard } from "@/lib/auth-guard";
 
 export async function GET(
-  _: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
@@ -17,12 +17,18 @@ export async function GET(
   }
 
   try {
+    const { searchParams } = new URL(request.url);
+    const days = parseInt(searchParams.get("days") || "30");
+
     const supabase = await createClient();
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
 
     const { error, data } = await supabase
       .from("feedbacks")
       .select("*")
       .eq("organization_id", id)
+      .gte("created_at", startDate.toISOString())
       .order("created_at", { ascending: false });
 
     if (error) {

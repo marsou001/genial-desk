@@ -1,23 +1,24 @@
-import FeedbackList from "@/components/interfaces/organizations/FeedbackList/FeedbackList";
+import { redirect } from "next/navigation";
 import { fetchFeedbacks } from "@/data/fetchFeedbacks";
+import { PERIOD_VALUES } from "@/components/common/DropdownPeriodSelection";
+import FeedbackList from "@/components/interfaces/organizations/FeedbackList/FeedbackList";
 
 export default async function FeedbackListPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ period?: string }>;
 }) {
   const { id: organizationId } = await params;
-  const feedbacks = await fetchFeedbacks(organizationId);
+  const { period } = await searchParams;
 
-  if (feedbacks.length === 0) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-zinc-600 dark:text-zinc-400">
-          No feedback found. Upload some feedback to get started!
-        </p>
-      </div>
-    );
+  const days = period ? Number(period) : 30;
+
+  if (!period || !PERIOD_VALUES.includes(days)) {
+    redirect(`/organizations/${organizationId}/feedback-list?period=30`);
   }
 
-  return <FeedbackList feedbacks={feedbacks} />;
+  const feedbacks = await fetchFeedbacks(organizationId, days);
+  return <FeedbackList feedbacks={feedbacks} organizationId={organizationId} />;
 }

@@ -32,7 +32,7 @@ export default function FeedbackCard({ feedback }: { feedback: Feedback }) {
           </span>
         </div>
         <span className="text-xs text-zinc-500 dark:text-zinc-400">
-          {new Date(feedback.created_at).toLocaleDateString()}
+          {new Date(feedback.created_at).toDateString()}
         </span>
       </div>
       <p className="text-zinc-900 dark:text-zinc-50 mb-2">{feedback.text}</p>
