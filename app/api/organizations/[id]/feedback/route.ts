@@ -2,8 +2,45 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { analyzeFeedback } from "@/lib/openai";
 import { authGuard } from "@/lib/auth-guard";
-import { invalidateCache } from "@/lib/redis";
-import { REDIS_KEYS } from "@/lib/redis/keys";
+
+export async function GET(
+  _: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { id } = await params;
+  const guard = await authGuard(id, {
+    requirePermission: "data:read",
+  });
+
+  if (!guard.success) {
+    return guard.response;
+  }
+
+  try {
+    const supabase = await createClient();
+
+    const { error, data } = await supabase
+      .from("feedbacks")
+      .select("*")
+      .eq("organization_id", id)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return NextResponse.json({ data });
+  } catch (error) {
+    console.error("Failed to get feedbacks ==>", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Failed to get feedbacks",
+      },
+      { status: 500 },
+    );
+  }
+}
 
 export async function POST(
   request: NextRequest,
@@ -57,7 +94,6 @@ export async function POST(
       throw new Error(error.message);
     }
 
-    await invalidateCache(REDIS_KEYS.feedbacks(id));
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Manual feedback error:", error);

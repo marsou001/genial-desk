@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { fetchStats } from "@/data/fetchStats";
-import { PERIOD_VALUES } from "@/components/interfaces/organizations/dashboard/DashboardClient.constants";
 import DashboardClient from "@/components/interfaces/organizations/dashboard/DashboardClient";
+import { PERIOD_VALUES } from "@/components/common/DropdownPeriodSelection";
 
 export default async function Dashboard({
   params,
