@@ -39,11 +39,12 @@ export default function AppSidebar() {
     },
   ];
 
-  if (canUploadFeedback) sidebarLinks.splice(2, 0, {
-    href: `/organizations/${organizationId}/upload`,
-    label: "Upload",
-    icon: "⬆️",
-  });
+  if (canUploadFeedback)
+    sidebarLinks.splice(2, 0, {
+      href: `/organizations/${organizationId}/upload`,
+      label: "Upload",
+      icon: "⬆️",
+    });
 
   return (
     <aside
@@ -52,7 +53,7 @@ export default function AppSidebar() {
       }`}
     >
       <div className="h-screen flex flex-col">
-        <div className="p-4 border-b border-zinc-200 dark:border-zinc-700 flex items-center justify-between">
+        <div className="p-4 sm:p-6 border-b border-zinc-200 dark:border-zinc-700 flex items-center justify-between">
           {!isCollapsed && (
             <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase">
               Navigation
