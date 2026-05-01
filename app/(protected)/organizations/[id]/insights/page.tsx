@@ -1,23 +1,24 @@
+import { redirect } from "next/navigation";
+import { PERIOD_VALUES } from "@/components/common/DropdownPeriodSelection";
 import Insights from "@/components/interfaces/organizations/Insights/Insights";
 import { fetchInsights } from "@/data/fetchInsights";
 
 export default async function InsightsPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ period?: string }>;
 }) {
   const { id: organizationId } = await params;
-  let insights = await fetchInsights(7, organizationId);
+  const { period } = await searchParams;
 
-  if (!insights) {
-    return (
-      <div className="bg-white dark:bg-zinc-900 p-6 rounded-lg border border-zinc-200 dark:border-zinc-800">
-        <p className="text-zinc-600 dark:text-zinc-400">
-          No insights available yet.
-        </p>
-      </div>
-    );
+  const days = period ? Number(period) : 7;
+
+  if (!period || !PERIOD_VALUES.includes(days)) {
+    redirect(`/organizations/${organizationId}/insights?period=30`);
   }
 
+  let insights = await fetchInsights(organizationId, days);
   return <Insights insightsData={insights} organizationId={organizationId} />;
 }

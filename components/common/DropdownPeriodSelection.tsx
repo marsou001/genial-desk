@@ -1,5 +1,3 @@
-"ue";
-
 import { parseAsNumberLiteral, useQueryState } from "nuqs";
 
 export const PERIOD_VALUES = [7, 14, 30, 60];

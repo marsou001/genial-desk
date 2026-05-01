@@ -64,11 +64,11 @@ Return ONLY valid JSON, no markdown formatting.`,
   }
 }
 
-export async function generateWeeklyInsights(
+export async function generateInsights(
   feedbacks: Array<{ text: string; topic: string; sentiment: string }>,
 ): Promise<string> {
   if (!process.env.OPENAI_API_KEY) {
-    return "Weekly insights require OpenAI API key configuration.";
+    return "Generating insights require OpenAI API key configuration.";
   }
 
   try {
@@ -86,11 +86,11 @@ export async function generateWeeklyInsights(
         {
           role: "system",
           content:
-            "You are a customer insights analyst. Generate a concise weekly summary highlighting key trends, patterns, and actionable insights from customer feedback.",
+            "You are a customer insights analyst. Generate a concise summary highlighting key trends, patterns, and actionable insights from customer feedback.",
         },
         {
           role: "user",
-          content: `Based on this week's feedback (${feedbacks.length} items), generate a 3-4 paragraph weekly insight summary:\n\n${feedbackSummary}`,
+          content: `Based on this week's feedback (${feedbacks.length} items), generate a 3-4 paragraph insight summary:\n\n${feedbackSummary}`,
         },
       ],
       temperature: 0.7,

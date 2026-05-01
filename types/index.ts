@@ -10,8 +10,10 @@ export type Stats = {
 };
 
 export type Insights = {
+  data: null
+} | {
   data: string;
-  count: number;
+  lastGenerated: string;
   period: string;
 };
 
