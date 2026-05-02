@@ -4,6 +4,14 @@ import Link from "next/link";
 import { useState } from "react";
 import { useParams, usePathname } from "next/navigation";
 import { usePermissions } from "@/context/permissions-context";
+import {
+  Home,
+  MessageCircleMore,
+  Upload,
+  Brain,
+  Users,
+  Settings,
+} from "lucide-react";
 
 export default function AppSidebar() {
   const { id: organizationId } = useParams();
@@ -15,27 +23,27 @@ export default function AppSidebar() {
     {
       href: `/organizations/${organizationId}/dashboard`,
       label: "Dashboard",
-      icon: "🏠",
+      icon: Home,
     },
     {
       href: `/organizations/${organizationId}/feedback-list`,
       label: "Feedbacks",
-      icon: "💬",
+      icon: MessageCircleMore,
     },
     {
       href: `/organizations/${organizationId}/insights`,
       label: "Insights",
-      icon: "📈",
+      icon: Brain,
     },
     {
       href: `/organizations/${organizationId}/members`,
       label: "Members",
-      icon: "👥",
+      icon: Users,
     },
     {
       href: `/organizations/${organizationId}/settings`,
       label: "Settings",
-      icon: "⚙️",
+      icon: Settings,
     },
   ];
 
@@ -43,7 +51,7 @@ export default function AppSidebar() {
     sidebarLinks.splice(2, 0, {
       href: `/organizations/${organizationId}/upload`,
       label: "Upload",
-      icon: "⬆️",
+      icon: Upload,
     });
 
   return (
@@ -97,14 +105,14 @@ export default function AppSidebar() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    className={`flex items-center gap-3 p-3 rounded-lg text-sm font-medium transition-colors ${
                       isActive
                         ? "bg-blue-600 text-white"
                         : "text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700"
                     }`}
                     title={isCollapsed ? link.label : undefined}
                   >
-                    {link.icon && <span className="text-lg">{link.icon}</span>}
+                    {link.icon && <link.icon />}
                     {!isCollapsed && <span>{link.label}</span>}
                   </Link>
                 </li>
