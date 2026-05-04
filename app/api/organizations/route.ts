@@ -1,21 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { authGuard } from "@/lib/auth-guard";
 import { createClient } from "@/lib/supabase/server";
-import { hasPermission } from "@/lib/permissions";
+import { getUser } from "@/lib";
 
 /**
  * GET /api/organizations
  * List all organizations the user belongs to
  */
-export async function GET(request: NextRequest) {
-  const guard = await authGuard(request, {
-    requireAuth: true,
-    requireOrg: false,
-  });
-
-  if (!guard.success) {
-    return guard.response;
-  }
+export async function GET() {
+  const { id } = await getUser();
 
   try {
     const supabase = await createClient();
@@ -33,7 +25,7 @@ export async function GET(request: NextRequest) {
         )
       `,
       )
-      .eq("user_id", guard.user.id);
+      .eq("user_id", id);
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
@@ -61,14 +53,7 @@ export async function GET(request: NextRequest) {
  * Create a new organization (user becomes Owner)
  */
 export async function POST(request: NextRequest) {
-  const guard = await authGuard(request, {
-    requireAuth: true,
-    requireOrg: false,
-  });
-
-  if (!guard.success) {
-    return guard.response;
-  }
+  const { id } = await getUser();
 
   try {
     const body = await request.json();
@@ -98,7 +83,7 @@ export async function POST(request: NextRequest) {
     const { error: memberError } = await supabase
       .from("organization_members")
       .insert({
-        user_id: guard.user.id,
+        user_id: id,
         organization_id: organization.id,
         role: "owner",
       });
