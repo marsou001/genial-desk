@@ -15,6 +15,26 @@ export interface Feedback {
 export interface Organization {
   id: string;
   name: string;
+  stripe_customer_id: string | null;
+  remaining_ai_runs: number;
+  remaining_uploads: number;
+  created_at: string;
+}
+
+export interface Plan {
+  id: string;
+  name: string;
+  price_id: string;
+  max_ai_runs: number;
+  max_uploads: number;
+  max_members: number;
+}
+
+export interface Subscription {
+  id: string;
+  subscription_id: string;
+  organization_id: string;
+  price_id: string;
   created_at: string;
 }
 

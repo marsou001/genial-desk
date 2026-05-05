@@ -20,4 +20,10 @@ export const REDIS_KEYS = {
   feedbacks(orgId: string) {
     return `organization_${orgId}_feedbacks`
   },
+  plans() {
+    return "plans"
+  },
+  plan(priceId: string) {
+    return `plan_${priceId}`
+  }
 }

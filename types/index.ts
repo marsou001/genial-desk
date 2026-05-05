@@ -17,7 +17,16 @@ export type Insights = {
   period: string;
 };
 
-export interface UserMembership {
+export type Organization = {
+  id: string;
+  name: string;
+  stripeCustomerId: string | null;
+  remainingAIRuns: number;
+  remainingUploads: number;
+  createdAt: string;
+}
+
+export type UserMembership = {
   id: string;
   organization_id: string;
   role: UserRole;
@@ -62,6 +71,23 @@ export type ProfileData = {
   fullName: string | null;
   email: string;
 };
+
+export interface Plan {
+  id: string;
+  name: string;
+  priceId: string;
+  maxAIRuns: number;
+  maxUploads: number;
+  maxMembers: number;
+}
+
+export interface Subscription {
+  id: string;
+  subscriptionId: string;
+  organizationId: string;
+  priceId: string;
+  createdAt: string;
+}
 
 export type UserRole = "owner" | "admin" | "analyst" | "viewer";
 
