@@ -75,6 +75,7 @@ export type ProfileData = {
 export interface Plan {
   id: string;
   name: string;
+  price: number;
   priceId: string;
   maxAIRuns: number;
   maxUploads: number;

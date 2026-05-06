@@ -24,6 +24,7 @@ export interface Organization {
 export interface Plan {
   id: string;
   name: string;
+  price: number;
   price_id: string;
   max_ai_runs: number;
   max_uploads: number;
