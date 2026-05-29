@@ -1,0 +1,1 @@
+export const PLANS = Object.freeze(["free", "pro", "business"]);

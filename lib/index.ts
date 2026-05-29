@@ -4,6 +4,8 @@ import { createClient } from "./supabase/server";
 import { NextRequest } from "next/server";
 import { UserRole } from "@/types";
 
+export const APP_URL = process.env.NEXT_PUBLIC_APP_URL!;
+
 export const getUser = cache(async () => {
   const supabase = await createClient();
   const { data: userData, error: userError } = await supabase.auth.getUser();

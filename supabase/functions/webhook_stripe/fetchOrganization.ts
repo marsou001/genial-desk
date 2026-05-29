@@ -1,26 +1,22 @@
-import { getCache, setCache } from "@/lib/redis";
-import { REDIS_KEYS } from "@/lib/redis/keys";
-import { createClient } from "@/lib/supabase/server";
-import { Organization } from "@/types";
+import { supabase } from "./supabase.ts";
+import { getCache, setCache } from "./cache.ts";
+import { Organization } from "./types.ts";
 
 export async function fetchOrganization(
   organizationId: string,
 ): Promise<Organization> {
-  const cacheKey = REDIS_KEYS.organization(organizationId);
+  const cacheKey = `organization_${organizationId}`;
   const cachedValue = await getCache<Organization>(cacheKey);
   if (cachedValue !== null) return cachedValue;
 
   try {
-    const supabase = await createClient();
     const { data, error } = await supabase
       .from("organizations")
-      .select()
+      .select("*")
       .eq("id", organizationId)
       .single();
 
-    if (error) {
-      throw new Error(error.message);
-    }
+    if (error) throw new Error(error.message);
 
     const organization = {
       id: data.id,
@@ -35,7 +31,7 @@ export async function fetchOrganization(
     await setCache(cacheKey, organization);
     return organization;
   } catch (error) {
-    console.log("Error fetching organization with id", error);
+    console.error("Error fetching organization with id", error);
     throw new Error("Error fetching organization with id");
   }
 }

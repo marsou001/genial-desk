@@ -10,6 +10,7 @@ import {
   ResetPasswordActionState,
 } from "@/types/action-states";
 import { isEmailValid } from "@/lib/utils";
+import { APP_URL } from "@/lib";
 
 export async function signInAction(_: AuthActionState, formData: FormData) {
   const email = formData.get("email") as string;
@@ -44,7 +45,8 @@ export async function signUpAction(_: AuthActionState, formData: FormData) {
   });
 
   if (error) {
-    return { isSuccess: false, error: error.message, email, password };
+    console.log("Error signing up", error)
+    return { isSuccess: false, error: "Something went wrong while signing up", email, password };
   }
 
   return { isSuccess: true, error: null, email, password  }

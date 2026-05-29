@@ -47,8 +47,9 @@ export async function updateSession(request: NextRequest) {
     request.nextUrl.pathname.startsWith("/forgot-password") ||
     request.nextUrl.pathname.startsWith("/api/auth");
   const isSetPasswordPage = request.nextUrl.pathname.startsWith("/set-password");
+  const isWebhookRoute = request.nextUrl.pathname.startsWith("/api/webhooks");
 
-  const isProtectedRoute = !isPublicRoute && !isAuthRoute && !isSetPasswordPage;
+  const isProtectedRoute = !isPublicRoute && !isAuthRoute && !isSetPasswordPage && !isWebhookRoute;
 
   if (!user && isProtectedRoute) {
     const fullPath = request.nextUrl.pathname + request.nextUrl.search;

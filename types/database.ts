@@ -1,3 +1,4 @@
+import Stripe from "stripe";
 import { InviteStatus, UserRole } from ".";
 
 export interface Feedback {
@@ -18,6 +19,7 @@ export interface Organization {
   stripe_customer_id: string | null;
   remaining_ai_runs: number;
   remaining_uploads: number;
+  last_reset_at: string | null;
   created_at: string;
 }
 
@@ -25,7 +27,7 @@ export interface Plan {
   id: string;
   name: string;
   price: number;
-  price_id: string;
+  price_id: string | null;
   max_ai_runs: number;
   max_uploads: number;
   max_members: number;
@@ -36,6 +38,7 @@ export interface Subscription {
   subscription_id: string;
   organization_id: string;
   price_id: string;
+  status: Stripe.Subscription.Status;
   created_at: string;
 }
 

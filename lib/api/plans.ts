@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { get } from "./client";
 import { Plan } from "@/types";
 
@@ -7,7 +7,7 @@ export function useFetchPlans() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const getPlans = useCallback(async () => {
+  async function getPlans() {
     setLoading(true);
     setError(null);
     try {
@@ -18,7 +18,7 @@ export function useFetchPlans() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  };
 
   return { data, loading, error, getPlans };
 }

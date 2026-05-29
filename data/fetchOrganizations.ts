@@ -38,7 +38,7 @@ export async function fetchOrganizations(): Promise<OrganizationView[]> {
       id: m.organization_id,
       name: m.organizations.name,
       role: m.role.name.toLowerCase(),
-      created_at: m.organizations.created_at,
+      createdAt: m.organizations.created_at,
     }));
 
     await setCache(cacheKey, organizations);

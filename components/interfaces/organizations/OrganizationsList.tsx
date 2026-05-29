@@ -70,6 +70,7 @@ export default function OrganizationsList({
 
       {showCreateDialog && (
         <CreateOrganizationDialog
+          isOpen={showCreateDialog}
           handleClose={() => setShowCreateDialog(false)}
         />
       )}

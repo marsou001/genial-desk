@@ -13,6 +13,7 @@ export async function updateOrganization(
   if (fields.stripeCustomerId !== undefined) fieldsToUpdate.stripe_customer_id = fields.stripeCustomerId;
   if (fields.remainingUploads !== undefined) fieldsToUpdate.remaining_uploads = fields.remainingUploads;
   if (fields.remainingAIRuns !== undefined) fieldsToUpdate.remaining_ai_runs = fields.remainingAIRuns;
+  if (fields.lastResetAt !== undefined) fieldsToUpdate.last_reset_at = fields.lastResetAt;
 
   try {
     const supabase = await createClient();

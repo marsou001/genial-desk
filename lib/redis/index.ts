@@ -1,7 +1,8 @@
 import Redis from 'ioredis';
 import { isSerializable } from '../utils';
 
-const redis = new Redis();
+const REDIS_URL = process.env.REDIS_URL!;
+const redis = new Redis(REDIS_URL);
 
 export async function getCache<T>(key: string): Promise<T | null> {
   let value: string | null;

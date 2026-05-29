@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib";
+import { PLANS } from "@/lib/constants";
 
 /**
  * GET /api/organizations
@@ -51,6 +52,7 @@ export async function GET() {
 /**
  * POST /api/organizations
  * Create a new organization (user becomes Owner)
+ * Accepts: { name, plan: "free" | "pro" | "business" }
  */
 export async function POST(request: NextRequest) {
   const { id } = await getUser();
@@ -58,6 +60,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const name = (body?.name as string)?.trim();
+    const plan = (body?.plan as string) || "free";
 
     if (!name || name.length < 2) {
       return NextResponse.json(
@@ -66,38 +69,45 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (!PLANS.includes(plan)) {
+      return NextResponse.json(
+        { error: "Invalid plan" },
+        { status: 400 },
+      );
+    }
+
     const supabase = await createClient();
 
-    // Create organization
-    const { data: organization, error: orgError } = await supabase
+    // Look up free plan limits as defaults for all plans
+    const { data: plans } = await supabase
+      .from("plans")
+      .select("max_ai_runs, max_uploads, max_members")
+      .eq("name", "free")
+      .maybeSingle();
+
+    const defaultAIRuns = plans?.max_ai_runs ?? 15;
+    const defaultUploads = plans?.max_uploads ?? 5;
+    const orgId = crypto.randomUUID();
+
+    // Create organization with default limits
+    const { error: orgError } = await supabase
       .from("organizations")
-      .insert({ name })
-      .select()
-      .single();
-
-    if (orgError) {
-      return NextResponse.json({ error: orgError.message }, { status: 500 });
-    }
-
-    // Add creator as Owner
-    const { error: memberError } = await supabase
-      .from("organization_members")
       .insert({
-        user_id: id,
-        organization_id: organization.id,
-        role: "owner",
-      });
+        id: orgId,
+        name,
+        remaining_ai_runs: defaultAIRuns,
+        remaining_uploads: defaultUploads,
+        last_reset_at: new Date().toISOString(),
+      })
 
-    if (memberError) {
-      // Rollback organization creation
-      await supabase.from("organizations").delete().eq("id", organization.id);
-      return NextResponse.json({ error: memberError.message }, { status: 500 });
-    }
+    if (orgError) throw new Error(orgError.message);
 
     return NextResponse.json({
       success: true,
+      plan,
       organization: {
-        ...organization,
+        id: orgId,
+        name,
         role: "owner",
       },
     });

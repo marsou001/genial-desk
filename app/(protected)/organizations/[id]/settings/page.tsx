@@ -1,5 +1,9 @@
 import { fetchOrganization } from "@/data/fetchOrganization";
-import OrganizationSettings from "@/components/interfaces/organizations/OrganizationSettings";
+import { fetchSubscriptionByOrganizationId } from "@/data/subscriptions";
+import { fetchPlans } from "@/data/fetchPlans";
+import OrganizationNameForm from "@/components/interfaces/organizations/settings/OrganizationNameForm";
+import OrganizationBilling from "@/components/interfaces/organizations/settings/OrganizationBilling";
+import OrganizationDangerZone from "@/components/interfaces/organizations/settings/OrganizationDangerZone";
 
 export default async function OrganizationSettingsPage({
   params,
@@ -19,13 +23,33 @@ export default async function OrganizationSettingsPage({
     );
   }
 
+  const [subscription, plans] = await Promise.all([
+    fetchSubscriptionByOrganizationId(organizationId),
+    fetchPlans(),
+  ]);
+
+  const currentPlan = subscription
+    ? (plans.find((p) => p.priceId === subscription.priceId) ?? null)
+    : null;
+
   return (
     <div>
       <div className="max-w-2xl">
         <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50 mb-6">
           Organization Settings
         </h1>
-        <OrganizationSettings organization={{ id: organizationId, name: organization.name}} />
+        <OrganizationNameForm
+          organization={{ id: organizationId, name: organization.name }}
+        />
+        <OrganizationBilling
+          organization={organization}
+          subscription={subscription}
+          plans={plans}
+          currentPlan={currentPlan}
+        />
+        <OrganizationDangerZone
+          organization={{ id: organizationId, name: organization.name }}
+        />
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import AppSidebar from "@/components/Layout/AppSidebar";
 import { PermissionsProvider } from "@/context/permissions-context";
 import { TOAST_FLASH_KEYS } from "@/lib/toast-flash-keys";
 import { checkOrganizationExists } from "@/data/checkOrganizationExists";
+import CheckoutSessionHandler from "@/components/common/CheckoutSessionHandler";
 
 export default async function OrganizationLayout({
   children,
@@ -30,6 +31,7 @@ export default async function OrganizationLayout({
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900 flex relative">
+      <CheckoutSessionHandler />
       <PermissionsProvider value={{ role }}>
         <AppSidebar />
         <div className="flex-1 flex flex-col pt-4 pr-4 pl-16 sm:pt-8 sm:pr-8 sm:pl-24">

@@ -1,3 +1,5 @@
+import Stripe from "stripe";
+
 export type Stats = {
   total: number;
   bySentiment: {
@@ -23,6 +25,7 @@ export type Organization = {
   stripeCustomerId: string | null;
   remainingAIRuns: number;
   remainingUploads: number;
+  lastResetAt: string | null;
   createdAt: string;
 }
 
@@ -37,7 +40,7 @@ export type OrganizationView = {
   id: string;
   name: string;
   role: UserRole;
-  created_at: string;
+  createdAt: string;
 };
 
 export type OrganizationMember = {
@@ -76,7 +79,7 @@ export interface Plan {
   id: string;
   name: string;
   price: number;
-  priceId: string;
+  priceId: string | null;
   maxAIRuns: number;
   maxUploads: number;
   maxMembers: number;
@@ -84,9 +87,10 @@ export interface Plan {
 
 export interface Subscription {
   id: string;
-  subscriptionId: string;
+  stripeSubscriptionId: string;
   organizationId: string;
   priceId: string;
+  status: Stripe.Subscription.Status;
   createdAt: string;
 }
 
