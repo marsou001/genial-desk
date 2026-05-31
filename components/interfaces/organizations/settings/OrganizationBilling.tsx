@@ -30,7 +30,6 @@ export default function OrganizationBilling({
         organization.id,
         plan.priceId!,
         organization.stripeCustomerId,
-        "settings",
       );
 
       window.location.href = sessionURL;

@@ -1,6 +1,6 @@
 import { fetchOrganization } from "@/data/fetchOrganization";
 import { fetchSubscriptionByOrganizationId } from "@/data/subscriptions";
-import { fetchPlans } from "@/data/fetchPlans";
+import { fetchPlans } from "@/data/plans";
 import OrganizationNameForm from "@/components/interfaces/organizations/settings/OrganizationNameForm";
 import OrganizationBilling from "@/components/interfaces/organizations/settings/OrganizationBilling";
 import OrganizationDangerZone from "@/components/interfaces/organizations/settings/OrganizationDangerZone";

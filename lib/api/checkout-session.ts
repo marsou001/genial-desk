@@ -44,7 +44,6 @@ export function useCreateCheckoutSession() {
     organizationId: string,
     priceId: string,
     customerId: string | null,
-    redirectPath?: string,
   ) {
     setLoading(true);
     setError(null);
@@ -53,7 +52,6 @@ export function useCreateCheckoutSession() {
         organizationId,
         priceId,
         customerId,
-        redirectPath,
       });
       setData(response);
       return response;

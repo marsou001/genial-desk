@@ -25,12 +25,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(req: Request) {
   try {
-    const {
-      organizationId,
-      priceId,
-      customerId,
-      redirectPath = "dashboard",
-    } = await req.json();
+    const { organizationId, priceId, customerId } = await req.json();
     if (!organizationId || !priceId) {
       throw new Error("Missing organizationId or priceId");
     }
@@ -47,8 +42,8 @@ export async function POST(req: Request) {
           quantity: 1,
         },
       ],
-      success_url: `${origin}/organizations/${organizationId}/${redirectPath}?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/organizations/${organizationId}/${redirectPath}`,
+      success_url: `${origin}/checkout?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/checkout`,
       client_reference_id: organizationId,
       subscription_data: {
         metadata: {

@@ -64,7 +64,6 @@ export default function CreateOrganizationDialog({
         result.organization.id,
         plan.priceId!,
         null,
-        "dashboard",
       );
 
       window.location.href = sessionURL;
