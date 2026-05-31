@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib";
 import { PLANS } from "@/lib/constants";
+import { REDIS_KEYS } from "@/lib/redis/keys";
+import { getCache, invalidateCache, setCache } from "@/lib/redis";
+import { OrganizationView } from "@/types";
 
 /**
  * GET /api/organizations
@@ -9,6 +12,9 @@ import { PLANS } from "@/lib/constants";
  */
 export async function GET() {
   const { id } = await getUser();
+  const cacheKey = REDIS_KEYS.organizations(id);
+  const cachedValue = await getCache<OrganizationView[]>(cacheKey);
+  if (cachedValue !== null) return cachedValue;
 
   try {
     const supabase = await createClient();
@@ -18,7 +24,9 @@ export async function GET() {
       .select(
         `
         organization_id,
-        role,
+        role:roles (
+          name
+        ),
         organizations!inner (
           id,
           name,
@@ -36,9 +44,10 @@ export async function GET() {
       id: m.organization_id,
       name: m.organizations.name,
       role: m.role,
-      created_at: m.organizations.created_at,
+      createdAt: m.organizations.created_at,
     }));
 
+    await setCache(cacheKey, organizations);
     return NextResponse.json({ organizations });
   } catch (error) {
     console.error("Error fetching organizations:", error);
@@ -55,8 +64,6 @@ export async function GET() {
  * Accepts: { name, plan: "free" | "pro" | "business" }
  */
 export async function POST(request: NextRequest) {
-  const { id } = await getUser();
-
   try {
     const body = await request.json();
     const name = (body?.name as string)?.trim();
@@ -101,7 +108,8 @@ export async function POST(request: NextRequest) {
       })
 
     if (orgError) throw new Error(orgError.message);
-
+    const { id } = await getUser();
+    await invalidateCache(REDIS_KEYS.organizations(id))
     return NextResponse.json({
       success: true,
       plan,
