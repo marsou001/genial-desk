@@ -1,4 +1,5 @@
 import { getUser } from "@/lib";
+import { authGuard } from "@/lib/auth-guard";
 import { headers } from "next/headers";
 import { NextRequest } from "next/server";
 import Stripe from "stripe";
@@ -29,6 +30,11 @@ export async function POST(req: Request) {
     if (!organizationId || !priceId) {
       throw new Error("Missing organizationId or priceId");
     }
+
+    const auth = await authGuard(organizationId, {
+      requirePermission: "org:billing",
+    });
+    if (!auth.success) return auth.response;
 
     const headerPayload = await headers();
     const origin = headerPayload.get("origin");
@@ -64,7 +70,7 @@ export async function POST(req: Request) {
       }, {
         // idempotencyKey: "customer__" + organizationId,
       });
-      console.log("customer.id", customer.id)
+
       sessionParams.customer = customer.id;
     }
 
