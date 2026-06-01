@@ -71,14 +71,14 @@ Deno.serve(async (req) => {
 
   switch (event.type) {
     case "customer.created": {
-      console.log("customer.created");
+      console.log("=====>> customer.created <<=====");
       const customer = event.data.object;
       const organizationId = customer.metadata.organization_id;
       await updateOrganization(organizationId, { stripeCustomerId: customer.id });
       break;
     }
     // case "checkout.session.completed": {
-    //   console.log("checkout.session.completed");
+    //   console.log("=====>> checkout.session.completed <<=====");
     //   const checkout = event.data.object;
     //   const organizationId = checkout.client_reference_id;
 
@@ -119,7 +119,7 @@ Deno.serve(async (req) => {
     //   break;
     // }
     case "customer.subscription.created": {
-      console.log("customer.subscription.created");
+      console.log("=====>> customer.subscription.created <<=====");
       const subscription = event.data.object;
       const customerId = typeof subscription.customer === "string"
         ? subscription.customer
@@ -141,7 +141,7 @@ Deno.serve(async (req) => {
       break;
     }
     case "customer.subscription.updated": {
-      console.log("customer.subscription.updated");
+      console.log("=====>> customer.subscription.updated <<=====");
       const subscription = event.data.object;
       const subscriptionId = subscription.id;
       const status = subscription.status;
@@ -155,14 +155,14 @@ Deno.serve(async (req) => {
       break;
     }
     case "customer.subscription.deleted": {
-      console.log("customer.subscription.deleted");
+      console.log("=====>> customer.subscription.deleted <<=====");
       const subscription = event.data.object;
       const subscriptionId = subscription.id;
       await deleteSubscription(subscriptionId);
       break;
     }
     case "invoice.paid": {
-      console.log("invoice.paid");
+      console.log("=====>> invoice.paid <<=====");
       const invoice = event.data.object as Stripe.Invoice;
       if (invoice.customer === null) {
         return new Response(
@@ -197,7 +197,7 @@ Deno.serve(async (req) => {
       break;
     }
     case "invoice.payment_failed": {
-      console.log("invoice.payment_failed");
+      console.log("=====>> invoice.payment_failed <<=====");
       const invoice = event.data.object as Stripe.Invoice;
       if (invoice.customer === null) {
         return new Response(

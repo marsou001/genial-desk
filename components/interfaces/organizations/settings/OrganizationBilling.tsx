@@ -7,6 +7,7 @@ import { Plan, Subscription, Organization } from "@/types";
 import { useCreateCheckoutSession } from "@/lib/api/checkout-session";
 import { createPortalSession } from "@/lib/api/billingPortal";
 import { statusColor } from "./OrganizationBilling.constants";
+import { useCancelSubscriptionMutation, useUpdateSubscriptionMutation } from "@/lib/api/subscriptions";
 
 export default function OrganizationBilling({
   organization,
@@ -21,18 +22,49 @@ export default function OrganizationBilling({
 }) {
   const [isChangingPlan, setIsChangingPlan] = useState<string | null>(null);
   const { createCheckoutSession } = useCreateCheckoutSession();
+  const { updateSubscription } = useUpdateSubscriptionMutation();
+  const { cancelSubscription } = useCancelSubscriptionMutation();
 
-  async function handleUpgrade(plan: Plan) {
+  async function subscribeToPlan(plan: Plan) {
+    const { sessionURL } = await createCheckoutSession(
+      organization.id,
+      plan.priceId!,
+      organization.stripeCustomerId,
+    );
+
+    window.location.href = sessionURL;
+  }
+
+  async function changePlan(plan: Plan) {
+    if (subscription === null) {
+      throw new Error("You're not currently subscribed to any plan");
+    }
+    if (plan.priceId === null) {
+      throw new Error("Can't subscribe to free plan");
+    }
+    await updateSubscription(subscription.stripeSubscriptionId, organization.id, plan.priceId);
+    toast.success("Plan changed successfully")
+  }
+
+  async function cancelPlan() {
+    if (subscription === null) {
+      throw new Error("You're not currently subscribed to any plan");
+    }
+    await cancelSubscription(subscription.stripeSubscriptionId, organization.id);
+    toast.success("Plan canceled successfully. Your organization will be at free plan at the end of the cureent billing period")
+  }
+
+  async function handlePlanChange(plan: Plan) {
     setIsChangingPlan(plan.name);
+    
+    const isSubscribingToPlan = plan.name.toLocaleLowerCase() !== "free" && currentPlan === null;
+    const isChangingPlan = plan.name.toLocaleLowerCase() !== "free" && currentPlan !== null;
+    const isCancelingPlan = plan.name.toLocaleLowerCase() === "free" && currentPlan !== null;
 
     try {
-      const { sessionURL } = await createCheckoutSession(
-        organization.id,
-        plan.priceId!,
-        organization.stripeCustomerId,
-      );
-
-      window.location.href = sessionURL;
+      if (isSubscribingToPlan) await subscribeToPlan(plan);
+      if (isChangingPlan) await changePlan(plan);
+      if (isCancelingPlan) await cancelPlan();
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "Failed to change plan",
@@ -143,7 +175,7 @@ export default function OrganizationBilling({
                 <button
                   type="button"
                   disabled={isCurrent || isChangingPlan !== null}
-                  onClick={() => handleUpgrade(plan)}
+                  onClick={() => handlePlanChange(plan)}
                   className={`mt-3 w-full py-1.5 text-sm font-medium rounded-lg transition-colors cursor-pointer ${
                     isCurrent
                       ? "bg-zinc-100 dark:bg-zinc-700 text-zinc-400 dark:text-zinc-500 cursor-default"
