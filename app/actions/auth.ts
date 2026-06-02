@@ -34,6 +34,15 @@ export async function signInAction(_: AuthActionState, formData: FormData) {
 export async function signUpAction(_: AuthActionState, formData: FormData) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
+
+  if (!isEmailValid(email)) {
+    return { isSuccess: false, error: "Please enter a valid email", email, password }
+  }
+
+  if (password.length < 6) {
+    return { isSuccess: false, error: "Password should be at least 6 characters long", email, password }
+  }
+
   const supabase = await createClient();
 
   const { error } = await supabase.auth.signUp({
