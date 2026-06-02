@@ -68,15 +68,13 @@ export async function POST(req: Request) {
           organization_id: organizationId,
         }
       }, {
-        // idempotencyKey: "customer__" + organizationId,
+        idempotencyKey: "customer__" + organizationId,
       });
 
       sessionParams.customer = customer.id;
     }
 
-    const session = await stripe.checkout.sessions.create(sessionParams, {
-      // idempotencyKey: "session__" + organizationId,
-    });
+    const session = await stripe.checkout.sessions.create(sessionParams);
     return Response.json({ sessionURL: session.url });
   } catch (error) {
     console.error("Error creating checkout session", error);
