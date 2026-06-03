@@ -19,6 +19,10 @@ export function getTextSearchParams(searchParams: SearchParams) {
   return stringParams;
 }
 
+export function generateRandomUUID() {
+  return crypto.randomUUID();
+}
+
 export function generateToken() {
   const bytes = new Uint8Array(32);
   crypto.getRandomValues(bytes);
