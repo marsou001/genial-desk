@@ -23,7 +23,7 @@ export const REDIS_KEYS = {
   plans() {
     return "plans"
   },
-  plan(priceId: string) {
+  plan(priceId: string | null) {
     return `plan_${priceId}`
   }
 }

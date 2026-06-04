@@ -42,11 +42,9 @@ export async function fetchPlanByPriceId(priceId: string | null): Promise<Plan> 
 
   try {
     const supabase = await createClient();
-    const { data, error } = await supabase
-      .from("plans")
-      .select("*")
-      .eq("price_id", priceId)
-      .single();
+    const { data, error } = priceId === null ?
+      await supabase.from("plans").select("*").is("price_id", null).single() : 
+      await supabase.from("plans").select("*").eq("price_id", priceId).single();
 
     if (error) throw new Error(error.message);
 

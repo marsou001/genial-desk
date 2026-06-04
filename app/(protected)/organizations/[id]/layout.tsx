@@ -5,6 +5,7 @@ import AppSidebar from "@/components/Layout/AppSidebar";
 import { PermissionsProvider } from "@/context/permissions-context";
 import { TOAST_FLASH_KEYS } from "@/lib/toast-flash-keys";
 import { checkOrganizationExists } from "@/data/checkOrganizationExists";
+import { resetOrganizationFreeLimits } from "@/data/organizations";
 
 export default async function OrganizationLayout({
   children,
@@ -25,6 +26,8 @@ export default async function OrganizationLayout({
   if (!orgExists) {
     redirect("/organizations?toast=" + TOAST_FLASH_KEYS.ORG_NOT_FOUND);
   }
+
+  await resetOrganizationFreeLimits(organizationId);
 
   const role = (await getUserRole(user.id, organizationId)) ?? "viewer";
 
