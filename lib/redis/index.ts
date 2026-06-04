@@ -5,6 +5,7 @@ const REDIS_URL = process.env.REDIS_URL!;
 const redis = new Redis(REDIS_URL);
 
 export async function getCache<T>(key: string): Promise<T | null> {
+  return null;
   let value: string | null;
 
   try {
@@ -24,6 +25,7 @@ export async function getCache<T>(key: string): Promise<T | null> {
 }
 
 export async function setCache(key: string, value: unknown, ttlSeconds?: number): Promise<void> {
+  return;
   if (!isSerializable(value)) {
     return console.error("Non-serializable value provided for key", key, value);
   }
