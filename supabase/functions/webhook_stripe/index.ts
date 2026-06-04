@@ -152,6 +152,7 @@ Deno.serve(async (req) => {
       await updateOrganization(organizationId, {
         remainingAIRuns: plan.maxAIRuns,
         remainingUploads: plan.maxUploads,
+        lastResetAt: null,
       });
       break;
     }
