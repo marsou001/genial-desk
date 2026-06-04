@@ -1,16 +1,14 @@
-import { createClient } from "@/lib/supabase/server";
-import { getUser } from "@/lib";
 import EditAvatar from "@/components/interfaces/Profile/EditAvatar";
 import EditNameForm from "@/components/interfaces/Profile/EditNameForm";
-import UserMembershipsList from "@/components/interfaces/Profile/UserMemberships";
+import UserMembershipsList from "@/components/interfaces/Profile/UserMembershipsList";
 import SignOutButton from "@/components/interfaces/Profile/SignOutButton";
 import { fetchProfile } from "@/data/fetchProfile";
-import { fetchMemberships } from "@/data/fetchMemberships";
+import { fetchUserMemberships } from "@/data/memberships";
 
 export default async function ProfilePage() {
-  const [profile, memberships] = await Promise.all([
+  const [profile, userMemberships] = await Promise.all([
     fetchProfile(),
-    fetchMemberships(),
+    fetchUserMemberships(),
   ]);
 
   return (
@@ -25,7 +23,7 @@ export default async function ProfilePage() {
         email={profile.email}
       />
       <EditNameForm profile={profile} />
-      <UserMembershipsList userMemberships={memberships} />
+      <UserMembershipsList userMemberships={userMemberships} />
       <SignOutButton />
     </div>
   );

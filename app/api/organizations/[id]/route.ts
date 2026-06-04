@@ -161,7 +161,7 @@ export async function DELETE(
     invalidateCache(REDIS_KEYS.feedbacks(organizationId)),
     invalidateCache(REDIS_KEYS.members(organizationId)),
     invalidateCache(REDIS_KEYS.organization(organizationId)),
-    invalidateCache(REDIS_KEYS.organizations(userId)),
+    invalidateCache(REDIS_KEYS.userMemberships(userId)),
   ]);
   revalidatePath("/organizations");
   return NextResponse.json({ success: true }, { status: 200 });

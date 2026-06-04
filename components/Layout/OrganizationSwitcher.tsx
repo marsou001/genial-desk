@@ -1,14 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { OrganizationView as Organization } from "@/types";
+import { UserMemberShipView } from "@/types";
 import { useParams, usePathname, useSearchParams } from "next/navigation";
 import { useIsClickedOutside } from "@/hooks/useIsClickedOutside";
 
 export default function OrganizationSwitcher({
-  organizations,
+  userMemberships,
 }: {
-  organizations: Organization[];
+  userMemberships: UserMemberShipView[];
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -20,11 +20,11 @@ export default function OrganizationSwitcher({
   const { containerRef, open, setOpen } = useIsClickedOutside();
 
   const { id: currentOrganizationId } = useParams();
-  const currentOrganization = currentOrganizationId
-    ? organizations.find((org) => org.id === currentOrganizationId)
+  const currentMembership = currentOrganizationId
+    ? userMemberships.find((m) => m.organizationId === currentOrganizationId)
     : null;
 
-  return organizations.length === 0 ? (
+  return userMemberships.length === 0 ? (
     <Link
       href="/organizations"
       className="px-4 py-2 rounded-lg cursor-pointer border bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 transition"
@@ -39,7 +39,7 @@ export default function OrganizationSwitcher({
         onClick={() => setOpen((prev) => !prev)}
         className="px-4 py-2 rounded-lg cursor-pointer border bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 transition"
       >
-        {currentOrganization ? currentOrganization.name : "All organizations"}
+        {currentMembership ? currentMembership.organizationName : "All organizations"}
       </button>
 
       {/* Dropdown */}
@@ -61,15 +61,15 @@ export default function OrganizationSwitcher({
             <div className="border-t border-zinc-200 dark:border-zinc-700" />
 
             {/* Organization list */}
-            {organizations.map((org) => (
-              <li key={org.id} className="w-full">
+            {userMemberships.map((membership) => (
+              <li key={membership.organizationId} className="w-full">
                 <Link
-                  href={`/organizations/${org.id}/${page}`}
+                  href={`/organizations/${membership.organizationId}/${page}`}
                   className={`inline-block w-full text-left px-4 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 focus:outline-none focus:bg-zinc-100 dark:focus:bg-zinc-800 ${
-                    org.id === currentOrganizationId ? "font-semibold" : ""
+                    membership.organizationId === currentOrganizationId ? "font-semibold" : ""
                   }`}
                 >
-                  {org.name}
+                  {membership.organizationName}
                 </Link>
               </li>
             ))}

@@ -1,4 +1,4 @@
-import { fetchMembers } from "@/data/fetchMembers";
+import { fetchMembers } from "@/data/memberships";
 import MembersList from "@/components/interfaces/organizations/members/MembersList";
 
 export default async function MembersPage({

@@ -36,10 +36,13 @@ export type UserMembership = {
   organization_name: string;
 }
 
-export type OrganizationView = {
+export type UserMemberShipView = {
   id: string;
-  name: string;
+  organizationId: string;
+  organizationName: string;
   role: UserRole;
+  remainingAIRuns: number;
+  remainingUploads: number;
   createdAt: string;
 };
 

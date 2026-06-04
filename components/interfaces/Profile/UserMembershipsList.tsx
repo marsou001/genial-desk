@@ -1,13 +1,13 @@
 "use client";
 
-import { UserMembership } from "@/types";
+import { UserMemberShipView } from "@/types";
 import UserMembershipCard from "./UserMembershipCard";
 import { useState } from "react";
 
 export default function UserMembershipsList({
   userMemberships,
 }: {
-  userMemberships: UserMembership[];
+  userMemberships: UserMemberShipView[];
 }) {
   const [memberships, setMemberships] = useState(userMemberships);
 

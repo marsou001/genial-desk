@@ -4,7 +4,7 @@ import { getUser } from "@/lib";
 import { PLANS } from "@/lib/constants";
 import { REDIS_KEYS } from "@/lib/redis/keys";
 import { getCache, invalidateCache, setCache } from "@/lib/redis";
-import { OrganizationView } from "@/types";
+import { UserMemberShipView } from "@/types";
 
 /**
  * GET /api/organizations
@@ -12,17 +12,18 @@ import { OrganizationView } from "@/types";
  */
 export async function GET() {
   const { id } = await getUser();
-  const cacheKey = REDIS_KEYS.organizations(id);
-  const cachedValue = await getCache<OrganizationView[]>(cacheKey);
+  const cacheKey = REDIS_KEYS.userMemberships(id);
+  const cachedValue = await getCache<UserMemberShipView[]>(cacheKey);
   if (cachedValue !== null) return cachedValue;
 
   try {
     const supabase = await createClient();
 
-    const { data: memberships, error } = await supabase
+    const { data, error } = await supabase
       .from("organization_members")
       .select(
         `
+        id,
         organization_id,
         role:roles (
           name
@@ -30,6 +31,8 @@ export async function GET() {
         organizations!inner (
           id,
           name,
+          remaining_ai_runs,
+          remaining_uploads,
           created_at
         )
       `,
@@ -40,15 +43,18 @@ export async function GET() {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    const organizations = (memberships || []).map((m: any) => ({
-      id: m.organization_id,
-      name: m.organizations.name,
-      role: m.role,
+    const memberships = (data || []).map((m: any) => ({
+      id: m.id,
+      organizationId: m.organization_id,
+      organizationName: m.organizations.name,
+      role: m.role.name.toLowerCase(),
+      remainingAIRuns: m.organizations.remaining_ai_runs,
+      remainingUploads: m.organizations.remaining_uploads,
       createdAt: m.organizations.created_at,
     }));
 
-    await setCache(cacheKey, organizations);
-    return NextResponse.json({ organizations });
+    await setCache(cacheKey, memberships);
+    return NextResponse.json({ memberships });
   } catch (error) {
     console.error("Error fetching organizations:", error);
     return NextResponse.json(
@@ -109,7 +115,7 @@ export async function POST(request: NextRequest) {
 
     if (orgError) throw new Error(orgError.message);
     const { id } = await getUser();
-    await invalidateCache(REDIS_KEYS.organizations(id))
+    await invalidateCache(REDIS_KEYS.userMemberships(id))
     return NextResponse.json({
       success: true,
       plan,

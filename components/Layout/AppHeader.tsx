@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { fetchNotifications } from "@/data/fetchNotifications";
-import { fetchOrganizations } from "@/data/fetchOrganizations";
+import { fetchUserMemberships } from "@/data/memberships";
 import AppLogo from "../common/AppLogo";
 import UserAvatar from "../common/UserAvatar";
 import NotificationsBell from "./NotificationsBell/NotificationsBell";
 import OrganizationSwitcher from "./OrganizationSwitcher";
 
 export default async function AppHeader() {
-  const [organizations, notifications] = await Promise.all([
-    fetchOrganizations(),
+  const [userMemberships, notifications] = await Promise.all([
+    fetchUserMemberships(),
     fetchNotifications(),
   ]);
 
@@ -18,7 +18,7 @@ export default async function AppHeader() {
         <div className="flex items-center gap-4">
           <AppLogo />
           <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
-            <OrganizationSwitcher organizations={organizations} />
+            <OrganizationSwitcher userMemberships={userMemberships} />
           </div>
         </div>
         <div className="flex items-center gap-3">

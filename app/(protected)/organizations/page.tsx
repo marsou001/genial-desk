@@ -1,8 +1,8 @@
-import { fetchOrganizations } from "@/data/fetchOrganizations";
-import OrganizationsList from "@/components/interfaces/organizations/OrganizationsList";
+import { fetchUserMemberships } from "@/data/memberships";
+import UserMembershipsList from "@/components/interfaces/organizations/UserMembershipsList";
 
 export default async function OrganizationsPage() {
-  const organizations = await fetchOrganizations();
+  const userMemberships = await fetchUserMemberships();
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
       <div className="mb-8">
@@ -13,7 +13,7 @@ export default async function OrganizationsPage() {
           Select an organization to get started, or create a new one.
         </p>
       </div>
-      <OrganizationsList organizations={organizations} />
+      <UserMembershipsList userMemberships={userMemberships} />
     </div>
   );
 }

@@ -1,25 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
-import { OrganizationView } from "@/types";
+import { useState } from "react";
+import { UserMemberShipView } from "@/types";
 import CreateOrganizationDialog from "./CreateOrganizationDialog";
-import { TOAST_FLASH_MESSAGES } from "@/lib/toast-flash-keys";
 import { useToastFlash } from "@/hooks/useToastFlash";
 
-export default function OrganizationsList({
-  organizations,
+export default function UserMembershipsList({
+  userMemberships,
 }: {
-  organizations: OrganizationView[];
+  userMemberships: UserMemberShipView[];
 }) {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   useToastFlash();
 
   return (
     <>
-      {organizations.length === 0 ? (
+      {userMemberships.length === 0 ? (
         <div className="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200 dark:border-zinc-700 p-8 text-center">
           <div className="text-6xl mb-4">🏢</div>
           <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50 mb-2">
@@ -37,19 +34,19 @@ export default function OrganizationsList({
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
-          {organizations.map((org) => (
+          {userMemberships.map((membership) => (
             <Link
-              key={org.id}
-              href={`/organizations/${org.id}/dashboard`}
+              key={membership.organizationId}
+              href={`/organizations/${membership.organizationId}/dashboard`}
               className="bg-white block dark:bg-zinc-800 rounded-xl border border-zinc-200 dark:border-zinc-700 p-6 cursor-pointer hover:border-blue-500 hover:shadow-md transition-all"
             >
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
-                    {org.name}
+                    {membership.organizationName}
                   </h3>
                   <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
-                    Role: <span>{org.role.toLowerCase()}</span>
+                    Role: <span>{membership.role.toLowerCase()}</span>
                   </p>
                 </div>
                 <div className="text-blue-600 dark:text-blue-400">→</div>
@@ -59,7 +56,7 @@ export default function OrganizationsList({
         </div>
       )}
 
-      {organizations.length > 0 && (
+      {userMemberships.length > 0 && (
         <button
           onClick={() => setShowCreateDialog(true)}
           className="w-full px-6 py-3 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-900 dark:text-zinc-50 font-medium rounded-lg cursor-pointer disabled:cursor-not-allowed transition-colors border border-zinc-300 dark:border-zinc-700"

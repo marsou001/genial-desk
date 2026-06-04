@@ -5,8 +5,8 @@ export const REDIS_KEYS = {
   notifications(userId: string) {
     return `${userId}:notifications`
   },
-  organizations(userId: string) {
-    return `${userId}:organizations`
+  userMemberships(userId: string) {
+    return `${userId}:memberships`
   },
   organization(orgId: string) {
     return `organization_${orgId}`

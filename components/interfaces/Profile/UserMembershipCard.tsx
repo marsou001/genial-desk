@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-import { UserMembership } from "@/types";
+import { UserMemberShipView } from "@/types";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { deleteOrganization as apiDeleteOrganization } from "@/lib/api/organizations";
 import { leaveOrganization } from "@/lib/api/memberships";
@@ -11,7 +11,7 @@ export default function UserMembershipCard({
   membership,
   removeMembership,
 }: {
-  membership: UserMembership;
+  membership: UserMemberShipView;
   removeMembership: (id: string) => void;
 }) {
   const [isLeaving, setIsLeaving] = useState(false);
@@ -20,7 +20,7 @@ export default function UserMembershipCard({
 
   async function deleteOrganization() {
     const isConfirmed = window.confirm(
-      `Delete "${membership.organization_name}"? This will permanently delete the organization and all of its data. This action cannot be undone.`,
+      `Delete "${membership.organizationName}"? This will permanently delete the organization and all of its data. This action cannot be undone.`,
     );
 
     if (!isConfirmed) return;
@@ -28,15 +28,15 @@ export default function UserMembershipCard({
     setIsLeaving(true);
 
     try {
-      await apiDeleteOrganization(membership.organization_id);
-      toast.info(membership.organization_name + " has been successfully deleted");
+      await apiDeleteOrganization(membership.organizationId);
+      toast.info(membership.organizationName + " has been successfully deleted");
       removeMembership(membership.id);
     } catch (error) {
       toast.error(
         error instanceof Error
           ? error.message
           : "Something went wrong while deleting organization " +
-            membership.organization_name,
+            membership.organizationName,
       );
     } finally {
       setIsLeaving(false);
@@ -50,7 +50,7 @@ export default function UserMembershipCard({
     }
 
     const isConfirmed = window.confirm(
-      `Leave "${membership.organization_name}"? You will lose access to this organization.`,
+      `Leave "${membership.organizationName}"? You will lose access to this organization.`,
     );
 
     if (!isConfirmed) return;
@@ -59,7 +59,7 @@ export default function UserMembershipCard({
 
     try {
       await leaveOrganization(membership.id, membership.role);
-      toast.info("You're no longer a member of " + membership.organization_name);
+      toast.info("You're no longer a member of " + membership.organizationName);
       removeMembership(membership.id);
     } catch (error) {
       toast.error(
@@ -76,7 +76,7 @@ export default function UserMembershipCard({
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 px-4 py-3">
       <div>
         <div className="text-sm font-medium text-zinc-900 dark:text-zinc-50">
-          {membership.organization_name || "Untitled organization"}
+          {membership.organizationName || "Untitled organization"}
         </div>
         <div className="text-xs text-zinc-500 dark:text-zinc-400">
           Role: {membership.role}

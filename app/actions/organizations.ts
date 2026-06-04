@@ -48,7 +48,7 @@ export async function createOrganization(
     return { isSuccess: false, error: "Error creating organization", name };
   }
 
-  await invalidateCache(REDIS_KEYS.organizations(user.id));
+  await invalidateCache(REDIS_KEYS.userMemberships(user.id));
   revalidatePath("/organizations");
   redirect(`/organizations/${orgId}/dashboard`);
 }
@@ -94,7 +94,7 @@ export async function updateOrganization(
     const { id } = await getUser();
     await Promise.all([
       invalidateCache(REDIS_KEYS.organization(organizationId)),
-      invalidateCache(REDIS_KEYS.organizations(id)),
+      invalidateCache(REDIS_KEYS.userMemberships(id)),
     ])
     
     revalidatePath(`/organizations/${organizationId}/settings`);
