@@ -13,7 +13,7 @@ import {
 } from "@/types/action-states";
 import { UserRole } from "@/types";
 import { assertIsError } from "@/types/typeguards";
-import { invalidateCache, setCache } from "@/lib/redis";
+import { invalidateCache } from "@/lib/redis";
 import { REDIS_KEYS } from "@/lib/redis/keys";
 
 export async function createOrganization(

@@ -1,11 +1,9 @@
 import { redirect } from "next/navigation";
 import { getUser, getUserRole, verifyOrganizationAccess } from "@/lib";
-import { fetchOrganization } from "@/data/fetchOrganization";
 import AppSidebar from "@/components/Layout/AppSidebar";
 import { PermissionsProvider } from "@/context/permissions-context";
 import { TOAST_FLASH_KEYS } from "@/lib/toast-flash-keys";
-import { checkOrganizationExists } from "@/data/checkOrganizationExists";
-import { resetOrganizationFreeLimits } from "@/data/organizations";
+import { checkOrganizationExists, resetOrganizationFreeLimits } from "@/data/organizations";
 
 export default async function OrganizationLayout({
   children,

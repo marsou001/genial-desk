@@ -1,4 +1,4 @@
-import { fetchOrganization } from "@/data/fetchOrganization";
+import { fetchOrganization } from "@/data/organizations";
 import { fetchSubscriptionByOrganizationId } from "@/data/subscriptions";
 import { fetchPlans } from "@/data/plans";
 import OrganizationNameForm from "@/components/interfaces/organizations/settings/OrganizationNameForm";
