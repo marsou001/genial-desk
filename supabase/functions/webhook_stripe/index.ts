@@ -77,47 +77,6 @@ Deno.serve(async (req) => {
       await updateOrganization(organizationId, { stripeCustomerId: customer.id });
       break;
     }
-    // case "checkout.session.completed": {
-    //   console.log("=====>> checkout.session.completed <<=====");
-    //   const checkout = event.data.object;
-    //   const organizationId = checkout.client_reference_id;
-
-    //   if (organizationId === null) {
-    //     console.error("No organization was attached to the session");
-    //     return new Response(
-    //       JSON.stringify({ error: "Invalid session data" }),
-    //       { status: 400, headers: { "Content-Type": "application/json" } },
-    //     );
-    //   }
-
-    //   if (checkout.customer === null) {
-    //     return new Response(
-    //       JSON.stringify({ error: "Error getting customer id" }),
-    //       { status: 502, headers: { "Content-Type": "application/json" } },
-    //     );
-    //   }
-
-    //   const stripeCustomerId = typeof checkout.customer === "string"
-    //     ? checkout.customer
-    //     : checkout.customer.id;
-
-    //   try {
-    //     const organization = await fetchOrganization(organizationId);
-    //     if (organization.stripeCustomerId !== null) {
-    //       console.log("Customer already exists. Skipping update.");
-    //     } else {
-    //       await updateOrganization(organizationId, { stripeCustomerId });
-    //       console.log("Saved new stripeCustomerId");
-    //     }
-    //   } catch (error) {
-    //     console.error(error);
-    //     return new Response(
-    //       JSON.stringify({ error: "Error updating organization" }),
-    //       { status: 500, headers: { "Content-Type": "application/json" } },
-    //     );
-    //   }
-    //   break;
-    // }
     case "customer.subscription.created": {
       console.log("=====>> customer.subscription.created <<=====");
       const subscription = event.data.object;
