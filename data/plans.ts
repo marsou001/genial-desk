@@ -12,7 +12,8 @@ export async function fetchPlans(): Promise<Plan[]> {
     const supabase = await createClient();
     const { data, error } = await supabase
       .from("plans")
-      .select("*");
+      .select("*")
+      .order("price");
 
     if (error) throw new Error(error.message);
 
@@ -34,7 +35,7 @@ export async function fetchPlans(): Promise<Plan[]> {
   }
 }
 
-export async function fetchPlanByPriceId(priceId: string): Promise<Plan> {
+export async function fetchPlanByPriceId(priceId: string | null): Promise<Plan> {
   const cacheKey = REDIS_KEYS.plan(priceId);
   const cachedValue = await getCache<Plan>(cacheKey);
   if (cachedValue !== null) return cachedValue;
