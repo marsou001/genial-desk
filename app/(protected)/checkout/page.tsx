@@ -1,7 +1,5 @@
 import Stripe from "stripe";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
-import { Plan } from "@/types";
 import { fetchPlanByPriceId } from "@/data/plans";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
