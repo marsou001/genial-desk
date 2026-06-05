@@ -24,14 +24,20 @@ export async function GET(
 
   // Verify user has access to this organization
   const supabase = await createClient();
-  const { data: membership, error } = await supabase
+  const { data, error } = await supabase
     .from("organization_members")
     .select(
       `
-      role,
+      id,
+      organization_id,
+      role:roles (
+        name
+      ),
       organizations!inner (
         id,
         name,
+        remaining_ai_runs,
+        remaining_uploads,
         created_at
       )
     `,
@@ -40,18 +46,50 @@ export async function GET(
     .eq("organization_id", id)
     .single();
 
-  if (error || !membership) {
+  if (error || !data) {
     return NextResponse.json(
-      { error: "Organization not found or access denied" },
+      { error: "Organization membership not found or access denied" },
       { status: 404 },
     );
   }
 
+  const { data: subData } = await supabase
+    .from("subscriptions")
+    .select("price_id")
+    .eq("organization_id", id)
+    .maybeSingle();
+
+  const priceId = subData?.price_id ?? null;
+
+  const planQuery =
+    priceId === null
+      ? supabase
+          .from("plans")
+          .select("max_ai_runs, max_uploads")
+          .is("price_id", null)
+          .maybeSingle()
+      : supabase
+          .from("plans")
+          .select("max_ai_runs, max_uploads")
+          .eq("price_id", priceId)
+          .maybeSingle();
+
+  const { data: planData } = await planQuery;
+
+  const membership = {
+    id: data.id,
+    organizationId: data.organization_id,
+    organizationName: data.organizations.name,
+    role: data.role.name.toLowerCase(),
+    remainingAIRuns: data.organizations.remaining_ai_runs,
+    remainingUploads: data.organizations.remaining_uploads,
+    maxAIRuns: planData?.max_ai_runs ?? 15,
+    maxUploads: planData?.max_uploads ?? 5,
+    createdAt: data.organizations.created_at,
+  };
+
   return NextResponse.json({
-    organization: {
-      ...membership.organizations,
-      role: membership.role,
-    },
+    organization: membership,
   });
 }
 
