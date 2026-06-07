@@ -49,7 +49,7 @@ export async function signUpAction(_: AuthActionState, formData: FormData) {
     email,
     password,
     options: {
-      emailRedirectTo: "/organizations",
+      emailRedirectTo: `${APP_URL}/organizations`,
     },
   });
 
