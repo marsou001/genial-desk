@@ -1,5 +1,6 @@
 import Link from "next/link";
 import UserAvatar from "./common/UserAvatar";
+import AppLogo from "./common/AppLogo";
 
 export default function LandingHeader({
   isAuthenticated,
@@ -10,9 +11,7 @@ export default function LandingHeader({
     <nav className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-50">
       <div className="max-w-[1280px] mx-auto px-8 h-16 flex items-center justify-between">
         <div className="flex items-center gap-8">
-          <Link href="/" className="text-zinc-900 dark:text-white font-semibold text-xl">
-            GenialDesk
-          </Link>
+          <AppLogo />
           <div className="hidden md:flex items-center gap-6">
             <Link
               href="/#features"

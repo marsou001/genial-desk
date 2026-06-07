@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function AppLogo() {
   return (
-    <Link href="/organizations" className="flex items-center gap-2">
+    <Link href="/" className="flex items-center gap-2">
       <svg
         width="52"
         height="33"
