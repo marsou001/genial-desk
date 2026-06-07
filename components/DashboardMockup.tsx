@@ -46,7 +46,7 @@ export function DashboardMockup() {
       </div>
 
       {/* Grid Layout */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Sentiment Distribution */}
         <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-lg p-4">
           <div className="flex items-center gap-2 mb-4">
@@ -87,7 +87,7 @@ export function DashboardMockup() {
         </div>
 
         {/* Sentiment Trend */}
-        <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-lg p-4 col-span-2">
+        <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-lg p-4 col-span-1 md:col-span-2">
           <div className="flex items-center gap-2 mb-4">
             <div className="w-8 h-8 rounded-lg bg-[#0066FF20] flex items-center justify-center">
               <TrendingUp className="w-4 h-4 text-[#0066FF]" />
@@ -121,7 +121,7 @@ export function DashboardMockup() {
         </div>
 
         {/* Top Negative Themes */}
-        <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-lg p-4 col-span-2">
+        <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-lg p-4 col-span-1 md:col-span-2">
           <div className="flex items-center gap-2 mb-4">
             <div className="w-8 h-8 rounded-lg bg-[#FF3B3020] flex items-center justify-center">
               <AlertCircle className="w-4 h-4 text-[#FF3B30]" />
@@ -181,7 +181,7 @@ export function DashboardMockup() {
           </div>
           <h4 className="text-white font-medium text-sm">What Customers Love</h4>
         </div>
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {topPraise.map((praise) => (
             <div key={praise.rank} className="flex items-center gap-3">
               <div className="w-6 h-6 rounded-full bg-[#00B34120] flex items-center justify-center flex-shrink-0">
