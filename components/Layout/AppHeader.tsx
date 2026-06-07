@@ -16,13 +16,13 @@ export default async function AppHeader() {
   return (
     <header className="sticky top-0 z-20 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
       <div className="h-16 flex items-center justify-between px-3 sm:px-6">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <AppLogo />
           <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
             <OrganizationSwitcher userMemberships={userMemberships} />
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 sm:gap-4">
           <OrgUsageBadge />
           {notifications.userId ? (
             <NotificationsBell
