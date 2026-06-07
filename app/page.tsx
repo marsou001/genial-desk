@@ -331,12 +331,12 @@ export default async function App() {
             {
               question: 'Is my data secure?',
               answer:
-                'Yes. All data is encrypted in transit and at rest. We are SOC 2 Type II certified and GDPR compliant. Enterprise customers receive additional security features and custom data retention policies.',
+                'Yes. All data is encrypted in transit and at rest. We are SOC 2 Type II certified and GDPR compliant.',
             },
             {
               question: 'Can I export reports?',
               answer:
-                'Absolutely. Export insights, charts, and raw data as PDF or CSV files. Pro and Enterprise plans include customizable executive report templates.',
+                'Absolutely. Export insights, charts, and raw data as PDF or CSV files.',
             },
           ].map((faq, index) => (
             <details
