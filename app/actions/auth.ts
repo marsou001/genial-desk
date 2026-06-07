@@ -58,7 +58,7 @@ export async function signUpAction(_: AuthActionState, formData: FormData) {
     return { isSuccess: false, error: "Something went wrong while signing up", email, password };
   }
 
-  return { isSuccess: true, error: null, email, password  }
+  return { isSuccess: true, error: null, email, password };
 }
 
 export async function signOutAction(
