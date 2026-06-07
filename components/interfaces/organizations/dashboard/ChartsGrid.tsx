@@ -23,7 +23,7 @@ export default function ChartsGrid({ stats }: { stats: Stats }) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Volume Over Time */}
-      <div className="bg-white dark:bg-zinc-900 p-6 rounded-lg border border-zinc-200 dark:border-zinc-800">
+      <div className="text-zinc-800 bg-white dark:bg-zinc-900 p-6 rounded-lg border border-zinc-200 dark:border-zinc-800">
         <h3 className="text-lg font-semibold mb-4 text-zinc-900 dark:text-zinc-50">
           Feedback Volume (Last 30 Days)
         </h3>
@@ -61,7 +61,7 @@ export default function ChartsGrid({ stats }: { stats: Stats }) {
       </div>
 
       {/* Top Topics */}
-      <div className="bg-white dark:bg-zinc-900 p-6 rounded-lg border border-zinc-200 dark:border-zinc-800">
+      <div className="text-zinc-800 bg-white dark:bg-zinc-900 p-6 rounded-lg border border-zinc-200 dark:border-zinc-800">
         <h3 className="text-lg font-semibold mb-4 text-zinc-900 dark:text-zinc-50">
           Top Topics This Month
         </h3>
