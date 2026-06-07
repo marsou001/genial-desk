@@ -31,6 +31,11 @@ export default function LandingFooter() {
                   FAQ
                 </Link>
               </li>
+              <li>
+                <Link href="mailto:support@genialdesk.com" className="hover:text-zinc-900 dark:hover:text-white">
+                  Contact us
+                </Link>
+              </li>
             </ul>
           </div>
           <div>
