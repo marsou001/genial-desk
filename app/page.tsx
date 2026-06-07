@@ -92,25 +92,18 @@ export default async function App() {
               Upload surveys, reviews, support tickets, and customer comments. Instantly uncover trends, understand
               sentiment, and receive AI-generated recommendations on what to improve next.
             </p>
-            {isAuthenticated ? (
-              <div className="flex flex-wrap gap-4">
-                <Link
-                  href="/organizations"
-                  className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm inline-block"
-                >
-                  Start Uploading Feedback
-                </Link>
-              </div>
-            ) : (
-              <div className="flex flex-wrap gap-4">
-                <button className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
-                  Start Free Trial
-                </button>
-                <button className="px-6 py-3 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white font-medium rounded-lg border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors">
-                  View Demo
-                </button>
-              </div>
-            )}
+            <div className="flex flex-wrap gap-4">
+              <Link
+                href="/organizations"
+                className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm inline-block"
+              >
+                {isAuthenticated ? "Start Uploading Feedback" : "Start Free Trial"}
+              </Link>
+              
+              <Link href="https://calendly.com/genial-desk/demo" className="px-6 py-3 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white font-medium rounded-lg border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors">
+                View Demo
+              </Link>
+            </div>
           </div>
           <div>
             <DashboardMockup />
@@ -412,23 +405,16 @@ export default async function App() {
             Start turning feedback into action today. No credit card required.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            {isAuthenticated ? (
-              <Link
-                href="/organizations"
-                className="px-8 py-4 bg-white text-blue-600 dark:text-blue-400 font-semibold rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors shadow-lg flex items-center gap-2"
-              >
-                Go to Dashboard
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-            ) : (
-              <button className="px-8 py-4 bg-white text-blue-600 dark:text-blue-400 font-semibold rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors shadow-lg flex items-center gap-2">
-                Start Free Trial
-                <ArrowRight className="w-5 h-5" />
-              </button>
-            )}
-            <button className="px-8 py-4 bg-transparent text-white font-semibold rounded-lg border-2 border-white/30 hover:bg-white/10 transition-colors">
+            <Link
+              href="/organizations"
+              className="px-8 py-4 bg-white text-blue-600 dark:text-blue-400 font-semibold rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors shadow-lg flex items-center gap-2"
+            >
+              {isAuthenticated ? "Go to Dashboard" : "Start Free Trial"}
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+            <Link href="https://calendly.com/genial-desk/demo" className="px-8 py-4 bg-transparent text-white font-semibold rounded-lg border-2 border-white/30 hover:bg-white/10 transition-colors">
               Schedule Demo
-            </button>
+            </Link>
           </div>
         </div>
       </section>
