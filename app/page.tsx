@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { DashboardMockup } from '@/components/DashboardMockup';
 import { createClient } from '@/lib/supabase/server';
-import UserAvatar from '@/components/common/UserAvatar';
+import LandingHeader from '@/components/LandingHeader';
+import LandingFooter from '@/components/LandingFooter';
 import { fetchPlans } from '@/data/plans';
 import type { Plan } from '@/types';
 import {
@@ -36,50 +37,7 @@ export default async function App() {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      {/* Navigation */}
-      <nav className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-50">
-        <div className="max-w-[1280px] mx-auto px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-8">
-            <div className="text-zinc-900 dark:text-white font-semibold text-xl">GenialDesk</div>
-            <div className="hidden md:flex items-center gap-6">
-              <a href="#features" className="text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white text-sm transition-colors">
-                Features
-              </a>
-              <a href="#pricing" className="text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white text-sm transition-colors">
-                Pricing
-              </a>
-              <a href="#faq" className="text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white text-sm transition-colors">
-                FAQ
-              </a>
-            </div>
-          </div>
-          {isAuthenticated ? (
-            <div className="flex items-center gap-3">
-              <Link
-                href="/organizations"
-                className="px-4 py-2 text-zinc-900 dark:text-white text-sm font-medium bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg transition-colors"
-              >
-                Organizations
-              </Link>
-              <Link
-                href="/profile"
-                className="relative block w-9 h-9 rounded-full overflow-hidden ring-2 ring-zinc-200 dark:ring-zinc-700 hover:ring-blue-600 transition-all"
-              >
-                <UserAvatar />
-              </Link>
-            </div>
-          ) : (
-            <div className="flex items-center gap-3">
-              <button className="px-4 py-2 text-zinc-900 dark:text-white text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded-lg transition-colors">
-                Sign In
-              </button>
-              <button className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
-                Start Free Trial
-              </button>
-            </div>
-          )}
-        </div>
-      </nav>
+      <LandingHeader isAuthenticated={isAuthenticated} />
 
       {/* Hero Section */}
       <section className="max-w-[1280px] mx-auto px-8 py-24">
@@ -419,55 +377,7 @@ export default async function App() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-        <div className="max-w-[1280px] mx-auto px-8 py-12">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="text-zinc-900 dark:text-white font-semibold text-xl mb-4">GenialDesk</div>
-              <p className="text-sm text-zinc-500 dark:text-zinc-400">Turn customer feedback into prioritized actions.</p>
-            </div>
-            <div>
-              <h4 className="font-semibold text-zinc-900 dark:text-white mb-3">Product</h4>
-              <ul className="space-y-2 text-sm text-zinc-500 dark:text-zinc-400">
-                <li>
-                  <a href="/#features" className="hover:text-zinc-900 dark:hover:text-white">
-                    Features
-                  </a>
-                </li>
-                <li>
-                  <a href="/#pricing" className="hover:text-zinc-900 dark:hover:text-white">
-                    Pricing
-                  </a>
-                </li>
-                <li>
-                  <a href="/#faq" className="hover:text-zinc-900 dark:hover:text-white">
-                    FAQ
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-zinc-900 dark:text-white mb-3">Legal</h4>
-              <ul className="space-y-2 text-sm text-zinc-500 dark:text-zinc-400">
-                <li>
-                  <a href="#" className="hover:text-zinc-900 dark:hover:text-white">
-                    Privacy
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-zinc-900 dark:hover:text-white">
-                    Terms
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-zinc-200 dark:border-zinc-800 mt-8 pt-8 text-center text-sm text-zinc-500 dark:text-zinc-400">
-            © 2026 GenialDesk. All rights reserved.
-          </div>
-        </div>
-      </footer>
+      <LandingFooter />
     </div>
   );
 }
