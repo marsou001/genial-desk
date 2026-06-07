@@ -85,13 +85,13 @@ export async function POST(
 
       try {
         // Analyze with AI
-        const analysis = await analyzeFeedback(feedbackText);
-        // const analysis = {
-        //   topic: 'General',
-        //   sentiment: 'neutral',
-        //   summary: text.substring(0, 100),
-        //   keywords: ["customer satisfaction", "customer service"],
-        // }
+        // const analysis = await analyzeFeedback(feedbackText);
+        const analysis = {
+          topic: 'General',
+          sentiment: 'neutral',
+          summary: text.substring(0, 100),
+          keywords: ["customer satisfaction", "customer service"],
+        }
 
         // Insert into database (scoped to organization)
         feedbacks.push({

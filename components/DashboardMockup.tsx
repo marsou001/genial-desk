@@ -1,199 +1,195 @@
 "use client";
 
-import { AreaChart, Area, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { TrendingUp, AlertCircle, CheckCircle2, Lightbulb } from 'lucide-react';
+import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+
+const volumeData = [
+  { date: "2026-05-07", count: 85 },
+  { date: "2026-05-08", count: 92 },
+  { date: "2026-05-09", count: 78 },
+  { date: "2026-05-10", count: 64 },
+  { date: "2026-05-11", count: 71 },
+  { date: "2026-05-12", count: 88 },
+  { date: "2026-05-13", count: 95 },
+  { date: "2026-05-14", count: 102 },
+  { date: "2026-05-15", count: 110 },
+  { date: "2026-05-16", count: 97 },
+  { date: "2026-05-17", count: 84 },
+  { date: "2026-05-18", count: 76 },
+  { date: "2026-05-19", count: 91 },
+  { date: "2026-05-20", count: 86 },
+  { date: "2026-05-21", count: 73 },
+  { date: "2026-05-22", count: 68 },
+  { date: "2026-05-23", count: 82 },
+  { date: "2026-05-24", count: 94 },
+  { date: "2026-05-25", count: 103 },
+  { date: "2026-05-26", count: 115 },
+  { date: "2026-05-27", count: 108 },
+  { date: "2026-05-28", count: 96 },
+  { date: "2026-05-29", count: 89 },
+  { date: "2026-05-30", count: 77 },
+  { date: "2026-05-31", count: 83 },
+  { date: "2026-06-01", count: 91 },
+  { date: "2026-06-02", count: 99 },
+  { date: "2026-06-03", count: 87 },
+  { date: "2026-06-04", count: 76 },
+  { date: "2026-06-05", count: 68 },
+];
+
+const topTopics = [
+  { topic: "Onboarding", count: 327 },
+  { topic: "Support Speed", count: 184 },
+  { topic: "Export", count: 156 },
+  { topic: "Mobile App", count: 142 },
+  { topic: "Pricing", count: 98 },
+];
 
 const sentimentData = [
-  { name: 'Jan', score: 72 },
-  { name: 'Feb', score: 75 },
-  { name: 'Mar', score: 71 },
-  { name: 'Apr', score: 68 },
-  { name: 'May', score: 58 },
-];
-
-const distributionData = [
-  { name: 'Positive', value: 42, color: '#00B341' },
-  { name: 'Neutral', value: 31, color: '#FF9500' },
-  { name: 'Negative', value: 27, color: '#FF3B30' },
-];
-
-const topIssues = [
-  { rank: 1, theme: 'Onboarding complexity', count: 327, sentiment: 'negative' },
-  { rank: 2, theme: 'Slow support response', count: 184, sentiment: 'negative' },
-  { rank: 3, theme: 'Export functionality', count: 156, sentiment: 'negative' },
-  { rank: 4, theme: 'Mobile app performance', count: 142, sentiment: 'negative' },
-];
-
-const topPraise = [
-  { rank: 1, theme: 'Dashboard usability', count: 412, sentiment: 'positive' },
-  { rank: 2, theme: 'Export features', count: 298, sentiment: 'positive' },
-  { rank: 3, theme: 'Customer support quality', count: 267, sentiment: 'positive' },
+  { name: "Positive", value: 1196, color: "#10b981" },
+  { name: "Neutral", value: 882, color: "#6b7280" },
+  { name: "Negative", value: 769, color: "#ef4444" },
 ];
 
 export function DashboardMockup() {
   return (
-    <div className="w-full bg-[#0A0A0A] rounded-xl border border-[#2A2A2A] p-6 shadow-2xl">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#2A2A2A]">
-        <div>
-          <h3 className="text-white font-semibold text-lg">Feedback Analysis</h3>
-          <p className="text-[#6B6B6B] text-sm mt-1">May 2026 • 2,847 responses</p>
+    <div className="w-full space-y-6">
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="bg-white dark:bg-zinc-900 p-6 rounded-lg border border-zinc-200 dark:border-zinc-800">
+          <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-1">
+            Total Feedback
+          </p>
+          <p className="text-3xl font-bold text-zinc-900 dark:text-zinc-50">
+            2,847
+          </p>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-[#FF3B3010] border border-[#FF3B30] rounded-md">
-          <div className="w-2 h-2 bg-[#FF3B30] rounded-full"></div>
-          <span className="text-[#FF3B30] text-sm font-medium">Sentiment declined 18%</span>
+        <div className="bg-white dark:bg-zinc-900 p-6 rounded-lg border border-zinc-200 dark:border-zinc-800">
+          <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-1">
+            Positive
+          </p>
+          <p className="text-3xl font-bold text-green-600">1,196</p>
+        </div>
+        <div className="bg-white dark:bg-zinc-900 p-6 rounded-lg border border-zinc-200 dark:border-zinc-800">
+          <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-1">Neutral</p>
+          <p className="text-3xl font-bold text-zinc-600 dark:text-zinc-400">
+            882
+          </p>
+        </div>
+        <div className="bg-white dark:bg-zinc-900 p-6 rounded-lg border border-zinc-200 dark:border-zinc-800">
+          <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-1">
+            Negative
+          </p>
+          <p className="text-3xl font-bold text-red-600">769</p>
         </div>
       </div>
 
-      {/* Grid Layout */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Sentiment Distribution */}
-        <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-lg p-4">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-8 h-8 rounded-lg bg-[#0066FF20] flex items-center justify-center">
-              <TrendingUp className="w-4 h-4 text-[#0066FF]" />
-            </div>
-            <h4 className="text-white font-medium text-sm">Sentiment Distribution</h4>
-          </div>
-          <div className="h-40 flex items-center justify-center">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={distributionData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={40}
-                  outerRadius={60}
-                  paddingAngle={2}
-                  dataKey="value"
-                >
-                  {distributionData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="flex justify-around mt-4 pt-4 border-t border-[#2A2A2A]">
-            {distributionData.map((item) => (
-              <div key={item.name} className="text-center">
-                <div className="text-xs text-[#6B6B6B] mb-1">{item.name}</div>
-                <div className="text-white font-semibold text-sm" style={{ color: item.color }}>
-                  {item.value}%
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Sentiment Trend */}
-        <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-lg p-4 col-span-1 md:col-span-2">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-8 h-8 rounded-lg bg-[#0066FF20] flex items-center justify-center">
-              <TrendingUp className="w-4 h-4 text-[#0066FF]" />
-            </div>
-            <h4 className="text-white font-medium text-sm">Sentiment Trend</h4>
-          </div>
-          <ResponsiveContainer width="100%" height={120}>
-            <AreaChart data={sentimentData}>
-              <defs>
-                <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#0066FF" stopOpacity={0.3} />
-                  <stop offset="100%" stopColor="#0066FF" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#2A2A2A" strokeOpacity={0.3} />
-              <XAxis dataKey="name" stroke="#6B6B6B" style={{ fontSize: '11px' }} />
-              <YAxis stroke="#6B6B6B" style={{ fontSize: '11px' }} domain={[0, 100]} />
+      {/* Charts Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Volume Over Time */}
+        <div className="bg-white dark:bg-zinc-900 p-6 rounded-lg border border-zinc-200 dark:border-zinc-800">
+          <h3 className="text-lg font-semibold mb-4 text-zinc-900 dark:text-zinc-50">
+            Feedback Volume (Last 30 Days)
+          </h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={volumeData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+              <XAxis
+                dataKey="date"
+                tick={{ fill: "#6b7280", fontSize: 12 }}
+                tickFormatter={(value) =>
+                  new Date(value).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                  })
+                }
+              />
+              <YAxis tick={{ fill: "#6b7280", fontSize: 12 }} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#1A1A1A',
-                  border: '1px solid #2A2A2A',
-                  borderRadius: '6px',
-                  fontSize: '12px',
+                  backgroundColor: "#fff",
+                  border: "1px solid #e5e7eb",
+                  borderRadius: "8px",
                 }}
-                labelStyle={{ color: '#FFFFFF' }}
-                itemStyle={{ color: '#0066FF' }}
+                labelFormatter={(value) => new Date(value).toLocaleDateString()}
               />
-              <Area type="monotone" dataKey="score" stroke="#0066FF" strokeWidth={2} fill="url(#colorScore)" />
-            </AreaChart>
+              <Line
+                type="monotone"
+                dataKey="count"
+                stroke="#3b82f6"
+                strokeWidth={2}
+                dot={{ fill: "#3b82f6", r: 4 }}
+              />
+            </LineChart>
           </ResponsiveContainer>
         </div>
 
-        {/* Top Negative Themes */}
-        <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-lg p-4 col-span-1 md:col-span-2">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-8 h-8 rounded-lg bg-[#FF3B3020] flex items-center justify-center">
-              <AlertCircle className="w-4 h-4 text-[#FF3B30]" />
-            </div>
-            <h4 className="text-white font-medium text-sm">Top Customer Issues</h4>
-          </div>
-          <div className="space-y-3">
-            {topIssues.map((issue) => (
-              <div key={issue.rank} className="flex items-center gap-3">
-                <div className="w-6 h-6 rounded-full bg-[#FF3B3020] flex items-center justify-center flex-shrink-0">
-                  <span className="text-[#FF3B30] text-xs font-semibold">{issue.rank}</span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-white text-sm font-medium truncate">{issue.theme}</div>
-                  <div className="text-[#6B6B6B] text-xs">{issue.count} mentions</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* AI Recommendation */}
-        <div className="bg-[#0066FF15] border border-[#0066FF40] rounded-lg p-4">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 rounded-lg bg-[#0066FF30] flex items-center justify-center">
-              <Lightbulb className="w-4 h-4 text-[#0066FF]" />
-            </div>
-            <h4 className="text-white font-medium text-sm">Top Priority</h4>
-          </div>
-          <div className="space-y-3">
-            <div>
-              <div className="text-xs text-[#0066FF] font-medium mb-1">ACTION NEEDED</div>
-              <div className="text-white text-sm font-medium mb-2">
-                Simplify onboarding flow
-              </div>
-              <div className="text-[#A3A3A3] text-xs leading-relaxed">
-                41% of negative feedback mentions onboarding complexity
-              </div>
-            </div>
-            <div className="flex gap-2 pt-3 border-t border-[#0066FF30]">
-              <span className="px-2 py-1 bg-[#00B34120] text-[#00B341] text-xs rounded font-medium">
-                High Impact
-              </span>
-              <span className="px-2 py-1 bg-[#FF950020] text-[#FF9500] text-xs rounded font-medium">
-                Med Effort
-              </span>
-            </div>
-          </div>
+        {/* Top Topics */}
+        <div className="bg-white dark:bg-zinc-900 p-6 rounded-lg border border-zinc-200 dark:border-zinc-800">
+          <h3 className="text-lg font-semibold mb-4 text-zinc-900 dark:text-zinc-50">
+            Top Topics This Month
+          </h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={topTopics}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+              <XAxis
+                dataKey="topic"
+                tick={{ fill: "#6b7280", fontSize: 12 }}
+                angle={-45}
+                textAnchor="end"
+                height={80}
+              />
+              <YAxis tick={{ fill: "#6b7280", fontSize: 12 }} />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "#fff",
+                  border: "1px solid #e5e7eb",
+                  borderRadius: "8px",
+                }}
+              />
+              <Bar dataKey="count" fill="#3b82f6" radius={[8, 8, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </div>
 
-      {/* Top Positive Themes */}
-      <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-lg p-4 mt-4">
-        <div className="flex items-center gap-2 mb-4">
-          <div className="w-8 h-8 rounded-lg bg-[#00B34120] flex items-center justify-center">
-            <CheckCircle2 className="w-4 h-4 text-[#00B341]" />
-          </div>
-          <h4 className="text-white font-medium text-sm">What Customers Love</h4>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {topPraise.map((praise) => (
-            <div key={praise.rank} className="flex items-center gap-3">
-              <div className="w-6 h-6 rounded-full bg-[#00B34120] flex items-center justify-center flex-shrink-0">
-                <span className="text-[#00B341] text-xs font-semibold">{praise.rank}</span>
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-white text-sm font-medium truncate">{praise.theme}</div>
-                <div className="text-[#6B6B6B] text-xs">{praise.count} mentions</div>
-              </div>
-            </div>
-          ))}
-        </div>
+      {/* Sentiment Distribution */}
+      <div className="bg-white dark:bg-zinc-900 p-6 rounded-lg border border-zinc-200 dark:border-zinc-800">
+        <h3 className="text-lg font-semibold mb-4 text-zinc-900 dark:text-zinc-50">
+          Sentiment Distribution
+        </h3>
+        <ResponsiveContainer width="100%" height={300}>
+          <PieChart>
+            <Pie
+              data={sentimentData}
+              cx="50%"
+              cy="50%"
+              labelLine={false}
+              label={({ name, percent }) =>
+                `${name} ${(percent * 100).toFixed(0)}%`
+              }
+              outerRadius={100}
+              fill="#8884d8"
+              dataKey="value"
+            >
+              {sentimentData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.color} />
+              ))}
+            </Pie>
+            <Tooltip />
+          </PieChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );
