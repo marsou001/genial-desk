@@ -42,6 +42,7 @@ export async function setCache(key: string, value: unknown, ttlSeconds?: number)
 }
 
 export async function invalidateCache(key: string) {
+  return null;
   try {
     await redis.del(key);
   } catch (error) {
