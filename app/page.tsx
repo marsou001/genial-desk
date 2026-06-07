@@ -445,38 +445,18 @@ export default async function App() {
               <h4 className="font-semibold text-zinc-900 dark:text-white mb-3">Product</h4>
               <ul className="space-y-2 text-sm text-zinc-500 dark:text-zinc-400">
                 <li>
-                  <a href="#" className="hover:text-zinc-900 dark:hover:text-white">
+                  <a href="/#features" className="hover:text-zinc-900 dark:hover:text-white">
                     Features
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-zinc-900 dark:hover:text-white">
+                  <a href="/#pricing" className="hover:text-zinc-900 dark:hover:text-white">
                     Pricing
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-zinc-900 dark:hover:text-white">
-                    Security
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-zinc-900 dark:text-white mb-3">Company</h4>
-              <ul className="space-y-2 text-sm text-zinc-500 dark:text-zinc-400">
-                <li>
-                  <a href="#" className="hover:text-zinc-900 dark:hover:text-white">
-                    About
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-zinc-900 dark:hover:text-white">
-                    Blog
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-zinc-900 dark:hover:text-white">
-                    Careers
+                  <a href="/#faq" className="hover:text-zinc-900 dark:hover:text-white">
+                    FAQ
                   </a>
                 </li>
               </ul>
