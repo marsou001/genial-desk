@@ -27,7 +27,7 @@ export default function OrganizationSwitcher({
   return userMemberships.length === 0 ? (
     <Link
       href="/organizations"
-      className="px-3 py-2 sm:px-4 rounded-lg cursor-pointer border bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 text-xs md:text- font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 transition"
+      className="px-3 py-2 sm:px-4 rounded-lg cursor-pointer border bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 text-xs md:text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 transition"
     >
       All organizations
     </Link>
@@ -37,7 +37,7 @@ export default function OrganizationSwitcher({
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className="px-3 py-2 sm:px-4 rounded-lg cursor-pointer border bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 text-xs md:text- font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 transition"
+        className="px-3 py-2 sm:px-4 rounded-lg cursor-pointer border bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 text-xs md:text-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 transition"
       >
         {currentMembership ? currentMembership.organizationName : "All organizations"}
       </button>
@@ -45,7 +45,7 @@ export default function OrganizationSwitcher({
       {/* Dropdown */}
       {open && (
         <div className="absolute min-w-40 mt-2 rounded-xl overflow-hidden shadow-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 z-50">
-          <ul className="text-xs md:text-">
+          <ul className="text-xs md:text-sm">
             {/* All organizations option */}
             <li>
               <Link
