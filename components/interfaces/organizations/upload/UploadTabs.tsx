@@ -21,10 +21,24 @@ const TABS: { key: TabKey; label: string; description: string }[] = [
   },
 ];
 
-export default function UploadTabs() {
+export default function UploadTabs({
+  remainingAIRuns,
+  remainingUploads,
+}: {
+  remainingAIRuns: number;
+  remainingUploads: number;
+}) {
   const [activeTab, setActiveTab] = useState<TabKey>("csv");
+  const [usage, setUsage] = useState({ remainingAIRuns, remainingUploads });
 
   const activeConfig = TABS.find((tab) => tab.key === activeTab)!;
+
+  function handleUploadConsumed() {
+    setUsage((currentUsage) => ({
+      remainingAIRuns: Math.max(0, currentUsage.remainingAIRuns - 1),
+      remainingUploads: Math.max(0, currentUsage.remainingUploads - 1),
+    }));
+  }
 
   return (
     <div className="space-y-6">
@@ -63,7 +77,19 @@ export default function UploadTabs() {
       </div>
 
       <div className="rounded-xl border border-dashed border-zinc-300 bg-zinc-100/60 p-4 dark:border-zinc-700 dark:bg-zinc-900/40">
-        {activeTab === "csv" ? <CSVUpload /> : <ManualFeedbackForm />}
+        {activeTab === "csv" ? (
+          <CSVUpload
+            remainingAIRuns={usage.remainingAIRuns}
+            remainingUploads={usage.remainingUploads}
+            onUploadConsumed={handleUploadConsumed}
+          />
+        ) : (
+          <ManualFeedbackForm
+            remainingAIRuns={usage.remainingAIRuns}
+            remainingUploads={usage.remainingUploads}
+            onUploadConsumed={handleUploadConsumed}
+          />
+        )}
       </div>
     </div>
   );

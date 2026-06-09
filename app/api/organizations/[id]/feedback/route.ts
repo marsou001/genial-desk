@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { analyzeFeedback } from "@/lib/openai";
 import { authGuard } from "@/lib/auth-guard";
+import { checkUploadLimits, consumeUploadLimits } from "@/lib/usage-limits";
 
 export async function GET(
   request: NextRequest,
@@ -62,6 +62,14 @@ export async function POST(
   }
 
   try {
+    const usageCheck = await checkUploadLimits(id);
+    if (!usageCheck.allowed) {
+      return NextResponse.json(
+        { success: false, error: usageCheck.error },
+        { status: usageCheck.status },
+      );
+    }
+
     const body = await request.json();
     const text = (body?.text as string | undefined)?.trim();
     const source =
@@ -81,25 +89,30 @@ export async function POST(
     const supabase = await createClient();
 
     // Analyze feedback with AI
-    const analysis = await analyzeFeedback(text);
+    // const analysis = await analyzeFeedback(text);
+    const analysis = {
+      topic: "General",
+      sentiment: "neutral",
+      summary: text.substring(0, 100),
+      keywords: ["customer satisfaction", "customer service"],
+    };
 
     // Insert into database (scoped to organization)
-    const { error } = await supabase
-      .from("feedbacks")
-      .insert({
-        text,
-        source,
-        topic: analysis.topic,
-        sentiment: analysis.sentiment,
-        summary: analysis.summary,
-        keywords: analysis.keywords,
-        organization_id: id,
-      });
+    const { error } = await supabase.from("feedbacks").insert({
+      text,
+      source,
+      topic: analysis.topic,
+      sentiment: analysis.sentiment,
+      summary: analysis.summary,
+      keywords: analysis.keywords,
+      organization_id: id,
+    });
 
     if (error) {
       throw new Error(error.message);
     }
 
+    await consumeUploadLimits(id);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Manual feedback error:", error);

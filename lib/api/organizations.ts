@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { get, post, postFormData, patch, del } from "./client";
+import { get, patch, del } from "./client";
 
 export interface OrganizationData {
   id: string;
@@ -11,18 +11,6 @@ export interface OrganizationData {
   maxAIRuns: number;
   maxUploads: number;
   createdAt: string;
-}
-
-export interface FeedbackResponse {
-  success: boolean;
-  error?: string;
-}
-
-export interface UploadResponse {
-  success: boolean;
-  processed: number;
-  errors?: string[];
-  feedbacks?: unknown[];
 }
 
 export interface InviteResponse {
@@ -54,33 +42,10 @@ export function useFetchOrganization() {
   return { data, loading, error, fetchOrganization };
 }
 
-export async function deleteOrganization(organizationId: string): Promise<void> {
+export async function deleteOrganization(
+  organizationId: string,
+): Promise<void> {
   await del(`/organizations/${organizationId}`);
-}
-
-export async function createFeedback(
-  organizationId: string,
-  text: string,
-  source: string,
-): Promise<FeedbackResponse> {
-  return post(`/organizations/${organizationId}/feedback`, {
-    text,
-    source,
-  });
-}
-
-export async function uploadCSV(
-  organizationId: string,
-  file: File,
-  source: string,
-): Promise<UploadResponse> {
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("source", source);
-  return postFormData<UploadResponse>(
-    `/organizations/${organizationId}/upload`,
-    formData,
-  );
 }
 
 export async function removeMember(

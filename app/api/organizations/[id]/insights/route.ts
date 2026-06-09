@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { generateInsights } from "@/lib/openai";
 import { authGuard } from "@/lib/auth-guard";
+import { checkInsightsLimits, consumeInsightsLimits } from "@/lib/usage-limits";
 
 export async function GET(
   request: NextRequest,
@@ -29,7 +29,7 @@ export async function GET(
       .eq("period", days)
       .order("created_at", { ascending: false })
       .limit(1)
-      .maybeSingle()
+      .maybeSingle();
 
     if (error) {
       throw new Error(error.message);
@@ -37,7 +37,7 @@ export async function GET(
 
     if (!data) {
       return NextResponse.json({
-        data: null
+        data: null,
       });
     }
 
@@ -51,9 +51,7 @@ export async function GET(
     return NextResponse.json(
       {
         error:
-          error instanceof Error
-            ? error.message
-            : "Failed to fetch insights",
+          error instanceof Error ? error.message : "Failed to fetch insights",
       },
       { status: 500 },
     );
@@ -73,12 +71,20 @@ export async function POST(
     return guard.response;
   }
 
+  const usageCheck = await checkInsightsLimits(id);
+  if (!usageCheck.allowed) {
+    return NextResponse.json(
+      { error: usageCheck.error },
+      { status: usageCheck.status },
+    );
+  }
+
   const { searchParams } = new URL(request.url);
   const days = parseInt(searchParams.get("days") || "30");
-  
+
   const startDate = new Date();
   startDate.setDate(startDate.getDate() - days);
-  
+
   const supabase = await createClient();
 
   try {
@@ -94,9 +100,13 @@ export async function POST(
     }
 
     if (!feedbacksData || feedbacksData.length === 0) {
-      return NextResponse.json({
-        error: "No feedback was found to make insights from. Upload some feedback then try again"
-      }, { status: 404 });
+      return NextResponse.json(
+        {
+          error:
+            "No feedback was found to make insights from. Upload some feedback then try again",
+        },
+        { status: 404 },
+      );
     }
 
     // const insights = await generateInsights(feedbacksData);
@@ -105,12 +115,18 @@ export async function POST(
 
     const { error: insightsError } = await supabase
       .from("insights")
-      .insert({ insight: insights, organization_id: id, period: days, created_at: today })
-    
+      .insert({
+        insight: insights,
+        organization_id: id,
+        period: days,
+        created_at: today,
+      });
+
     if (insightsError) {
       throw new Error(insightsError.message);
     }
 
+    await consumeInsightsLimits(id);
     return NextResponse.json({
       data: insights,
       lastGenerated: today,

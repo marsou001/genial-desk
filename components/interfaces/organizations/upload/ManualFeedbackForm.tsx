@@ -2,27 +2,38 @@
 
 import { useParams } from "next/navigation";
 import { useState } from "react";
-import { createFeedback } from "@/lib/api/organizations";
+import { createFeedback } from "@/lib/api/feedbacks";
+import ButtonWithTooltip from "@/components/common/ButtonWithTooltip";
+import { toast } from "sonner";
 
-interface ManualFeedbackResult {
-  success: boolean;
-  error?: string;
-}
-
-export default function ManualFeedbackForm() {
+export default function ManualFeedbackForm({
+  remainingAIRuns,
+  remainingUploads,
+  onUploadConsumed,
+}: {
+  remainingAIRuns: number;
+  remainingUploads: number;
+  onUploadConsumed: () => void;
+}) {
   const [source, setSource] = useState("Manual Entry");
   const [feedback, setFeedback] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [result, setResult] = useState<ManualFeedbackResult | null>(null);
 
   const { id: organizationId } = useParams();
+  const hasUploadCredits = remainingUploads >= 1 && remainingAIRuns >= 1;
+  const limitTooltip = !hasUploadCredits
+    ? remainingUploads < 1 && remainingAIRuns < 1
+      ? "You need at least 1 upload and 1 AI run remaining to submit feedback."
+      : remainingUploads < 1
+        ? "You need at least 1 upload remaining to submit feedback."
+        : "You need at least 1 AI run remaining to submit feedback."
+    : undefined;
 
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!feedback.trim()) return;
 
     setSubmitting(true);
-    setResult(null);
 
     try {
       await createFeedback(
@@ -30,15 +41,11 @@ export default function ManualFeedbackForm() {
         feedback.trim(),
         source.trim() || "Manual Entry",
       );
-
-      setResult({ success: true });
+      toast.success("Feedback analyzed and added to your workspace.");
       setFeedback("");
+      onUploadConsumed();
     } catch (error) {
-      setResult({
-        success: false,
-        error:
-          error instanceof Error ? error.message : "Failed to submit feedback",
-      });
+      toast.error(error instanceof Error ? error.message : "Failed to submit feedback");
     } finally {
       setSubmitting(false);
     }
@@ -86,36 +93,15 @@ export default function ManualFeedbackForm() {
         </div>
       </div>
 
-      <button
+      <ButtonWithTooltip
         type="submit"
-        disabled={!feedback.trim() || submitting}
+        disabled={!feedback.trim() || submitting || !hasUploadCredits}
+        tooltip={limitTooltip}
+        wrapperClassName="block w-full"
         className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-zinc-400 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
       >
         {submitting ? "Analyzing..." : "Analyze & Save Feedback"}
-      </button>
-
-      {result && (
-        <div
-          className={`p-4 rounded-lg ${
-            result.success
-              ? "bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800"
-              : "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800"
-          }`}
-        >
-          <p
-            className={`text-sm font-medium ${
-              result.success
-                ? "text-green-800 dark:text-green-200"
-                : "text-red-800 dark:text-red-200"
-            }`}
-          >
-            {result.success
-              ? "✅ Feedback analyzed and added to your workspace."
-              : result.error ||
-                "Something went wrong while submitting your feedback."}
-          </p>
-        </div>
-      )}
+      </ButtonWithTooltip>
     </form>
   );
 }

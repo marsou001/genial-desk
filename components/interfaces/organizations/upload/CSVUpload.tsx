@@ -3,7 +3,8 @@
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { uploadCSV } from "@/lib/api/organizations";
+import { uploadCSV } from "@/lib/api/feedbacks";
+import ButtonWithTooltip from "@/components/common/ButtonWithTooltip";
 
 interface UploadResult {
   success: boolean;
@@ -12,13 +13,29 @@ interface UploadResult {
   feedbacks?: any[];
 }
 
-export default function CSVUpload() {
+export default function CSVUpload({
+  remainingAIRuns,
+  remainingUploads,
+  onUploadConsumed,
+}: {
+  remainingAIRuns: number;
+  remainingUploads: number;
+  onUploadConsumed: () => void;
+}) {
   const [file, setFile] = useState<File | null>(null);
   const [source, setSource] = useState("CSV Upload");
   const [uploading, setUploading] = useState(false);
   const [result, setResult] = useState<UploadResult | null>(null);
 
   const { id: organizationId } = useParams();
+  const hasUploadCredits = remainingUploads >= 1 && remainingAIRuns >= 1;
+  const limitTooltip = !hasUploadCredits
+    ? remainingUploads < 1 && remainingAIRuns < 1
+      ? "You need at least 1 upload and 1 AI run remaining to upload feedback."
+      : remainingUploads < 1
+        ? "You need at least 1 upload remaining to upload feedback."
+        : "You need at least 1 AI run remaining to upload feedback."
+    : undefined;
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files[0]) {
@@ -37,6 +54,7 @@ export default function CSVUpload() {
     try {
       const data = await uploadCSV(String(organizationId), file, source);
       setResult(data);
+      if (data.success) onUploadConsumed();
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "Failed to process file",
@@ -105,14 +123,16 @@ export default function CSVUpload() {
         </p>
       </div>
 
-      <button
+      <ButtonWithTooltip
         type="submit"
         form="csv-file-upload"
-        disabled={!file || uploading}
+        disabled={!file || uploading || !hasUploadCredits}
+        tooltip={limitTooltip}
+        wrapperClassName="block w-full"
         className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 cursor-pointer disabled:bg-zinc-400 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
       >
         {uploading ? "Processing..." : "Upload & Analyze"}
-      </button>
+      </ButtonWithTooltip>
 
       {result && (
         <div

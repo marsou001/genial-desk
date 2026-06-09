@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { PERIOD_VALUES } from "@/components/common/DropdownPeriodSelection";
 import Insights from "@/components/interfaces/organizations/Insights/Insights";
 import { fetchInsights } from "@/data/fetchInsights";
+import { fetchOrganization } from "@/data/organizations";
 
 export default async function InsightsPage({
   params,
@@ -19,6 +20,13 @@ export default async function InsightsPage({
     redirect(`/organizations/${organizationId}/insights?period=30`);
   }
 
-  let insights = await fetchInsights(organizationId, days);
-  return <Insights insightsData={insights} organizationId={organizationId} />;
+  const organization = await fetchOrganization(organizationId);
+  const insights = await fetchInsights(organizationId, days);
+  return (
+    <Insights
+      insightsData={insights}
+      organizationId={organizationId}
+      remainingAIRuns={organization.remainingAIRuns}
+    />
+  );
 }

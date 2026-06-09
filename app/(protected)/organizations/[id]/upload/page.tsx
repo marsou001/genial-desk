@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import UploadTabs from "@/components/interfaces/organizations/upload/UploadTabs";
+import { fetchOrganization } from "@/data/organizations";
 import { getUser, getUserRole } from "@/lib";
-import { TOAST_FLASH_KEYS } from "@/lib/toast-flash-keys";
 
 export default async function UploadPage({
   params,
@@ -15,6 +15,8 @@ export default async function UploadPage({
   if (role === null || role === "viewer") {
     redirect(`/organizations/${organizationId}/dashboard`);
   }
+
+  const organization = await fetchOrganization(organizationId);
 
   return (
     <section className="w-full max-w-3xl mx-auto py-8">
@@ -43,7 +45,10 @@ export default async function UploadPage({
       </div>
 
       <div className="rounded-2xl border border-zinc-200 bg-white/90 p-4 shadow-sm backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
-        <UploadTabs />
+        <UploadTabs
+          remainingAIRuns={organization.remainingAIRuns}
+          remainingUploads={organization.remainingUploads}
+        />
       </div>
     </section>
   );

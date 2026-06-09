@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { analyzeFeedback } from "@/lib/openai";
 import { authGuard } from "@/lib/auth-guard";
 import Papa from "papaparse";
 import { invalidateCache } from "@/lib/redis";
 import { REDIS_KEYS } from "@/lib/redis/keys";
+import { checkUploadLimits, consumeUploadLimits } from "@/lib/usage-limits";
 
 export async function POST(
   request: NextRequest,
@@ -20,6 +20,14 @@ export async function POST(
   }
 
   try {
+    const usageCheck = await checkUploadLimits(id);
+    if (!usageCheck.allowed) {
+      return NextResponse.json(
+        { success: false, error: usageCheck.error },
+        { status: usageCheck.status },
+      );
+    }
+
     const formData = await request.formData();
     const file = formData.get("file") as File;
     const source = formData.get("source") || "CSV Upload";
@@ -87,11 +95,11 @@ export async function POST(
         // Analyze with AI
         // const analysis = await analyzeFeedback(feedbackText);
         const analysis = {
-          topic: 'General',
-          sentiment: 'neutral',
+          topic: "General",
+          sentiment: "neutral",
           summary: text.substring(0, 100),
           keywords: ["customer satisfaction", "customer service"],
-        }
+        };
 
         // Insert into database (scoped to organization)
         feedbacks.push({
@@ -110,15 +118,14 @@ export async function POST(
       }
     }
 
-    const { error } = await supabase
-      .from("feedbacks")
-      .insert(feedbacks);
+    const { error } = await supabase.from("feedbacks").insert(feedbacks);
 
     if (error) {
       throw new Error(error.message);
     }
 
     await invalidateCache(REDIS_KEYS.feedbacks(id));
+    await consumeUploadLimits(id);
     return NextResponse.json({
       success: true,
       processed: feedbacks.length,

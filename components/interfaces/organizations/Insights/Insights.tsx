@@ -10,19 +10,27 @@ import {
 } from "@/lib/api/organizations-insights";
 import { formatRelativeTime } from "@/lib/utils";
 import DropdownPeriodSelection from "@/components/common/DropdownPeriodSelection";
+import ButtonWithTooltip from "@/components/common/ButtonWithTooltip";
 
 export default function Insights({
   insightsData,
   organizationId,
+  remainingAIRuns,
 }: {
   insightsData: InsightsData;
   organizationId: string;
+  remainingAIRuns: number;
 }) {
   const [insights, setInsights] = useState<InsightsData>(insightsData);
   const [isLoading, setIsLoading] = useState(false);
+  const [remainingRuns, setRemainingRuns] = useState(remainingAIRuns);
   const searchParams = useSearchParams();
 
   const period = searchParams.get("period") ?? "30";
+  const hasInsightCredits = remainingRuns >= 2;
+  const insightLimitTooltip = hasInsightCredits
+    ? undefined
+    : `Generating insights requires 2 AI runs. You have ${remainingRuns} remaining.`;
   const lastGenerated = insights?.data
     ? formatRelativeTime(new Date(insights.lastGenerated).toISOString())
     : null;
@@ -48,6 +56,7 @@ export default function Insights({
     try {
       const data = await _generateInsights(organizationId, Number(period));
       setInsights(data);
+      setRemainingRuns((currentRuns) => Math.max(0, currentRuns - 2));
       toast.success("Insights refreshed");
       return true;
     } catch (error) {
@@ -76,13 +85,15 @@ export default function Insights({
             <p className="text-zinc-600 dark:text-zinc-200 text-center">
               No insights were generated for a {period} days period.
             </p>
-            <button
+            <ButtonWithTooltip
               onClick={generateInsights}
-              disabled={isLoading}
-              className="mt-6 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg cursor-pointer disabled:bg-blue-800 disabled:cursor-not-allowed transition-colors"
+              disabled={isLoading || !hasInsightCredits}
+              tooltip={insightLimitTooltip}
+              wrapperClassName="mt-6 block mx-auto"
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg cursor-pointer disabled:bg-blue-800 disabled:bg-zinc-400 disabled:cursor-not-allowed transition-colors"
             >
               Generate Insights
-            </button>
+            </ButtonWithTooltip>
           </div>
         </div>
       ) : (
@@ -104,13 +115,15 @@ export default function Insights({
               ))}
             </div>
           </div>
-          <button
+          <ButtonWithTooltip
             onClick={generateInsights}
-            disabled={isLoading}
-            className="mt-6 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg cursor-pointer disabled:bg-blue-800 disabled:cursor-not-allowed transition-colors"
+            disabled={isLoading || !hasInsightCredits}
+            tooltip={insightLimitTooltip}
+            wrapperClassName="mt-6 block"
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg cursor-pointer disabled:bg-zinc-400 disabled:cursor-not-allowed transition-colors"
           >
             Refresh Insights
-          </button>
+          </ButtonWithTooltip>
         </div>
       )}
     </>
