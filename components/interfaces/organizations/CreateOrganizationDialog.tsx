@@ -114,11 +114,11 @@ export default function CreateOrganizationDialog({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+            <label htmlFor="plan" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
               Plan
             </label>
 
-            {isFetchingPlans && (
+            {isFetchingPlans ? (
               <div className="flex items-center gap-2 py-3 text-sm text-zinc-500">
                 <svg
                   className="animate-spin h-4 w-4"
@@ -142,42 +142,26 @@ export default function CreateOrganizationDialog({
                 </svg>
                 Loading plans...
               </div>
-            )}
-
-            {error && !isFetchingPlans && (
+            ) : error ? (
               <div className="py-2 px-3 mb-2 text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-lg">
                 {error}
               </div>
+            ) : (
+              <select
+                id="plan"
+                name="plan"
+                value={selectedPlan}
+                onChange={(e) => setSelectedPlan(e.target.value)}
+                disabled={!!error || isFetchingPlans}
+                className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {plans.map((plan) => (
+                  <option key={plan.name} value={plan.name} className="capitalize">
+                    {plan.name} — ${plan.price}/month
+                  </option>
+                ))}
+              </select>
             )}
-
-            <div className="grid grid-cols-3 gap-2">
-              {plans.map((plan) => {
-                const disabled = !!error || !!isFetchingPlans;
-
-                return (
-                  <button
-                    key={plan.name}
-                    type="button"
-                    onClick={() => setSelectedPlan(plan.name)}
-                    disabled={disabled}
-                    className={`p-3 rounded-lg border text-center transition-colors ${
-                      selectedPlan === plan.name
-                        ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300"
-                        : "border-zinc-300 dark:border-zinc-600 text-zinc-700 dark:text-zinc-300 hover:border-zinc-400"
-                    } ${
-                      disabled
-                        ? "opacity-50 cursor-not-allowed"
-                        : "cursor-pointer"
-                    }`}
-                  >
-                    <div className="text-sm font-medium capitalize">
-                      {plan.name}
-                    </div>
-                    <div className="text-xs mt-1">${plan.price}/month</div>
-                  </button>
-                );
-              })}
-            </div>
           </div>
 
           <div className="flex gap-3">
