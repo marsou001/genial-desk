@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { readFileSync } from "fs";
 
 function createAdminClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -16,6 +17,14 @@ function createAdminClient() {
       persistSession: false,
     },
   });
+}
+
+export async function deleteOrganization(orgId: string): Promise<void> {
+  const supabase = createAdminClient();
+  const { error } = await supabase.from("organizations").delete().eq("id", orgId);
+  if (error) {
+    console.warn(`Failed to delete organization ${orgId}:`, error.message);
+  }
 }
 
 export async function deleteTestUser(email: string): Promise<void> {
@@ -36,5 +45,14 @@ export async function deleteTestUser(email: string): Promise<void> {
 
   if (deleteError) {
     console.warn(`Failed to delete user ${email}:`, deleteError.message);
+  }
+}
+
+export function getSetupEmail(): string | null {
+  try {
+    const data = readFileSync("playwright/.auth/setup-email.json", "utf-8");
+    return JSON.parse(data).email;
+  } catch {
+    return null;
   }
 }

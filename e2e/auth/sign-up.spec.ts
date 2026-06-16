@@ -7,6 +7,7 @@ const TEST_PASSWORD = "TestPassword123!";
 const createdUsers: string[] = [];
 
 test.describe("Sign-up flow", () => {
+  test.use({ storageState: { cookies: [], origins: [] } });
   test.afterAll(async () => {
     await deleteAllMessages();
     for (const email of createdUsers) {
