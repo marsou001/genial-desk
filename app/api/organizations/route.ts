@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib";
-import { PLANS } from "@/lib/constants";
 import { REDIS_KEYS } from "@/lib/redis/keys";
 import { getCache, invalidateCache, setCache } from "@/lib/redis";
 import { UserMemberShipView } from "@/types";
@@ -73,18 +72,10 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const name = (body?.name as string)?.trim();
-    const plan = (body?.plan as string) || "free";
 
     if (!name || name.length < 2) {
       return NextResponse.json(
         { error: "Organization name must be at least 2 characters" },
-        { status: 400 },
-      );
-    }
-
-    if (!PLANS.includes(plan)) {
-      return NextResponse.json(
-        { error: "Invalid plan" },
         { status: 400 },
       );
     }
@@ -117,8 +108,6 @@ export async function POST(request: NextRequest) {
     const { id } = await getUser();
     await invalidateCache(REDIS_KEYS.userMemberships(id))
     return NextResponse.json({
-      success: true,
-      plan,
       organization: {
         id: orgId,
         name,

@@ -46,7 +46,7 @@ export default function CreateOrganizationDialog({
     setIsSubmitting(true);
 
     try {
-      const result = await createOrganization(name, selectedPlan);
+      const result = await createOrganization(name);
 
       if (selectedPlan === "free") {
         toast.success("Organization created successfully");
