@@ -24,7 +24,6 @@ export async function fetchPlans(): Promise<Plan[]> {
       priceId: p.price_id,
       maxAIRuns: p.max_ai_runs,
       maxUploads: p.max_uploads,
-      maxMembers: p.max_members,
     }));
 
     await setCache(cacheKey, plans);
@@ -55,7 +54,6 @@ export async function fetchPlanByPriceId(priceId: string | null): Promise<Plan> 
       priceId: data.price_id,
       maxAIRuns: data.max_ai_runs,
       maxUploads: data.max_uploads,
-      maxMembers: data.max_members,
     };
 
     await setCache(cacheKey, plan);

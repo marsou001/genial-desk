@@ -67,7 +67,6 @@ export default async function CheckoutPage({
                 ${plan.price}/month
               </p>
               <ul className="text-xs text-zinc-500 dark:text-zinc-400 mt-2 space-y-1">
-                <li>Up to {plan.maxMembers} members</li>
                 <li>{plan.maxAIRuns} AI runs per month</li>
                 <li>{plan.maxUploads} uploads per month</li>
               </ul>

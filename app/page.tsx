@@ -239,7 +239,6 @@ export default async function App() {
             const features = [
               `Up to ${plan.maxUploads} feedback uploads/month`,
               `Up to ${plan.maxAIRuns} AI analysis runs/month`,
-              `Up to ${plan.maxMembers} team member${plan.maxMembers > 1 ? 's' : ''}`,
             ];
 
             return (

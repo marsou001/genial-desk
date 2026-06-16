@@ -25,7 +25,6 @@ export async function fetchPlanByPriceId(
       name: data.name,
       price: data.price,
       priceId: data.price_id,
-      maxMembers: data.max_members,
       maxUploads: data.max_uploads,
       maxAIRuns: data.max_ai_runs,
     } as Plan;

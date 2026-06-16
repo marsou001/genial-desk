@@ -107,8 +107,8 @@ export default function OrganizationBilling({
                 {currentPlan.name} Plan
               </p>
               <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
-                ${currentPlan.price}/month &middot; {currentPlan.maxMembers}{" "}
-                members &middot; {currentPlan.maxAIRuns} AI runs &middot;{" "}
+                ${currentPlan.price}/month{" "}
+                {currentPlan.maxAIRuns} AI runs &middot;{" "}
                 {currentPlan.maxUploads} uploads
               </p>
             </div>
@@ -168,7 +168,6 @@ export default function OrganizationBilling({
                   ${plan.price}/month
                 </p>
                 <ul className="text-xs text-zinc-500 dark:text-zinc-400 mt-2 space-y-1">
-                  <li>Up to {plan.maxMembers} members</li>
                   <li>{plan.maxAIRuns} AI runs</li>
                   <li>{plan.maxUploads} uploads</li>
                 </ul>

@@ -85,7 +85,6 @@ export interface Plan {
   priceId: string | null;
   maxAIRuns: number;
   maxUploads: number;
-  maxMembers: number;
 }
 
 export interface Subscription {

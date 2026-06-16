@@ -30,7 +30,6 @@ export interface Plan {
   price_id: string | null;
   max_ai_runs: number;
   max_uploads: number;
-  max_members: number;
 }
 
 export interface Subscription {

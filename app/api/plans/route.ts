@@ -17,7 +17,6 @@ export async function GET() {
       priceId: p.price_id,
       maxAIRuns: p.max_ai_runs,
       maxUploads: p.max_uploads,
-      maxMembers: p.max_members,
     }));
     return Response.json({ data: plans });
   } catch (error) {
