@@ -57,7 +57,7 @@ export async function POST(req: Request) {
         }
       }
     };
-    console.log("customerId", customerId)
+
     if (customerId) {
       sessionParams.customer = customerId;
     } else {
