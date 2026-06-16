@@ -44,34 +44,47 @@ export default function CreateOrganizationDialog({
     if (!name) return;
 
     setIsSubmitting(true);
+    let createdOrgId: string;
 
     try {
       const result = await createOrganization(name);
+      createdOrgId = result.organization.id;
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Something went wrong while creating your organization",
+      );
+      setIsSubmitting(false);
+      return;
+    }
+    
+    if (selectedPlan === "free") {
+      toast.success("Organization created successfully");
+      setIsSubmitting(false);
+      handleClose();
+      router.push(`/organizations/${createdOrgId}/dashboard`);
+      return;
+    }
 
-      if (selectedPlan === "free") {
-        toast.success("Organization created successfully");
-        handleClose();
-        router.push(`/organizations/${result.organization.id}/dashboard`);
-        return;
-      }
+    const plan = plans.find((p) => p.name.toLowerCase() === selectedPlan);
+    if (!plan) {
+      toast.error("Selected plan not found");
+      setIsSubmitting(false);
+      return;
+    }
 
-      const plan = plans.find((p) => p.name.toLowerCase() === selectedPlan);
-      if (!plan) {
-        throw new Error("Selected plan not found");
-      }
-
+    try {
       const { sessionURL } = await createCheckoutSession(
-        result.organization.id,
+        createdOrgId,
         plan.priceId!,
         null,
       );
-
+  
       window.location.href = sessionURL;
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Something went wrong",
+        error instanceof Error ? error.message : "Organization created, but we couldn't start checkout. You can upgrade later from Billing.",
       );
-      setIsSubmitting(false);
+      router.push(`/organizations/${createdOrgId}/dashboard`);
     }
   }
 
