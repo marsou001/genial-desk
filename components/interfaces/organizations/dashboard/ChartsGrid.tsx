@@ -21,7 +21,7 @@ export default function ChartsGrid({ stats }: { stats: Stats }) {
     .map(([topic, count]) => ({ topic, count }));
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8 mb-4 sm:mb-8">
       {/* Volume Over Time */}
       <div className="text-zinc-800 bg-white dark:bg-zinc-900 p-6 rounded-lg border border-zinc-200 dark:border-zinc-800">
         <h3 className="text-lg font-semibold mb-4 text-zinc-900 dark:text-zinc-50">

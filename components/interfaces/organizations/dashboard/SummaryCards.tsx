@@ -2,7 +2,7 @@ import { Stats } from "@/types";
 
 export default function SummaryCards({ stats }: { stats: Stats }) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8 mb-4 sm:mb-8">
       <div className="bg-white dark:bg-zinc-900 p-6 rounded-lg border border-zinc-200 dark:border-zinc-800">
         <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-1">
           Total Feedback
