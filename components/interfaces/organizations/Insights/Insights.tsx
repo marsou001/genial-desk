@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { toast } from "sonner";
 import { Insights as InsightsData } from "@/types";
 import {
@@ -11,6 +11,7 @@ import {
 import { formatRelativeTime } from "@/lib/utils";
 import DropdownPeriodSelection from "@/components/common/DropdownPeriodSelection";
 import ButtonWithTooltip from "@/components/common/ButtonWithTooltip";
+import DownloadPDFReport from "@/components/common/DownloadPDFReport";
 
 export default function Insights({
   insightsData,
@@ -25,6 +26,7 @@ export default function Insights({
   const [isLoading, setIsLoading] = useState(false);
   const [remainingRuns, setRemainingRuns] = useState(remainingAIRuns);
   const searchParams = useSearchParams();
+  const contentRef = useRef<HTMLDivElement>(null);
 
   const period = searchParams.get("period") ?? "30";
   const hasInsightCredits = remainingRuns >= 2;
@@ -71,11 +73,19 @@ export default function Insights({
 
   return (
     <>
-      <div className="flex justify-end mb-4 sm:mb-8">
+      <div className="flex items-center justify-end gap-3 mb-4 sm:mb-8">
         <DropdownPeriodSelection
           disabled={isLoading}
           fetchData={fetchInsights}
         />
+        {insights.data !== null && (
+          <DownloadPDFReport
+            period={Number(period)}
+            contentRef={contentRef}
+            reportTitle="Insights Report"
+            disabled={isLoading}
+          />
+        )}
       </div>
       {isLoading ? (
         <div className="flex items-center justify-center h-64">Loading...</div>
@@ -106,7 +116,7 @@ export default function Insights({
               Generated {lastGenerated}
             </div>
           </div>
-          <div className="prose prose-sm max-w-none dark:prose-invert">
+          <div ref={contentRef} className="prose prose-sm max-w-none dark:prose-invert">
             <div className="text-zinc-700 dark:text-zinc-300 leading-relaxed whitespace-pre-line">
               {insights.data.split("\n").map((paragraph, i) => (
                 <p key={i} className="mb-4 last:mb-0">

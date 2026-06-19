@@ -9,7 +9,7 @@ import ChartsGrid from "./ChartsGrid";
 import SentimentsDistribution from "./SentimentsDistribution";
 import NoFeedbackFound from "./NoFeedbackFound";
 import DropdownPeriodSelection from "@/components/common/DropdownPeriodSelection";
-import DownloadPDFReport from "./DownloadPDFReport";
+import DownloadPDFReport from "../../../common/DownloadPDFReport";
 
 export default function DashboardClient({
   initialStats,
@@ -50,8 +50,6 @@ export default function DashboardClient({
         <DropdownPeriodSelection fetchData={fetchStats} disabled={isFetching} />
         {stats && stats.total > 0 && (
           <DownloadPDFReport
-            stats={stats}
-            organizationId={organizationId}
             period={currentPeriod}
             contentRef={contentRef}
           />

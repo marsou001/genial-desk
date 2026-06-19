@@ -5,18 +5,18 @@ import { toast } from "sonner";
 import html2canvas from "html2canvas-pro";
 import jsPDF from "jspdf";
 import { FileDown } from "lucide-react";
-import { Stats } from "@/types";
 import { usePermissions } from "@/context/permissions-context";
 
 export default function DownloadPDFReport({
-  stats,
   period,
   contentRef,
+  reportTitle = "Dashboard Report",
+  disabled = false,
 }: {
-  stats: Stats;
-  organizationId: string;
   period: number;
   contentRef: React.RefObject<HTMLDivElement | null>;
+  reportTitle?: string;
+  disabled?: boolean;
 }) {
   const canExport = usePermissions("data:export");
   const [isGenerating, setIsGenerating] = useState(false);
@@ -40,7 +40,11 @@ export default function DownloadPDFReport({
               .dark\\:bg-zinc-900 { background-color: #ffffff !important; }
               .dark\\:text-zinc-50 { color: #09090b !important; }
               .dark\\:text-zinc-400 { color: #71717a !important; }
+              .dark\\:text-zinc-300 { color: #52525b !important; }
               .dark\\:border-zinc-800 { border-color: #e4e4e7 !important; }
+              .dark\\:border-blue-800 { border-color: #bfdbfe !important; }
+              .dark\\:from-blue-950\\/20 { background-image: none !important; }
+              .dark\\:to-indigo-950\\/20 { background-image: none !important; }
             }
           `;
           clonedDoc.head.appendChild(style);
@@ -53,7 +57,7 @@ export default function DownloadPDFReport({
       const pageHeight = pdf.internal.pageSize.getHeight();
 
       pdf.setFontSize(18);
-      pdf.text("Dashboard Report", pageWidth / 2, 20, { align: "center" });
+      pdf.text(reportTitle, pageWidth / 2, 20, { align: "center" });
       pdf.setFontSize(11);
       pdf.text(`Period: Last ${period} days`, pageWidth / 2, 28, {
         align: "center",
@@ -94,7 +98,7 @@ export default function DownloadPDFReport({
   return (
     <button
       onClick={handleDownload}
-      disabled={isGenerating}
+      disabled={disabled || isGenerating}
       className="flex items-center gap-2 px-4 py-1.5 text-sm font-medium bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg transition-colors cursor-pointer disabled:cursor-not-allowed"
     >
       <FileDown className="h-4 w-4" />
